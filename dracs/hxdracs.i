@@ -6,7 +6,7 @@
 
   [./PBModelParams]
 	pspg = false
-	pbm_scaling_factors = '1 1e-3 1e-7'
+	pbm_scaling_factors = '1 1e-2 1e-5'
 	#variable_bounding = true
 	#V_bounds = '0 10'
   [../]
@@ -14,7 +14,7 @@
 
 
 [EoS]
-	active = 'eos eos2'
+	active = 'eos eos2 eos3'
   [./eos]
   	type = SaltEquationOfState
   [../]
@@ -28,6 +28,19 @@
   	cv =  155136    #100x scaled (boils over ~10 K)
   	h_0 = 2.678e6  # J/kg
   	T_0 = 374      # K
+  	mu = 1.23e-5 #1x
+ 	k = 0.0251 #1x
+  [../]
+  [./eos3] #const salt
+  	type = PTConstantEOS
+  	p_0 = 1.0e5    # Pa
+  	rho_0 = 2279.92   # kg/m^3
+  	#a2 = 1.834e5  # m^2/s^2
+  	beta = 0 # K^{-1}
+  	cp = 2415.78
+  	cv =  2415.78
+  	h_0 = 2.35092e6  # J/kg
+  	T_0 = 973.15      # K
   	mu = 1.23e-5 #1x
  	k = 0.0251 #1x
   [../]
@@ -220,7 +233,7 @@
 
   [./pipe5] 
     type = PBOneDFluidComponent
-    eos = eos
+    eos = eos3
     position = '0 0 7.5'
     orientation = '0 0 1'
     
@@ -233,7 +246,7 @@
   	type = PBTDV
   	input = 'pipe5(out)'
 	eos = eos
-  	p_bc = '9.5e4'
+  	p_bc = 1.01e5
   	T_bc = 1050
   [../]
   
@@ -249,7 +262,7 @@
   	type = PBTDV
   	input = 'TCHX(secondary_out)'
     eos = eos2
-  	p_bc = 9.5e4
+  	p_bc = 1.01e5
   	T_bc = 384
   [../]  
 

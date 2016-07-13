@@ -6,7 +6,7 @@
 
   [./PBModelParams]
 	pspg = false
-	pbm_scaling_factors = '1 1e-2 1e-5'
+	pbm_scaling_factors = '1 1e-1 1e-4'
 	#variable_bounding = true
 	#V_bounds = '0 10'
   [../]
@@ -271,7 +271,7 @@
 	input = 'DHX(primary_out)'
     eos = eos
 	v_bc = -0.045
-  	T_bc = 973
+  	T_bc = 1050
   [../]
  
   [./outlet1]

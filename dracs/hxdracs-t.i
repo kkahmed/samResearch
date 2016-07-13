@@ -6,7 +6,7 @@
 
   [./PBModelParams]
 	pspg = false
-	pbm_scaling_factors = '1 1e-2 1e-5'
+	pbm_scaling_factors = '1 1e-1 1e-4'
 	#variable_bounding = true
 	#V_bounds = '0 10'
   [../]
@@ -64,7 +64,7 @@
   [../]
   [./T_osc]
     type = ParsedFunction
-    value = '1050+75*sin(2*pi*t/240)'
+    value = '1050+75*sin(2*pi*t/480)'
   [../]
 []
 

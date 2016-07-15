@@ -264,6 +264,28 @@
     length = 0.1
     n_elems = 1
   [../]
+  #[./pool1]
+  #  type = PBLiquidVolume
+  #  center = '0 0 8.6'
+  #  inputs = 'pipe5(out)'
+  #  K = '0.5'
+  #  Area = 3
+  #  volume = 30
+  #  initial_level = 5.0
+    #initial_T = 900
+    #scale_factors = '1 1e-1 1e-2'
+  #  display_pps = true
+  #  covergas_component = 'cover_gas1'
+  #  eos = eos3
+  #[../]
+  #[./cover_gas1]
+#	type = CoverGas
+#	n_liquidvolume =1
+#	name_of_liquidvolume = 'pool1'
+#	initial_P = 2e5
+#	initial_Vol = 15.0
+#	initial_T = 950
+  #[../]
   [./p_out]
   	type = PBTDV
   	input = 'pipe5(out)'
@@ -372,7 +394,7 @@
 
   start_time = 0.0
   num_steps = 15000
-  end_time = 5000
+  end_time = 3000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve

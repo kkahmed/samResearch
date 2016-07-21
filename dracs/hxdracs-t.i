@@ -224,7 +224,7 @@
     inputs = 'pipe2(out)'
     outputs = 'pipe3(in) pipe5(in)'
     center = '0 0 7.5' 
-    volume = 0.03534292 #0.01767146
+    volume = 0.01767146 #0.003534292
     K = '0.0 0.0 10.0'
     #Area =   0.44934 
     Area = 0.01767146
@@ -264,35 +264,37 @@
     length = 0.1
     n_elems = 1
   [../]
-  #[./pool1]
-  #  type = PBLiquidVolume
-  #  center = '0 0 8.6'
-  #  inputs = 'pipe5(out)'
-  #  K = '0.5'
-  #  Area = 3
-  #  volume = 30
-  #  initial_level = 5.0
-    #initial_T = 900
+  [./pool1]
+    type = PBLiquidVolume
+    center = '0 0 8.6'
+    inputs = 'pipe5(out)'
+    Steady = 0
+    K = '0.5'
+    Area = 3
+    volume = 30
+    initial_level = 5.0
+    initial_T = 1011
+    initial_V = 0.0
     #scale_factors = '1 1e-1 1e-2'
-  #  display_pps = true
-  #  covergas_component = 'cover_gas1'
-  #  eos = eos3
-  #[../]
-  #[./cover_gas1]
-#	type = CoverGas
-#	n_liquidvolume =1
-#	name_of_liquidvolume = 'pool1'
-#	initial_P = 2e5
-#	initial_Vol = 15.0
-#	initial_T = 950
-  #[../]
-  [./p_out]
-  	type = PBTDV
-  	input = 'pipe5(out)'
-	eos = eos
-  	p_bc = 1.01e5
-  	T_bc = 1050
+    display_pps = true
+    covergas_component = 'cover_gas1'
+    eos = eos3
   [../]
+  [./cover_gas1]
+	type = CoverGas
+	n_liquidvolume =1
+	name_of_liquidvolume = 'pool1'
+	initial_P = 2e5
+	initial_Vol = 15.0
+	initial_T = 950
+  [../]
+#  [./p_out]
+#  	type = PBTDV
+#  	input = 'pipe5(out)'
+#	eos = eos
+#  	p_bc = 1.01e5
+#  	T_bc = 1050
+#  [../]
   
   [./inlet2]
   	type = PBTDJ

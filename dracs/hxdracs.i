@@ -13,7 +13,7 @@
 []
 
 
-[EoS]
+[EOS]
 	active = 'eos eos2 eos3'
   [./eos]
   	type = SaltEquationOfState
@@ -94,7 +94,7 @@
 	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
 	initial_T = 925
 
-    HT_surface_area_density = 353.0303124
+    HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
     HT_surface_area_density_secondary = 366.9724771
     
     Twall_init = 900
@@ -325,17 +325,27 @@
     block = 'TCHX:secondary_pipe'
     #execute_on = timestep_end
   [../]
-  [./DHX_in]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 39.259855
-    block = 'DHX:primary_pipe'
+  #[./DHX_in]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 39.259855
+  #  block = 'DHX:primary_pipe'
     #execute_on = timestep_end
+  #[../]
+  #[./DHX_out]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 33.695466
+  #  block = 'DHX:secondary_pipe'
+    #execute_on = timestep_end
+  #[../]
+  [./coldleg]
+    type = ComponentNodalVariableValue
+    input = 'pipe4(0)'
+    variable = 'temperature'
   [../]
-  [./DHX_out]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 33.695466
-    block = 'DHX:secondary_pipe'
-    #execute_on = timestep_end
+  [./corecold]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX:primary_pipe(in)'
+    variable = 'temperature'
   [../]
 []
   

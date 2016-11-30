@@ -13,7 +13,7 @@
 []
 
 
-[EoS]
+[EOS]
 	active = 'eos eos2 eos3'
   [./eos]
   	type = SaltEquationOfState
@@ -87,14 +87,14 @@
     n_elems = 8
     #f = 0.238
     #f_secondary = 0.045
-    Hw = 582 #604.98482473 #Overall Ux2
-    Hw_secondary = 582 #Overall Ux2
+    #Hw = 582 #604.98482473 #Overall Ux2
+    #Hw_secondary = 582 #Overall Ux2
 
-  	initial_V = -0.03 #0.23470 #0.104 #0.04855862 
+  	initial_V = -0.001 #0.23470 #0.104 #0.04855862 
 	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
 	initial_T = 925
 
-    HT_surface_area_density = 353.0303124
+    HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
     HT_surface_area_density_secondary = 366.9724771
     
     Twall_init = 900
@@ -152,7 +152,7 @@
     Hw = 1.5e5 #Turned this down from e5
     #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
     #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
-    Hw_secondary = 20.6241 #Converges, 100 does not
+    Hw_secondary = 2 #20.6241 #Converges, 100 does not
 
   	initial_V = 0.04855862 #0.12341942  #0.23470
 	initial_V_secondary = -9.21125 #Not scaled to preserve residence time
@@ -294,7 +294,8 @@
   	type = PBTDJ
 	input = 'DHX(primary_out)'
     eos = eos
-	v_bc = -0.03
+     #p_bc = 10.5e4
+	v_bc = -0.001
   	T_bc = 973
   [../]
  
@@ -302,8 +303,9 @@
   	type = PBTDV
   	input = 'DHX(primary_in)'
     eos = eos
+     #v_bc = 0.001
   	p_bc = 10.5e4
-  	T_bc = 873
+  	T_bc = 973
   [../] 
 []
 
@@ -319,24 +321,24 @@
     block = 'TCHX:primary_pipe'
     #execute_on = timestep_end
   [../]
-  [./TCHX_out]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 76.924338 #70.198888
-    block = 'TCHX:secondary_pipe'
+  #[./TCHX_out]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 76.924338 #70.198888
+  #  block = 'TCHX:secondary_pipe'
     #execute_on = timestep_end
-  [../]
+  #[../]
   #[./DHX_in]
   #  type = HeatExchangerHeatRemovalRate
   #  heated_perimeter = 39.259855
   #  block = 'DHX:primary_pipe'
     #execute_on = timestep_end
   #[../]
-  #[./DHX_out]
-  #  type = HeatExchangerHeatRemovalRate
-  #  heated_perimeter = 33.695466
-  #  block = 'DHX:secondary_pipe'
+  [./DHX_out]
+    type = HeatExchangerHeatRemovalRate
+    heated_perimeter = 33.695466
+    block = 'DHX:secondary_pipe'
     #execute_on = timestep_end
-  #[../]
+  [../]
   [./coldleg]
     type = ComponentNodalVariableValue
     input = 'pipe4(0)'

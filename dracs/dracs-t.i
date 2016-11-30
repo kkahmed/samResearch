@@ -13,7 +13,7 @@
 []
 
 
-[EoS]
+[EOS]
 	active = 'eos eos2 eos3'
   [./eos]
   	type = SaltEquationOfState

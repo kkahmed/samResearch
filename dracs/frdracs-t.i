@@ -13,7 +13,7 @@
 []
 
 
-[EoS]
+[EOS]
 	active = 'eos eos2 eos3'
   [./eos]
   	type = SaltEquationOfState
@@ -49,8 +49,8 @@
 [Functions]
   [./T_step]
     type = PiecewiseLinear
-    x = '0   120   10000'
-    y = '973 1119  1119'
+    x = '0   360   1800 10000'
+    y = '973 1073  1032 1032'
   [../]
   [./T_slug]
     type = PiecewiseLinear
@@ -68,8 +68,8 @@
   [../]
   [./v_step]
     type = PiecewiseLinear
-    x = '0     120    10000'
-    y = '-0.03 -0.045 -0.045'
+    x = '0     60    360    10000'
+    y = '0.001 0.001 -0.045 -0.045'
   [../]
 []
 
@@ -114,14 +114,14 @@
     n_elems = 8
     #f = 0.238
     #f_secondary = 0.045
-    Hw = 582 #604.98482473 #Overall Ux2
-    Hw_secondary = 582 #Overall Ux2
+    #Hw = 582 #604.98482473 #Overall Ux2
+    #Hw_secondary = 582 #Overall Ux2
 
   	initial_V = -0.045 #0.23470 #0.104 #0.04855862 
 	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
 	initial_T = 925
 
-    HT_surface_area_density = 353.0303124
+    HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
     HT_surface_area_density_secondary = 366.9724771
     
     Twall_init = 900
@@ -324,7 +324,7 @@
 	#v_bc = -0.045
   	#T_bc = 973
 	T_fn = T_step
-        v_fn = v_step
+     v_fn = v_step
   [../]
  
   [./outlet1]
@@ -332,7 +332,8 @@
   	input = 'DHX(primary_in)'
     eos = eos
   	p_bc = 10.5e4
-  	T_bc = 873
+  	#T_bc = 973
+     T_fn = T_step
   [../] 
 []
 
@@ -348,23 +349,33 @@
     block = 'TCHX:primary_pipe'
     #execute_on = timestep_end
   [../]
-  [./TCHX_out]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 76.924338 #70.198888
-    block = 'TCHX:secondary_pipe'
+  #[./TCHX_out]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 76.924338 #70.198888
+  #  block = 'TCHX:secondary_pipe'
     #execute_on = timestep_end
-  [../]
-  [./DHX_in]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 39.259855
-    block = 'DHX:primary_pipe'
+  #[../]
+  #[./DHX_in]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 39.259855
+  #  block = 'DHX:primary_pipe'
     #execute_on = timestep_end
-  [../]
+  #[../]
   [./DHX_out]
     type = HeatExchangerHeatRemovalRate
     heated_perimeter = 33.695466
     block = 'DHX:secondary_pipe'
     #execute_on = timestep_end
+  [../]
+  [./coldleg]
+    type = ComponentNodalVariableValue
+    input = 'pipe4(0)'
+    variable = 'temperature'
+  [../]
+  [./corecold]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX:primary_pipe(in)'
+    variable = 'temperature'
   [../]
 []
   
@@ -402,7 +413,7 @@
 
   start_time = 0.0
   num_steps = 15000
-  end_time = 3600
+  end_time = 7200
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -414,7 +425,7 @@
 []
 
 [Problem]
-  restart_file_base = 'chdracs_out_cp/0001'
+  restart_file_base = 'frdracs_out_cp/0001'
 []
 
 [Outputs]
@@ -423,7 +434,7 @@
     type = Exodus
     use_displaced = true
     execute_on = 'initial timestep_end'
-    #file_base = chdracs-t_out_displaced
+    #file_base = frdracs-t_out_displaced
     sequence = false  
   [../]
 

@@ -46,28 +46,6 @@
   [../]
 [] 
 
-[Functions]
-  [./T_step]
-    type = PiecewiseLinear
-    x = '0   100   10000'
-    y = '973 1125  1125'
-  [../]
-  [./T_slug]
-    type = PiecewiseLinear
-    x = '0   20   50   70  10000 '
-    y = '973 1125 1125 973  973  '
-  [../]
-  [./T_2step]
-    type = PiecewiseLinear
-    x = '0   100   500  1600 2000 2100 2500 3600 10000'
-    y = '973 1125  1125 973  973  1125 1125 973  973'
-  [../]
-  [./T_osc]
-    type = ParsedFunction
-    value = '1050+75*sin(2*pi*t/480)'
-  [../]
-[]
-
 [Materials]
   [./ss-mat]
     type = SolidMaterialProps
@@ -90,7 +68,7 @@
     length = 1
     n_elems = 1
     #f = 0.03903
-  [../]  
+  [../] 
 
   [./DHX]
     type = PBHeatExchanger
@@ -109,10 +87,10 @@
     n_elems = 8
     #f = 0.238
     #f_secondary = 0.045
-    Hw = 582 #604.98482473 #Overall Ux2
-    Hw_secondary = 582 #Overall Ux2
+    #Hw = 582 #604.98482473 #Overall Ux2
+    #Hw_secondary = 582 #Overall Ux2
 
-  	initial_V = -0.045 #0.23470 #0.104 #0.04855862 
+  	initial_V = -0.03 #0.23470 #0.104 #0.04855862 
 	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
 	initial_T = 925
 
@@ -135,7 +113,7 @@
     
     A = 0.01767146
     Dh = 0.15
-    length = 5.0
+    length = 15.0
     n_elems = 3
     #f = 0.03903
   [../]  
@@ -143,7 +121,7 @@
   [./pipe3] 
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 0 7.50'
+    position = '0 0 17.50'
     orientation = '0 1 0'
     
     A = 0.01767146
@@ -158,7 +136,7 @@
     eos = eos
     eos_secondary = eos2
 
-    position = '0 1.0 7.5'
+    position = '0 1.0 17.5'
     orientation = '23.86943652456 0 -2.5'
     orientation_secondary = '0 0 -1'
 
@@ -174,7 +152,7 @@
     Hw = 1.5e5 #Turned this down from e5
     #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
     #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
-    Hw_secondary = 20.6241 #Converges, 100 does not
+    Hw_secondary = 2 #20.6241 #Converges, 100 does not
 
   	initial_V = 0.04855862 #0.12341942  #0.23470
 	initial_V_secondary = -9.21125 #Not scaled to preserve residence time
@@ -194,12 +172,12 @@
   [./pipe4] 
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 1.0 5.0'
+    position = '0 1.0 15.0'
     orientation = '0 0 -1'
     
     A = 0.01767146
     Dh = 0.15
-    length = 5.0
+    length = 15.0
     n_elems = 3
     #f = 0.03903
   [../] 
@@ -220,10 +198,10 @@
 
 
   [./Branch3]
-    type = PBVolumeBranch
+    type = PBVolumeBranch #type=PBBranch 
     inputs = 'pipe2(out)'
     outputs = 'pipe3(in) pipe5(in)'
-    center = '0 0 7.5' 
+    center = '0 0 17.5' 
     volume = 0.01767146 #0.003534292
     K = '0.0 0.0 10.0'
     #Area =   0.44934 
@@ -256,7 +234,7 @@
   [./pipe5] 
     type = PBOneDFluidComponent
     eos = eos3
-    position = '0 0 7.5'
+    position = '0 0 17.5'
     orientation = '0 0 1'
     
     A = 0.01767146
@@ -266,14 +244,14 @@
   [../]
   [./pool1]
     type = PBLiquidVolume
-    center = '0 0 8.6'
+    center = '0 0 18.6'
     inputs = 'pipe5(out)'
-    Steady = 0
+    Steady = 1
     K = '0.5'
     Area = 3
     volume = 30
     initial_level = 5.0
-    initial_T = 1011
+    initial_T = 907
     initial_V = 0.0
     #scale_factors = '1 1e-1 1e-2'
     display_pps = true
@@ -295,7 +273,7 @@
 #  	p_bc = 1.01e5
 #  	T_bc = 1050
 #  [../]
-  
+
   [./inlet2]
   	type = PBTDJ
 	input = 'TCHX(secondary_in)'
@@ -316,9 +294,8 @@
   	type = PBTDJ
 	input = 'DHX(primary_out)'
     eos = eos
-	v_bc = -0.045
-  	#T_bc = 973
-	T_fn = T_step
+	v_bc = -0.001
+  	T_bc = 973
   [../]
  
   [./outlet1]
@@ -326,7 +303,7 @@
   	input = 'DHX(primary_in)'
     eos = eos
   	p_bc = 10.5e4
-  	T_bc = 873
+  	T_bc = 973
   [../] 
 []
 
@@ -342,24 +319,24 @@
     block = 'TCHX:primary_pipe'
     #execute_on = timestep_end
   [../]
-  [./TCHX_out]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 76.924338 #70.198888
-    block = 'TCHX:secondary_pipe'
+  #[./TCHX_out]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 76.924338 #70.198888
+  #  block = 'TCHX:secondary_pipe'
     #execute_on = timestep_end
-  [../]
+  #[../]
   #[./DHX_in]
   #  type = HeatExchangerHeatRemovalRate
   #  heated_perimeter = 39.259855
   #  block = 'DHX:primary_pipe'
     #execute_on = timestep_end
   #[../]
-  #[./DHX_out]
-  #  type = HeatExchangerHeatRemovalRate
-  #  heated_perimeter = 33.695466
-  #  block = 'DHX:secondary_pipe'
+  [./DHX_out]
+    type = HeatExchangerHeatRemovalRate
+    heated_perimeter = 33.695466
+    block = 'DHX:secondary_pipe'
     #execute_on = timestep_end
-  #[../]
+  [../]
   [./coldleg]
     type = ComponentNodalVariableValue
     input = 'pipe4(0)'
@@ -391,22 +368,22 @@
 
 
 [Executioner]
-  #type = Steady
-  type = Transient  
+  type = Steady
+  #type = Transient  
 
   petsc_options_iname = '-ksp_gmres_restart'
   petsc_options_value = '101'
 
-  dt = 5
-  dtmin = 1e-4
+  #dt = 1e-2
+  #dtmin = 1e-8
 
   nl_rel_tol = 1e-7
   nl_abs_tol = 1e-5
-  nl_max_its = 20
+  nl_max_its = 100
 
-  start_time = 0.0
-  num_steps = 15000
-  end_time = 3600
+  #start_time = 0.0
+  #num_steps = 15000
+  #end_time = 100
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -417,17 +394,16 @@
    [../]
 []
 
-[Problem]
-  restart_file_base = 'hxdracs_out_cp/0001'
-[]
-
 [Outputs]
   print_linear_residuals = false
+  [./out]
+    type = Checkpoint
+  [../]
+
   [./out_displaced]
     type = Exodus
     use_displaced = true
     execute_on = 'initial timestep_end'
-    #file_base = hxdracs-t_out_displaced
     sequence = false  
   [../]
 

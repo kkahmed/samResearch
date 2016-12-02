@@ -90,7 +90,7 @@
     #Hw = 582 #604.98482473 #Overall Ux2
     #Hw_secondary = 582 #Overall Ux2
 
-  	initial_V = -0.001 #0.23470 #0.104 #0.04855862 
+  	initial_V = -0.0045 #0.23470 #0.104 #0.04855862 
 	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
 	initial_T = 925
 
@@ -295,7 +295,7 @@
 	input = 'DHX(primary_out)'
     eos = eos
      #p_bc = 10.5e4
-	v_bc = -0.001
+	v_bc = -0.0045
   	T_bc = 973
   [../]
  
@@ -303,7 +303,7 @@
   	type = PBTDV
   	input = 'DHX(primary_in)'
     eos = eos
-     #v_bc = 0.001
+     #v_bc = 0.0045
   	p_bc = 10.5e4
   	T_bc = 973
   [../] 

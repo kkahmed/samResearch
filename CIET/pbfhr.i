@@ -1,4 +1,4 @@
-[GlobalParams] #for comparison of steady state dracs performance , prior to full-pbfhr model
+[GlobalParams] 
     global_init_P = 1.0e5
     global_init_V = 0.1525 #0.06 #0.29
     global_init_T = 850  
@@ -14,22 +14,9 @@
 
 
 [EOS]
-	active = 'eos eos2 eos3'
+	active = 'eos eos3'
   [./eos]
   	type = SaltEquationOfState
-  [../]
-  [./eos2] #steam
-  	type = PTConstantEOS
-  	p_0 = 1.0e5    # Pa
-  	rho_0 = 0.5959   # kg/m^3
-  	#a2 = 1.834e5  # m^2/s^2
-  	beta = 0.00289 # K^{-1}
-  	cp = 207300 #100x scaled (boils over ~10 K)
-  	cv =  155136    #100x scaled (boils over ~10 K)
-  	h_0 = 2.678e6  # J/kg
-  	T_0 = 374      # K
-  	mu = 1.23e-5 #1x
- 	k = 0.0251 #1x
   [../]
   [./eos3] #const salt
   	type = PTConstantEOS
@@ -63,34 +50,34 @@
     eos = eos
     eos_secondary = eos
     hs_type = cylinder
-    radius_i = 0.00545
 
+    radius_i = 0.00545
     position = '0 0 0'
     orientation = '0 0 1'
-    A = 0.222
-    Dh = 0.0109
-    A_secondary = 0.1840
+    A = 0.2224163
+    Dh = 0.01085449
+    A_secondary = 0.1836403
     Dh_secondary = 0.0109
+    roughness = 0.000015
+    roughness_secondary = 0.000015
     length = 2.5
-    n_elems = 8
-    #f = 0.238
-    #f_secondary = 0.045
-    Hw = 582 #604.98482473 #Overall Ux2
-    Hw_secondary = 582 #Overall Ux2
+    n_elems = 14
 
-  	initial_V = -0.045 #0.23470 #0.104 #0.04855862 
-	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
-	initial_T = 925
+    initial_V = -0.045  
+    initial_V_secondary = 0.029349731 
+    initial_T = 925
 
-    HT_surface_area_density = 354.411275 #Heated perimeter / AreaX
-    HT_surface_area_density_secondary = 366.999488
+    HT_surface_area_density = 353.0303766
+    HT_surface_area_density_secondary = 366.9724771
+    #DittusBoelterModel LaminarForcedHTModel FreeConvectionVerticalCCModel
+    #Hw = 586
+    #Hw_secondary = 586
     
     Twall_init = 900
     wall_thickness = 0.0009
-    
     dim_wall = 2
     material_wall = ss-mat
-    n_wall_elems = 8
+    n_wall_elems = 4
   [../]
 
   [./pipe200] #DRACS hot leg 1 (20)
@@ -129,57 +116,29 @@
     n_elems = 15
   [../] 
 
-  #[./pipe230] #TCHX salt tube (23)
-  #  type = PBOneDFluidComponent 
-  #  eos = eos
-  #  position = '0 -3.67 8.55'
-  #  orientation = '5.407402334 0 -2.6'
-  #  roughness = 0.000015
-  #  A = 0.1746822
-  #  Dh = 0.0109
-  #  length = 6.0
-  #  n_elems = 34
+  [./pipe230] #TCHX salt tube (23)
+    type = PBPipe 
+    eos = eos
+    position = '0 -3.67 8.55'
+    orientation = '5.407402334 0 -2.6'
+    roughness = 0.000015
+    A = 0.1746822
+    Dh = 0.0109
+    length = 6.0
+    n_elems = 34
+    initial_V = 0.04855862
 
-  #  initial_V = 0.04855862
-  #[../] 
-  
-		  [./TCHX]
-		    type = PBHeatExchanger
-		    eos = eos
-		    eos_secondary = eos2
-
-		    position = '0 -3.67 8.55'
-		    orientation = '5.407402334 0 -2.6'
-		    orientation_secondary = '0 0 -1'
-
-		    A = 0.175
-		    Dh = 0.0109
-		    A_secondary = 0.382584
-		    Dh_secondary = 0.0109
-		    length = 6.0
-		    length_secondary = 2.5 #2.73951413
-		    n_elems = 12
-		    #f = 0.238
-		    f_secondary = 0.045
-		    Hw = 1.5e5 #Turned this down from e5
-		    #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
-		    #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
-		    Hw_secondary = 20.6241 #Converges, 100 does not
-
-		  	initial_V = 0.04855862 #0.12341942  #0.23470
-			initial_V_secondary = -9.21125 #Not scaled to preserve residence time
-			initial_T_secondary = 374
-
-		    HT_surface_area_density = 366.893142
-		    HT_surface_area_density_secondary = 402.7746 #Scaled to satisfy Phf conditions 
-		    
-		    Twall_init = 800
-		    wall_thickness = 0.0009
-		    
-		    dim_wall = 1
-		    material_wall = ss-mat
-		    n_wall_elems = 12
-		  [../]
+    HS_BC_type = Temperature
+    Hw = 1000
+    Ph = 64.10356978 
+    T_wall = 799.15
+    Twall_init = 800
+    hs_type = cylinder
+    material_wall = ss-mat
+    n_wall_elems = 4
+    radius_i = 0.00545
+    wall_thickness = 0.0009
+  [../] 	   
 
   [./pipe240] #DRACS cold leg 1 (24)
     type = PBOneDFluidComponent 
@@ -205,23 +164,23 @@
     n_elems = 34
   [../] 
   
-  [./Branch502] #DRACS tank branch (CHECK ABRUPT AREA CHANGE MODEL)
+  [./Branch502] #DRACS tank branch 	(CHECK ABRUPT AREA CHANGE MODEL)
     type = PBVolumeBranch 
-    inputs = 'pipe200(out)'
-    outputs = 'pipe210(in) pipe5(in)'
+    inputs = 'pipe200(out)'			# A = 0.1836403
+    outputs = 'pipe210(in) pipe5(in)'   # A = 0.1836403 A = 1
     center = '0 0 5.95' 
-    volume = 0.003534292 #0.003534292
-    K = '0.0 0.0 0.0'
+    volume = 0.003534292
+    K = '0.0 0.0 0.3673'
     Area = 0.03534292
     eos = eos
   [../]
 
-  [./Branch610] #In to DRACS hot leg 1 (CHECK ABRUPT AREA CHANGE MODEL)
+  [./Branch610] #In to DRACS hot leg 1	(CHECK ABRUPT AREA CHANGE MODEL)
     type = PBBranch
-    inputs = 'DHX(secondary_in)'
-    outputs = 'pipe200(in)'
+    inputs = 'DHX(secondary_in)'		# A = 0.1836403
+    outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
-    K = '0.366 0.366'
+    K = '0.3666 0.3666'
     Area = 0.03534292
   [../]
 
@@ -232,18 +191,22 @@
     eos = eos
   [../]
 
-  [./Branch612] #In to TCHX salt tube (CHECK ABRUPT AREA CHANGE MODEL)
-    type = PBSingleJunction
-    inputs = 'pipe220(out)'
-    outputs = TCHX(primary_in) #'pipe230(in)'
+  [./Branch612] #In to TCHX salt tube 	(CHECK ABRUPT AREA CHANGE MODEL)
+    type = PBBranch
+    inputs = 'pipe220(out)' 			# A = 0.03534292
+    outputs = 'pipe230(in)' 			# A = 0.1746822
     eos = eos
+    K = '0.3655 0.3655'
+    Area = 0.03534292
   [../]
 
   [./Branch613] #In to DRACS cold leg 1 (CHECK ABRUPT AREA CHANGE MODEL)
-    type = PBSingleJunction
-    inputs = TCHX(primary_out) #'pipe230(out)'
-    outputs = 'pipe240(in)'
+    type = PBBranch
+    inputs = 'pipe230(out)' 			# A = 0.1746822
+    outputs = 'pipe240(in)' 			# A = 0.03534292
     eos = eos
+    K = '0.3655 0.3655'
+    Area = 0.03534292
   [../]
   
   [./Branch614] #In to DRACS cold leg 2
@@ -253,26 +216,27 @@
     eos = eos
   [../]
 
-  [./Branch615] #In to DHX tube side (CHECK ABRUPT AREA CHANGE MODEL)
+  [./Branch615] #In to DHX tube side 	(CHECK ABRUPT AREA CHANGE MODEL)
     type = PBSingleJunction
-    inputs = 'pipe250(out)'
-    outputs = 'DHX(secondary_out)'
+    inputs = 'pipe250(out)' 			# A = 0.03534292
+    outputs = 'DHX(secondary_out)' 	# A = 0.1836403
     eos = eos
+    K = '0.3666 0.3666'
+    Area = 0.03534292
   [../]
 
-  [./pipe5] #Pipe to DRACS tank branch
+  [./pipe5] #Pipe to DRACS tank
     type = PBOneDFluidComponent
     eos = eos3
     position = '0 0 5.95'
     orientation = '0 0 1'
-    
     A = 1
     Dh = 0.15
     length = 0.1
     n_elems = 1
   [../]
 
-  [./pool1] #DRACS tank branch
+  [./pool1] #DRACS tank
     type = PBLiquidVolume
     center = '0 0 7.05'
     inputs = 'pipe5(out)'
@@ -306,22 +270,6 @@
 #  	T_bc = 1050
 #  [../]
 
-  [./inlet2]
-  	type = PBTDJ
-	input = 'TCHX(secondary_in)'
-    eos = eos2
-	v_bc = -9.21125
-  	T_bc = 374
-  [../]
- 
-  [./outlet2]
-  	type = PBTDV
-  	input = 'TCHX(secondary_out)'
-    eos = eos2
-  	p_bc = 1.01e5
-  	T_bc = 384
-  [../]  
-
   [./inlet1]
   	type = PBTDJ
 	input = 'DHX(primary_out)'
@@ -345,27 +293,15 @@
     input = DHX(secondary_out)
     #execute_on = timestep_end
   [../]
-  [./TCHX_in]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 64.2063
-    block = 'TCHX:primary_pipe'
-    #execute_on = timestep_end
-  [../]
-  [./TCHX_out]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 154.095 #76.924338 
-    block = 'TCHX:secondary_pipe'
-    #execute_on = timestep_end
-  [../]
   [./DHX_in]
     type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 78.679303
+    heated_perimeter = 78.51971015
     block = 'DHX:primary_pipe'
     execute_on = timestep_end
   [../]
   [./DHX_out]
     type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 67.527906
+    heated_perimeter = 67.39093233
     block = 'DHX:secondary_pipe'
     execute_on = timestep_end
   [../]

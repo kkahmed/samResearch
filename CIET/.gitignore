@@ -1,6 +1,8 @@
+r5files
 *_out_cp
 *.e
 *.pvsm
 *.png
 *.avi
+*.csv
 peacock*

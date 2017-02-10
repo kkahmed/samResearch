@@ -69,7 +69,6 @@
 
     HT_surface_area_density = 353.0303766
     HT_surface_area_density_secondary = 366.9724771
-    #DittusBoelterModel LaminarForcedHTModel FreeConvectionVerticalCCModel
     #Hw = 586
     #Hw_secondary = 586
     
@@ -120,7 +119,7 @@
     type = PBPipe 
     eos = eos
     position = '0 -3.67 8.55'
-    orientation = '5.407402334 0 -2.6'
+    orientation = '0 -5.407402334 -2.6'
     roughness = 0.000015
     A = 0.1746822
     Dh = 0.0109
@@ -143,7 +142,7 @@
   [./pipe240] #DRACS cold leg 1 (24)
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 -3.67 5.95'
+    position = '1 -4.43 5.95'
     orientation = '0 1 0'
     roughness = 0.000015
     A = 0.03534292
@@ -155,7 +154,7 @@
   [./pipe250] #DRACS cold leg 2 (25)
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 0 5.95'
+    position = '1 0 5.95'
     orientation = '0 0 -1'
     roughness = 0.000015
     A = 0.03534292
@@ -175,12 +174,12 @@
     eos = eos
   [../]
 
-  [./Branch610] #In to DRACS hot leg 1	(CHECK ABRUPT AREA CHANGE MODEL)
+  [./Branch610] #In to DRACS hot leg 1	(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
     type = PBBranch
     inputs = 'DHX(secondary_in)'		# A = 0.1836403
     outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
-    K = '0.3666 0.3666'
+    K = '50.3666 50.3666'
     Area = 0.03534292
   [../]
 
@@ -245,7 +244,7 @@
     Area = 1
     volume = 0.9
     initial_level = 0.4
-    initial_T = 1011
+    initial_T = 950
     initial_V = 0.0
     #scale_factors = '1 1e-1 1e-2'
     display_pps = true
@@ -255,26 +254,19 @@
 
   [./cover_gas1]
 	type = CoverGas
-	n_liquidvolume =1
+	n_liquidvolume = 1
 	name_of_liquidvolume = 'pool1'
 	initial_P = 2e5
 	initial_Vol = 0.5
 	initial_T = 950
   [../]
 
-#  [./p_out]
-#  	type = PBTDV
-#  	input = 'pipe5(out)'
-#	eos = eos
-#  	p_bc = 1.01e5
-#  	T_bc = 1050
-#  [../]
-
   [./inlet1]
   	type = PBTDJ
 	input = 'DHX(primary_out)'
     eos = eos
-	v_bc = -0.045
+    #v_bc =  -0.0453228 #9.77 kg/s in each loop
+     v_bc =  0.11969487 #-51.604 kg/s in total
   	T_bc = 973
   [../]
  
@@ -283,7 +275,7 @@
   	input = 'DHX(primary_in)'
     eos = eos
   	p_bc = 10.5e4
-  	T_bc = 873
+  	T_bc = 873.61 #873
   [../] 
 []
 
@@ -293,27 +285,47 @@
     input = DHX(secondary_out)
     #execute_on = timestep_end
   [../]
-  [./DHX_in]
+  [./DHX_q]
     type = HeatExchangerHeatRemovalRate
     heated_perimeter = 78.51971015
     block = 'DHX:primary_pipe'
     execute_on = timestep_end
   [../]
-  [./DHX_out]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 67.39093233
-    block = 'DHX:secondary_pipe'
-    execute_on = timestep_end
-  [../]
-  [./coldleg]
+  #[./DHX_out]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 67.39093233
+  #  block = 'DHX:secondary_pipe'
+  #  execute_on = timestep_end
+  #[../]
+  [./dracscold]
     type = ComponentNodalVariableValue
     input = 'pipe250(0)'
     variable = 'temperature'
   [../]
-  [./corecold]
-    type = ComponentBoundaryVariableValue
-    input = 'DHX:primary_pipe(in)'
+  [./dracshot]
+    type = ComponentNodalVariableValue
+    input = 'pipe210(0)'
     variable = 'temperature'
+  [../]
+  #[./DHXshellBot]
+  #  type = ComponentBoundaryVariableValue
+  #  input = 'DHX:primary_pipe(in)'
+  #  variable = 'temperature'
+  #[../]
+  #[./DHXshellTop]
+  #  type = ComponentBoundaryVariableValue
+  #  input = 'DHX:primary_pipe(out)'
+  #  variable = 'temperature'
+  #[../]
+  [./DHXshellBot]
+	type = ComponentNodalVariableValue
+	input =  'DHX:primary_pipe(0)'
+	variable = 'temperature'
+  [../]
+  [./DHXshellTop]
+	type = ComponentNodalVariableValue
+	input =  'DHX:primary_pipe(14)'
+	variable = 'temperature'
   [../]
 []
   

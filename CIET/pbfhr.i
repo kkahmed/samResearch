@@ -1,6 +1,6 @@
 [GlobalParams] 
     global_init_P = 1.0e5
-    global_init_V = 0.1525 #0.06 #0.29
+    global_init_V = 0.1525 
     global_init_T = 850  
     Tsolid_sf = 1e-3  
 
@@ -63,14 +63,14 @@
     length = 2.5
     n_elems = 14
 
-    initial_V = -0.045  
+    initial_V = 0.11969487  
     initial_V_secondary = 0.029349731 
     initial_T = 925
 
     HT_surface_area_density = 353.0303766
     HT_surface_area_density_secondary = 366.9724771
-    #Hw = 586
-    #Hw_secondary = 586
+    Hw = 526.266
+    Hw_secondary = 440
     
     Twall_init = 900
     wall_thickness = 0.0009
@@ -179,7 +179,9 @@
     inputs = 'DHX(secondary_in)'		# A = 0.1836403
     outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
-    K = '50.3666 50.3666'
+    #K = '50.3666 50.3666'
+    #K = '44.5 44.5'				# Match m without h specified
+    K = '45.8 45.8'					# Match m with h specified
     Area = 0.03534292
   [../]
 
@@ -263,19 +265,19 @@
 
   [./inlet1]
   	type = PBTDJ
-	input = 'DHX(primary_out)'
-    eos = eos
+	input = 'DHX(primary_in)'
+     eos = eos
     #v_bc =  -0.0453228 #9.77 kg/s in each loop
      v_bc =  0.11969487 #-51.604 kg/s in total
-  	T_bc = 973
+  	T_bc = 873.61
   [../]
  
   [./outlet1]
   	type = PBTDV
-  	input = 'DHX(primary_in)'
-    eos = eos
+  	input = 'DHX(primary_out)'
+     eos = eos
   	p_bc = 10.5e4
-  	T_bc = 873.61 #873
+  	T_bc = 973
   [../] 
 []
 

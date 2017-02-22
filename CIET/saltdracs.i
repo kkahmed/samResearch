@@ -166,7 +166,7 @@
   [./Branch502] #DRACS tank branch 	(CHECK ABRUPT AREA CHANGE MODEL)
     type = PBVolumeBranch 
     inputs = 'pipe200(out)'			# A = 0.1836403
-    outputs = 'pipe210(in) pipe5(in)'   # A = 0.1836403 A = 1
+    outputs = 'pipe210(in) pipe1(in)'   # A = 0.1836403 A = 1
     center = '0 0 5.95' 
     volume = 0.003534292
     K = '0.0 0.0 0.3673'
@@ -218,7 +218,7 @@
   [../]
 
   [./Branch615] #In to DHX tube side 	(CHECK ABRUPT AREA CHANGE MODEL)
-    type = PBSingleJunction
+    type = PBBranch
     inputs = 'pipe250(out)' 			# A = 0.03534292
     outputs = 'DHX(secondary_out)' 	# A = 0.1836403
     eos = eos
@@ -226,23 +226,23 @@
     Area = 0.03534292
   [../]
 
-  [./pipe5] #Pipe to DRACS tank
+  [./pipe1] #Pipe to DRACS tank
     type = PBOneDFluidComponent
     eos = eos3
     position = '0 0 5.95'
     orientation = '0 0 1'
     A = 1
-    Dh = 0.15
+    Dh = 1.12838
     length = 0.1
-    n_elems = 1
+    n_elems = 3
   [../]
 
   [./pool1] #DRACS tank
     type = PBLiquidVolume
-    center = '0 0 7.05'
-    inputs = 'pipe5(out)'
+    center = '0 0 6.5'
+    inputs = 'pipe1(out)'
     Steady = 1
-    K = '0.5'
+    #K = '0.5'
     Area = 1
     volume = 0.9
     initial_level = 0.4
@@ -260,7 +260,7 @@
 	name_of_liquidvolume = 'pool1'
 	initial_P = 2e5
 	initial_Vol = 0.5
-	initial_T = 950
+	initial_T = 850
   [../]
 
   [./inlet1]
@@ -277,7 +277,7 @@
   	input = 'DHX(primary_out)'
      eos = eos
   	p_bc = 10.5e4
-  	T_bc = 973
+  	T_bc = 863
   [../] 
 []
 

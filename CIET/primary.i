@@ -1,6 +1,6 @@
 [GlobalParams] 
     global_init_P = 1.0e5
-    global_init_V = 1.0
+    global_init_V = 1.5
     global_init_T = 950  
     Tsolid_sf = 1e-3  
 
@@ -57,7 +57,7 @@
 
 [Components]
 
-  [./pipe010] #Active core region (1)	FINISH HEAT STRUCTURE INPUT, CHECK CCFL
+  [./pipe010] #Active core region (1)	(FINISH HEAT STRUCTURE INPUT, CHECK CCFL)
     type = PBPipe 
     eos = eos
     position = '0 5.94445 -5.34'
@@ -90,7 +90,7 @@
     outputs = 'pipe040(in)'   			# A = 0.2512732
     center = '0 5.94445 -0.76' 
     volume = 0.99970002
-    K = '0.0 0.0 0.0'				# Compute these
+    K = '0.3668 0.35336 0.0006'			# Check these
     Area = 0.2524495				# L = 3.96
     eos = eos
   [../]  
@@ -119,6 +119,152 @@
     n_elems = 21
   [../] 
 
+  [./pipe050] #Reactor vessel to hot salt well (5)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 4.46445 3.01'
+    orientation = '0 3.72912 0.081'
+    roughness = 0.000015
+    A = 0.264208
+    Dh = 0.58
+    length = 3.73
+    n_elems = 21
+  [../] 
+
+  [./pipe060] #Hot well (6)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 8.30 3.09' #'0 8.19357 3.091'
+    orientation = '0 1.970888 0.34'
+    roughness = 0.000015
+    A = 3.3145
+    Dh = 1.452610
+    length = 2.00
+    n_elems = 11
+  [../] 
+
+  #PUMP?
+
+  [./pipe070] #Hot salt well to CTAH (7)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 10.271 3.43' 
+    orientation = '0 3.22967 -0.046'
+    roughness = 0.000015
+    A = 0.3041
+    Dh = 0.4399955
+    length = 3.23
+    n_elems = 18
+  [../]
+
+  [./pipe080] #CTAH hot manifold (8)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 13.5 3.384' 
+    orientation = '0 0 -1'
+    roughness = 0.000015
+    A = 0.4926017
+    Dh = 0.28
+    length = 3.418
+    n_elems = 19
+  [../]
+
+  [./pipe090] #CTAH tubes (salt side) (9)
+    type = PBPipe 
+    eos = eos
+    position = '0 13.5 -0.034'
+    orientation = '0 18.4692719 -0.164'
+    roughness = 0.000015
+    A = 0.4491779
+    Dh = 0.004572
+    length = 18.47
+    n_elems = 99
+    initial_V = 1.207
+
+    HS_BC_type = Temperature
+    Hw = 2000
+    Ph = 392.9818537
+    T_wall = 873.15
+    Twall_init = 900
+    hs_type = cylinder
+    material_wall = ss-mat
+    n_wall_elems = 4
+    radius_i = 0.002286
+    wall_thickness = 0.000889
+  [../] 
+
+  [./pipe100] #CTAH cold manifold (10)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 18.2055 -0.197'
+    orientation = '0 0 -1'
+    roughness = 0.000015
+    A = 0.1924226
+    Dh = 0.175
+    length = 3.418
+    n_elems = 19
+  [../]
+
+  [./pipe110] #CTAH to drain tank (11)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 18.2055 -3.615'
+    orientation = '0 -3.4791917 -0.075'
+    roughness = 0.000015
+    A = 0.3019068
+    Dh = 0.438406
+    length = 3.48
+    n_elems = 20
+  [../]
+
+  [./pipe120] #Stand pipe (12)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 14.7263 -3.69'
+    orientation = '0 0 1'
+    roughness = 0.000015
+    A = 0.3019068
+    Dh = 0.438406
+    length = 6.51
+    n_elems = 37
+  [../]
+
+  [./pipe130] #Stand pipe to reactor vessel (13)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 14.7263 2.82'
+    orientation = '0 -6.6018536 0.14'
+    roughness = 0.000015
+    A = 0.3019068
+    Dh = 0.438406
+    length = 6.6033378
+    n_elems = 37
+  [../]
+
+  [./pipe140] #Injection plenum (14)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 8.12445 2.96'
+    orientation = '0 0 -1'
+    roughness = 0.000015
+    A = 0.3019068
+    Dh = 0.438406
+    length = 3.04
+    n_elems = 17
+  [../]
+
+  [./pipe150] #Downcomer (15)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 8.12445 -0.58'
+    orientation = '0 0 -1'
+    roughness = 0.000015
+    A = 0.3038791
+    Dh = 0.0560284
+    length = 4.76
+    n_elems = 27
+  [../]
+
   [./pipe160] #Downcomer to DHX (16)
     type = PBOneDFluidComponent 
     eos = eos
@@ -131,7 +277,7 @@
     n_elems = 3
   [../]  
 
-  [./DHX]
+  [./DHX] # DHX shell side (17), DHX tube side (19), DHX tubes structure
     type = PBHeatExchanger
     eos = eos
     eos_secondary = eos
@@ -183,7 +329,7 @@
     outputs = 'pipe050(in)'   			# A = 0.264208
     center = '0 4.21445 3.01' 
     volume = 0.132104
-    K = '0.0 0.0 0.0'				# Compute these
+    K = '0.3713 0.00636 0.0'			# Check these
     Area = 0.264208					# L = 0.5
     eos = eos
   [../]
@@ -200,6 +346,187 @@
   #  n_elems = 
   #[../]  
 
+  [./Branch270] #Middle branch (27)		(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
+    type = PBVolumeBranch 
+    inputs = 'pipe140(out)'				# A = 0.3019068	
+    outputs = 'pipe150(in) pipe160(in)'   	# A = 0.3038791	A = 0.03534292
+    center = '0 8.12445 -0.33'
+    volume = 0.15193955
+    K = '0.0 0.0 0.3727'				# Check these
+    Area = 0.3038791				# L = 0.5
+    eos = eos
+  [../]
+
+  #[./pipe270] #placeholder
+  #  type = PBOneDFluidComponent 
+  #  eos = eos
+  #  position = '0 8.12445 -0.08'
+  #  orientation = '0 -1 0'
+  #  roughness = 0.000015
+  #  A = 0.3038791
+  #  Dh = 0.0560284
+  #  length = 0.5
+  #  n_elems = 
+  #[../]  
+
+  [./Branch280] #Bottom branch (28)		(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
+    type = PBVolumeBranch 
+    inputs = 'pipe150(out)'				# A = 0.3038791	
+    outputs = 'pipe010(in) pipe020(in)'   	# A = 1.327511 	A = 0.065
+    center = '0 8.02445 -5.34' 
+    volume = 0.2655022
+    K = '0.35964 0.0 0.3750'				# Check these
+    Area = 1.327511						# L = 0.2
+    eos = eos
+  [../]  
+
+  #[./pipe280] #placeholder
+  #  type = PBOneDFluidComponent 
+  #  eos = eos
+  #  position = '0 8.12445 -5.34'
+  #  orientation = '0 -1 0'
+  #  roughness = 0.000015
+  #  A = 1.327511
+  #  Dh = 0.03
+  #  length = 0.2
+  #  n_elems = 
+  #[../]
+
+  [./pipe2] #Pipe to primary tank
+    type = PBOneDFluidComponent
+    eos = eos3
+    position = '0 8.25 3.09'
+    orientation = '0 0 1'
+    A = 1
+    Dh = 1.12838
+    length = 0.1
+    n_elems = 3
+  [../]
+
+  [./pool2] #Primary Loop Expansion Tank
+    type = PBLiquidVolume
+    center = '0 8.25 3.64'
+    inputs = 'pipe2(out)'
+    Steady = 1
+    #K = '0.5'
+    Area = 1
+    volume = 0.9
+    initial_level = 0.4
+    initial_T = 900
+    initial_V = 0.0
+    #scale_factors = '1 1e-1 1e-2'
+    display_pps = true
+    covergas_component = 'cover_gas2'
+    eos = eos3
+  [../]
+
+  [./cover_gas2]
+	type = CoverGas
+	n_liquidvolume = 1
+	name_of_liquidvolume = 'pool2'
+	initial_P = 2e5
+	initial_Vol = 0.5
+	initial_T = 900
+  [../]
+
+  [./Branch501] #Primary tank branch 		(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
+    type = PBVolumeBranch 
+    inputs = 'pipe050(out)'				# A = 0.264208 	
+    outputs = 'pipe060(in) pipe2(in)'   	# A = 3.3145 (0.264208)	A = 1 (0.264208)
+    center = '0 8.25 3.09' 
+    volume = 0.0264208 
+    K = '0 0.3744 0.35187'				# Check these
+    Area = 0.264208 					# L = 0.2
+    eos = eos
+  [../]  
+
+  #[./pipe501] #placeholder
+  #  type = PBOneDFluidComponent 
+  #  eos = eos
+  #  position = '0 8.20 3.09' 
+  #  orientation = '0 1 0'
+  #  roughness = 0.000015
+  #  A = 0.264208
+  #  Dh = 0.58
+  #  length = 0.1
+  #  n_elems = 
+  #[../]
+
+  [./Branch601] # In to hot manifold
+    type = PBBranch
+    inputs = 'pipe070(out)'			# A = 
+    outputs = 'pipe080(in)'			# A = 
+    eos = eos
+    K = ' '
+    Area = 0.3041
+  [../]
+
+  [./Branch602] # In to CTAH salt side
+    type = PBBranch
+    inputs = 'pipe080(out)'			# A = 
+    outputs = 'pipe090(in)'			# A = 
+    eos = eos
+    K = ' '
+    Area = 0.4491779
+  [../]
+
+  [./Branch603] # In to cold manifold
+    type = PBBranch
+    inputs = 'pipe090(out)'			# A = 
+    outputs = 'pipe100(in)'			# A = 
+    eos = eos
+    K = ' '
+    Area = 0.1924226
+  [../]
+
+  [./Branch604] # In to pipe to drain tank
+    type = PBBranch
+    inputs = 'pipe100(out)'			# A = 
+    outputs = 'pipe110(in)'			# A = 
+    eos = eos
+    K = ' '
+    Area = 0.1924226
+  [../]
+
+  [./Branch605] # In to stand pipe
+    type = PBSingleJunction
+    inputs = 'pipe110(out)'
+    outputs = 'pipe120(in)'
+    eos = eos
+  [../]
+
+  [./Branch606] # In to pipe to reactor vessel
+    type = PBSingleJunction
+    inputs = 'pipe120(out)'
+    outputs = 'pipe130(in)'
+    eos = eos
+  [../]
+
+  [./Branch607] # In to injection plenum
+    type = PBSingleJunction
+    inputs = 'pipe130(out)'
+    outputs = 'pipe140(in)'
+    eos = eos
+  [../]
+
+  [./Branch608] # Fluidic diode		(CHECK FORWARD AND REVERSE K)
+    type = PBBranch
+    inputs = 'pipe160(out)'			# A = 
+    outputs = 'DHX(primary_in)'		# A = 
+    eos = eos
+    K = '1.0 50.0'
+    Area = 0.03534292
+  [../]
+
+  [./Branch609] # Out of DHX
+    type = PBBranch
+    inputs = 'DHX(primary_out)'		# A = 
+    outputs = 'pipe180(in)'			# A = 
+    eos = eos
+    K = '100 100'
+    Area = 0.03534292
+  [../]
+
   [./inlet1]
   	type = PBTDJ
 	input = 'DHX(secondary_out)'
@@ -213,7 +540,7 @@
   	input = 'DHX(secondary_in)'
      eos = eos
   	p_bc = 10.5e4
-  	T_bc = 973
+  	T_bc = 850
   [../] 
 []
 

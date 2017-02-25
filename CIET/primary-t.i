@@ -72,8 +72,8 @@
     initial_P = 2.6e5
 
     WF_user_option = User
-    #User_defined_WF_parameters = '32.1 4974.4 1.0'
-    User_defined_WF_parameters = '32.1 32.583 -1.0'
+    #User_defined_WF_parameters = '32.1 4974.4 -1.0'
+    User_defined_WF_parameters = '0.210 32.583 -1.0'
 
     heat_source = 38815787
     #HT_surface_area_density
@@ -674,22 +674,22 @@
 
 
 [Executioner]
-  type = Steady
-  #type = Transient  
+  #type = Steady
+  type = Transient  
 
   petsc_options_iname = '-ksp_gmres_restart'
   petsc_options_value = '101'
 
-  #dt = 1e-2
-  #dtmin = 1e-8
+  dt = 1e-1
+  dtmin = 1e-8
 
   nl_rel_tol = 1e-7
   nl_abs_tol = 1e-5
   nl_max_its = 100
 
-  #start_time = 0.0
-  #num_steps = 15000
-  #end_time = 100
+  start_time = 0.0
+  num_steps = 1500
+  end_time = 1000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve

@@ -180,8 +180,8 @@
     outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
     #K = '50.3666 50.3666'
-    #K = '44.5 44.5'				# Match m without h specified
-    K = '45.8 45.8'					# Match m with h specified
+    #K = '44.2 44.2'    				# Match m without h specified
+    K = '45.5 45.5'    				# Match m with h specified
     Area = 0.03534292
   [../]
 
@@ -235,6 +235,7 @@
     Dh = 1.12838
     length = 0.1
     n_elems = 3
+    initial_T = 852.7
   [../]
 
   [./pool1] #DRACS tank
@@ -242,11 +243,11 @@
     center = '0 0 6.5'
     inputs = 'pipe1(out)'
     Steady = 1
-    #K = '0.5'
+    K = '0.0'
     Area = 1
     volume = 0.9
     initial_level = 0.4
-    initial_T = 850
+    initial_T = 852.7
     initial_V = 0.0
     #scale_factors = '1 1e-1 1e-2'
     display_pps = true
@@ -260,7 +261,7 @@
 	name_of_liquidvolume = 'pool1'
 	initial_P = 2e5
 	initial_Vol = 0.5
-	initial_T = 850
+	initial_T = 852.7
   [../]
 
   [./inlet1]

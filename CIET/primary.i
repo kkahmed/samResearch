@@ -17,6 +17,7 @@
 	active = 'eos eos3'
   [./eos]
   	type = SaltEquationOfState
+     salt_type = r5Flibe
   [../]
   [./eos3] #const salt
   	type = PTConstantEOS
@@ -46,7 +47,7 @@
     Cp = 1323.92
     rho = 2.266e3
   [../]
-  [./pebble]
+  [./fuel]
     type = SolidMaterialProps
     k = 15
     Cp = 1323.92
@@ -72,10 +73,11 @@
     initial_P = 2.6e5
 
     WF_user_option = User
-    #User_defined_WF_parameters = '32.1 4974.4 1.0'
-    User_defined_WF_parameters = '32.1 32.583 -1.0'
+    #User_defined_WF_parameters = '32.1 4974.4 -1.0'
+    User_defined_WF_parameters = '5.467 847.17 -1.0'
 
     heat_source = 38815787
+    #heat_source = 38815787
     #HT_surface_area_density
     #Ts_init
     #elem_number_of_hs
@@ -426,7 +428,8 @@
     outputs = 'pipe010(in) pipe020(in)'   	# A = 1.327511 	A = 0.065
     center = '0 8.02445 -5.34' 
     volume = 0.2655022
-    K = '0.35964 0.0 0.3750'				# Check these
+    #K = '0.35964 0.0 0.3750'				# Check these
+    K = '0.35964 0.0 0.5550'
     Area = 1.327511						# L = 0.2
     eos = eos
     initial_V = 0.388
@@ -470,7 +473,7 @@
     initial_T = 970
     initial_V = 0.0
     #scale_factors = '1 1e-1 1e-2'
-    display_pps = true
+    display_pps = false
     covergas_component = 'cover_gas2'
     eos = eos3
   [../]
@@ -595,7 +598,8 @@
     inputs = 'DHX(primary_out)'		# A = 0.2224163
     outputs = 'pipe180(in)'			# A = 0.03534292
     eos = eos
-    K = '100.3693 100.3693'				# Check K
+    #K = '100.3693 100.3693'				# Check K
+    K = '94.3693 94.3693'
     Area = 0.03534292
     initial_V = 0.767
     initial_P = 1.3e5
@@ -608,7 +612,8 @@
     eos = eos
     K = '0 0'
     Area = 0.3041
-    Head = 369119
+    #Head = 369119 original, 367725 match SS
+    Head = 367725
     initial_V = 1.783
     initial_T = 970
     initial_P = 2.7e5
@@ -635,7 +640,7 @@
   [./DHX_flow]
     type = ComponentBoundaryFlow 
     input = DHX(primary_out)
-    #execute_on = timestep_end
+    execute_on = timestep_end
   [../]
   [./DHX_q]
     type = HeatExchangerHeatRemovalRate
@@ -652,6 +657,26 @@
     type = ComponentBoundaryVariableValue
     input = 'DHX:primary_pipe(out)'
     variable = 'temperature'
+  [../]
+  [./Corev]
+    type = ComponentBoundaryVariableValue
+    input = 'pipe010(in)'
+    variable = 'velocity'
+  [../]
+  [./Corerho]
+    type = ComponentBoundaryVariableValue
+    input = 'pipe010(in)'
+    variable = 'rho'
+  [../]
+  [./Bypassv]
+    type = ComponentBoundaryVariableValue
+    input = 'pipe020(in)'
+    variable = 'velocity'
+  [../]
+  [./Bypassrho]
+    type = ComponentBoundaryVariableValue
+    input = 'pipe020(in)'
+    variable = 'rho'
   [../]
 []
   
@@ -698,6 +723,10 @@
       type = TRAP
       order = FIRST
    [../]
+[]
+
+[Problem]
+  restart_file_base = 'primary-t_out_cp/0200'
 []
 
 [Outputs]

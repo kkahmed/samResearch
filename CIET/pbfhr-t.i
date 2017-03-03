@@ -22,7 +22,7 @@
   [./eos3] #const salt
   	type = PTConstantEOS
   	p_0 = 1.0e5    # Pa
-  	rho_0 = 2279.92   # kg/m^3
+  	rho_0 = 1980 #2279.92   # kg/m^3
   	#a2 = 1.834e5  # m^2/s^2
   	beta = 0 # K^{-1}
   	cp = 2415.78
@@ -55,11 +55,84 @@
   [../]
 []
 
+[Functions]
+  active = 'Paxial Phead2 shutdownPower2'
+  [./uniform]                                # Function name
+    type = PiecewiseLinear                   # Function type
+    axis = 0                                 # X-co-ordinate is used for x
+    x = '0  4.58'                            # The x abscissa values
+    y = '1  1'                               # The y abscissa values
+  [../]
+
+  [./Paxial]                                 # Function name
+    type = PiecewiseConstant                  # Function type
+    axis = 0                                 # X-co-ordinate is used for x
+    direction = right
+    xy_data = 
+		'0.176153846153846	0.0939862040
+		0.352307692307692	0.2648701900
+		0.528461538461539	0.4186657800
+		0.704615384615385	0.5895497920
+		0.880769230769231	0.7689779760
+		1.056923076923080	0.9056851700
+		1.233076923076920	0.9825829780
+		1.409230769230770	1.0082155720
+		1.585384615384620	1.0167597700
+		1.761538461538460	1.0167597700
+		1.937692307692310	1.0509365880
+		2.113846153846150	1.1363785680
+		2.290000000000000	1.2047321780
+		2.466153846153850	1.2218205740
+		2.642307692307690	1.2303647720
+		2.818461538461540	1.2559973660
+		2.994615384615380	1.2389089700
+		3.170769230769230	1.1961879800
+		3.346923076923080	1.1278343700
+		3.523076923076920	1.0509365880
+		3.699230769230770	1.0851133800
+		3.875384615384620	1.1192901720
+		4.051538461538460	1.1876437820
+		4.227692307692310	1.2645415640
+		4.403846153846150	1.3499835700
+		4.580000000000000	1.2132763760'
+  [../]
+
+  [./Phead]     
+    type = PiecewiseLinear  
+    x = '0 1000 1004.5 1009 1013.5 1018 1022.5 1027 10000'
+    y = '367725 367725 171250 80450 38750 18600 4900 0 0'
+  [../]
+
+  [./shutdownPower]     
+    type = PiecewiseLinear  
+    x = '0	1000	1001	1002	1004	1008	1016	1024	1032	1040	1048	1060	1120	1240	1480	1960	2440	2920	3400	3880	4360	4600	13200'
+    y = '1.0000000000	1.0000000000	0.0529661017	0.0508474576	0.0478813559	0.0440677966	0.0402966102	0.0378389831	0.0360593220	0.0347033898	0.0335593220	0.0321610169	0.0279237288	0.0242372881	0.0210169492	0.0179237288	0.0161016949	0.0147881356	0.0137711864	0.0130084746	0.0123728814	0.0120762712	0.0081355932'
+  [../]
+
+  [./Phead2]     
+    type = PiecewiseLinear  
+    x = '0 100 104.5 109 113.5 118 122.5 127 10000'
+    y = '367725 367725 171250 80450 38750 18600 4900 0 0'
+  [../]
+
+  [./shutdownPower2]     
+    type = PiecewiseLinear  
+    x = '0	100	101	102	104	108	116	124	132	140	148	160	220	340	580	1060	1540	2020	2500	2980	3460	3700	12300'
+    y = '1.0000000000	1.0000000000	0.0529661017	0.0508474576	0.0478813559	0.0440677966	0.0402966102	0.0378389831	0.0360593220	0.0347033898	0.0335593220	0.0321610169	0.0279237288	0.0242372881	0.0210169492	0.0179237288	0.0161016949	0.0147881356	0.0137711864	0.0130084746	0.0123728814	0.0120762712	0.0081355932'
+  [../]
+
+[] 
 
 [Components]
 
+  [./reactor]
+    type = ReactorPower
+    initial_power = 2.36e8				# Initial total reactor power
+    decay_heat = shutdownPower2
+  [../]
+
   [./pipe010] #Active core region (1)	(FINISH HEAT STRUCTURE INPUT, CHECK CCFL)
-    type = PBOneDFluidComponent
+    type = PBCoreChannel
     eos = eos
     position = '0 5.94445 -5.34'
     orientation = '0 0 1'
@@ -76,15 +149,16 @@
     #User_defined_WF_parameters = '32.1 4974.4 -1.0'
     User_defined_WF_parameters = '5.467 847.17 -1.0'
 
-    heat_source = 38815787
-    #heat_source = 38815787
-    #HT_surface_area_density
-    #Ts_init
-    #elem_number_of_hs
-    #material_hs
-    #n_heatstruct
-    #name_of_hs
-    #width_of_hs
+    HT_surface_area_density = 133		#Adjust this later
+    Ts_init = 950
+    elem_number_of_hs = '5 5 2'
+    material_hs = 'h451 fuel h451'
+    n_heatstruct = 3
+    fuel_type = cylinder
+    name_of_hs = 'inner fuel outer'
+    width_of_hs = '0.0125 0.0015 0.0010'
+    power_fraction = '0 1 0'
+    power_shape_function = Paxial
   [../] 
 
   [./pipe020] #Core bypass (2)
@@ -372,6 +446,92 @@
     initial_P = 2.6e5
   [../]
 
+  [./pipe200] #DRACS hot leg 1 (20)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 0 2.5'
+    orientation = '0 0 1'
+    roughness = 0.000015
+    A = 0.03534292
+    Dh = 0.15
+    length = 3.45
+    n_elems = 20
+  [../]  
+
+  [./pipe210] #DRACS hot leg 2 (21)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 0 5.95'
+    orientation = '0 -1 0'
+    roughness = 0.000015
+    A = 0.03534292
+    Dh = 0.15
+    length = 3.67
+    n_elems = 21
+  [../] 
+
+  [./pipe220] #TCHX Manifold (22)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '0 -3.67 5.95'
+    orientation = '0 0 1'
+    roughness = 0.000015
+    A = 0.03534292
+    Dh = 0.15
+    length = 2.60
+    n_elems = 15
+  [../] 
+
+  [./pipe230] #TCHX salt tube (23)
+    type = PBPipe 
+    eos = eos
+    position = '0 -3.67 8.55'
+    orientation = '0 -5.407402334 -2.6'
+    roughness = 0.000015
+    A = 0.1746822
+    Dh = 0.0109
+    length = 6.0
+    n_elems = 34
+    initial_V = 0.04855862
+
+    HS_BC_type = Temperature
+    Hw = 1000
+    #Ph = 64.10356978 
+    HT_surface_area_density = 366.972535
+    T_wall = 799.15
+    Twall_init = 800
+    hs_type = cylinder
+    material_wall = ss-mat
+    n_wall_elems = 4
+    radius_i = 0.00545
+    wall_thickness = 0.0009
+    p_order = 2
+  [../] 	   
+
+  [./pipe240] #DRACS cold leg 1 (24)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '1 -4.43 5.95'
+    orientation = '0 1 0'
+    roughness = 0.000015
+    A = 0.03534292
+    Dh = 0.15
+    length = 4.43
+    n_elems = 25
+  [../] 
+  
+  [./pipe250] #DRACS cold leg 2 (25)
+    type = PBOneDFluidComponent 
+    eos = eos
+    position = '1 0 5.95'
+    orientation = '0 0 -1'
+    roughness = 0.000015
+    A = 0.03534292
+    Dh = 0.15
+    length = 5.95
+    n_elems = 34
+  [../] 
+
   [./Branch260] #Top branch (26)			(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
     type = PBVolumeBranch 
     inputs = 'pipe180(out) pipe040(out)'	# A = 0.03534292	A = 0.2512732
@@ -450,13 +610,13 @@
 
   [./pipe2] #Pipe to primary tank
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos3 #eos3
     position = '0 8.25 3.09'
     orientation = '0 0 1'
     A = 1
     Dh = 1.12838
     length = 0.1
-    n_elems = 3
+    n_elems = 1
     initial_V = 0.0
     initial_T = 970
   [../]
@@ -475,7 +635,7 @@
     #scale_factors = '1 1e-1 1e-2'
     display_pps = false
     covergas_component = 'cover_gas2'
-    eos = eos3
+    eos = eos3 #eos3
   [../]
 
   [./cover_gas2]
@@ -511,6 +671,55 @@
   #  length = 0.1
   #  n_elems = 
   #[../]
+
+  [./pipe1] #Pipe to DRACS tank
+    type = PBOneDFluidComponent
+    eos = eos3 #eos3
+    position = '0 0 5.95'
+    orientation = '0 0 1'
+    A = 1
+    Dh = 1.12838
+    length = 0.1
+    n_elems = 1
+    initial_T = 852.7
+  [../]
+
+  [./pool1] #DRACS tank
+    type = PBLiquidVolume
+    center = '0 0 6.5'
+    inputs = 'pipe1(out)'
+    Steady = 1
+    K = '0.0'
+    Area = 1
+    volume = 0.9
+    initial_level = 0.4
+    initial_T = 852.7
+    initial_V = 0.0
+    #scale_factors = '1 1e-1 1e-2'
+    display_pps = true
+    covergas_component = 'cover_gas1'
+    eos = eos3 #eos3
+  [../]
+
+  [./cover_gas1]
+	type = CoverGas
+	n_liquidvolume = 1
+	name_of_liquidvolume = 'pool1'
+	initial_P = 2e5
+	initial_Vol = 0.5
+	initial_T = 852.7
+  [../]
+
+  [./Branch502] #DRACS tank branch 	(CHECK ABRUPT AREA CHANGE MODEL)
+    type = PBVolumeBranch 
+    inputs = 'pipe200(out)'			# A = 0.1836403
+    outputs = 'pipe210(in) pipe1(in)'   # A = 0.1836403 A = 1
+    center = '0 0 5.95' 
+    volume = 0.003534292
+    K = '0.0 0.0 0.3673'
+    Area = 0.03534292
+    eos = eos
+  [../]
 
   [./Branch601] # In to hot manifold
     type = PBBranch
@@ -605,6 +814,62 @@
     initial_P = 1.3e5
   [../]
 
+  [./Branch610] #In to DRACS hot leg 1	(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
+    type = PBBranch
+    inputs = 'DHX(secondary_in)'		# A = 0.1836403
+    outputs = 'pipe200(in)'			# A = 0.03534292
+    eos = eos
+    #K = '50.3666 50.3666'
+    #K = '44.2 44.2'    				# Match m without h specified
+    #K = '45.5 45.5'    				# Match m with h specified
+    K = '45.2 45.2' 				# Match m with r5Flibe
+    Area = 0.03534292
+  [../]
+
+  [./Branch611] #In to TCHX manifold
+    type = PBSingleJunction
+    inputs = 'pipe210(out)'
+    outputs = 'pipe220(in)'
+    eos = eos
+  [../]
+
+  [./Branch612] #In to TCHX salt tube 	(CHECK ABRUPT AREA CHANGE MODEL)
+    type = PBBranch
+    inputs = 'pipe220(out)' 			# A = 0.03534292
+    outputs = 'pipe230(in)' 			# A = 0.1746822
+    eos = eos
+    K = '0.3655 0.3655'
+    #K = '0.0 0.3655'
+    Area = 0.03534292
+  [../]
+
+  [./Branch613] #In to DRACS cold leg 1 (CHECK ABRUPT AREA CHANGE MODEL)
+    type = PBBranch
+    inputs = 'pipe230(out)' 			# A = 0.1746822
+    outputs = 'pipe240(in)' 			# A = 0.03534292
+    eos = eos
+    K = '0.3655 0.3655'
+    #K = '0.3655 0.0'
+    Area = 0.03534292
+  [../]
+  
+  [./Branch614] #In to DRACS cold leg 2
+    type = PBSingleJunction
+    inputs = 'pipe240(out)'
+    outputs = 'pipe250(in)'
+    eos = eos
+  [../]
+
+  [./Branch615] #In to DHX tube side 	(CHECK ABRUPT AREA CHANGE MODEL)
+    type = PBBranch
+    inputs = 'pipe250(out)' 			# A = 0.03534292
+    outputs = 'DHX(secondary_out)' 	# A = 0.1836403
+    eos = eos
+    K = '0.3666 0.3666'
+    #K = '0.0 0.3666'
+    Area = 0.03534292
+  [../]
+
   [./Pump] 
     type = PBPump
     inputs = 'pipe060(out)'		# A = 
@@ -613,27 +878,12 @@
     K = '0 0'
     Area = 0.3041
     #Head = 369119 original, 367725 match SS
-    Head = 367725
+    Head_fn = Phead2
     initial_V = 1.783
     initial_T = 970
     initial_P = 2.7e5
   [../]
 
-  [./inlet1]
-  	type = PBTDJ
-	input = 'DHX(secondary_out)'
-     eos = eos
-     v_bc =  0.02879044 #10.697 kg/s in total
-  	T_bc = 799.15
-  [../]
- 
-  [./outlet1]
-  	type = PBTDV
-  	input = 'DHX(secondary_in)'
-     eos = eos
-  	p_bc = 1.5e5
-  	T_bc = 850
-  [../] 
 []
 
 [Postprocessors]
@@ -708,13 +958,19 @@
   dt = 1
   dtmin = 1e-8
 
+  [./TimeStepper]    
+    type = FunctionDT
+    time_t = '   0  99  100   150   151  2000  2001 1e5'   
+    time_dt ='   1   1  0.05  0.05  0.1  0.1   1    1'
+  [../]
+
   nl_rel_tol = 1e-7
   nl_abs_tol = 1e-5
   nl_max_its = 100
 
   start_time = 0.0
-  num_steps = 200
-  end_time = 1000
+  num_steps = 10000
+  end_time = 10000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -726,7 +982,7 @@
 []
 
 [Problem]
-  restart_file_base = 'primary_out_cp/0001'
+  restart_file_base = 'pbfhr_out_cp/0001'
 []
 
 [Outputs]

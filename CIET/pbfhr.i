@@ -2,13 +2,16 @@
     global_init_P = 1.0e5
     global_init_V = 1.796
     global_init_T = 874 
-    Tsolid_sf = 1e-3  
+    Tsolid_sf = 1e-2
 
   [./PBModelParams]
 	pspg = false
-	pbm_scaling_factors = '1 1e-1 1e-4'
+	pbm_scaling_factors = '1 1e-2 1e-5'
 	#variable_bounding = true
 	#V_bounds = '0 10'
+     scaling_velocity = 1
+     #supg_max = true
+     p_order = 2
   [../]
 []
 
@@ -114,7 +117,7 @@
     A = 1.327511
     Dh = 0.03
     length = 4.58
-    n_elems = 26
+    n_elems = 13 #26
     initial_V = 0.290
     initial_T = 920
     initial_P = 2.6e5
@@ -123,14 +126,14 @@
     #User_defined_WF_parameters = '32.1 4974.4 -1.0'
     User_defined_WF_parameters = '5.467 847.17 -1.0'
 
-    HT_surface_area_density = 133		#Adjust this later
+    HT_surface_area_density = 211.1		#Preserves #ofpins such that core mass is = relap
     Ts_init = 950
     elem_number_of_hs = '5 5 2'
     material_hs = 'h451 fuel h451'
     n_heatstruct = 3
     fuel_type = cylinder
     name_of_hs = 'inner fuel outer'
-    width_of_hs = '0.0125 0.0015 0.0010'
+    width_of_hs = '0.011410887	0.002114398	0.001474715' #'0.0125 0.0015 0.0010'
     power_fraction = '0 1 0'
     power_shape_function = Paxial
   [../] 
@@ -144,7 +147,7 @@
     A = 0.065
     Dh = 0.01
     length = 4.58
-    n_elems = 26
+    n_elems = 13 #26
     initial_V = 1.993
     initial_P = 2.6e5
   [../] 
@@ -161,6 +164,9 @@
     initial_V = 2.040
     initial_T = 970
     initial_P = 1.7e5
+    width = 4
+    height = 0.2
+    nodal_Tbc = true
   [../]  
 
   #[./pipe030] #placeholder
@@ -184,7 +190,7 @@
     A = 0.2512732
     Dh = 0.5656244
     length = 3.77
-    n_elems = 21
+    n_elems = 11 #21
     initial_V = 2.050
     initial_T = 970
     initial_P = 1.3e5
@@ -199,7 +205,7 @@
     A = 0.264208
     Dh = 0.58
     length = 3.73
-    n_elems = 21
+    n_elems = 11 #21
     initial_V = 2.05
     initial_T = 970
   [../] 
@@ -213,7 +219,7 @@
     A = 3.3145
     Dh = 1.452610
     length = 2.00
-    n_elems = 11
+    n_elems = 6 #11
     initial_V = 0.164
     initial_T = 970
   [../] 
@@ -227,7 +233,7 @@
     A = 0.3041
     Dh = 0.4399955
     length = 3.23
-    n_elems = 18
+    n_elems = 9 #18
     initial_V = 1.783
     initial_T = 970
     initial_P = 4.6e5
@@ -242,7 +248,7 @@
     A = 0.4926017
     Dh = 0.28
     length = 3.418
-    n_elems = 19
+    n_elems = 10 #19
     initial_V = 1.100
     initial_T = 970
     initial_P = 4.9e5
@@ -257,7 +263,7 @@
     A = 0.4491779
     Dh = 0.004572
     length = 18.47
-    n_elems = 99
+    n_elems = 50 #99
     initial_V = 1.207
     initial_T = 920
     initial_P = 4.1e5
@@ -283,7 +289,7 @@
     A = 0.1924226
     Dh = 0.175
     length = 3.418
-    n_elems = 19
+    n_elems = 10 #19
     initial_V = 2.818
     initial_P = 2.8e5
   [../]
@@ -297,7 +303,7 @@
     A = 0.3019068
     Dh = 0.438406
     length = 3.48
-    n_elems = 20
+    n_elems = 10 #20
     initial_P = 3.1e5
   [../]
 
@@ -310,7 +316,7 @@
     A = 0.3019068
     Dh = 0.438406
     length = 6.51
-    n_elems = 37
+    n_elems = 19 #37
     initial_P = 2.5e5
   [../]
 
@@ -323,7 +329,7 @@
     A = 0.3019068
     Dh = 0.438406
     length = 6.6033378
-    n_elems = 37
+    n_elems = 19 #37
     initial_P = 1.8e5
   [../]
 
@@ -336,7 +342,7 @@
     A = 0.3019068
     Dh = 0.438406
     length = 3.04
-    n_elems = 17
+    n_elems = 9 #17
     initial_P = 2.1e5
   [../]
 
@@ -349,7 +355,7 @@
     A = 0.3038791
     Dh = 0.0560284
     length = 4.76
-    n_elems = 27
+    n_elems = 14 #27
     initial_V = 1.695
     initial_P = 2.9e5
   [../]
@@ -363,7 +369,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 0.58
-    n_elems = 3
+    n_elems = 2 #3
     initial_V = 0.767
     initial_P = 2.5e5
   [../]  
@@ -384,7 +390,7 @@
     roughness = 0.000015
     roughness_secondary = 0.000015
     length = 2.5
-    n_elems = 14
+    n_elems = 7 #14
 
     initial_V = 0.122 #0.11969487  
     initial_V_secondary = 0.029349731 
@@ -414,7 +420,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 3.008
-    n_elems = 17
+    n_elems = 9 #17
     initial_V = 0.767
     initial_T = 860
     initial_P = 2.6e5
@@ -429,7 +435,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 3.45
-    n_elems = 20
+    n_elems = 10 #20
   [../]  
 
   [./pipe210] #DRACS hot leg 2 (21)
@@ -441,7 +447,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 3.67
-    n_elems = 21
+    n_elems = 11 #21
   [../] 
 
   [./pipe220] #TCHX Manifold (22)
@@ -453,7 +459,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 2.60
-    n_elems = 15
+    n_elems = 8 #15
   [../] 
 
   [./pipe230] #TCHX salt tube (23)
@@ -465,7 +471,7 @@
     A = 0.1746822
     Dh = 0.0109
     length = 6.0
-    n_elems = 34
+    n_elems = 17 #34
     initial_V = 0.04855862
 
     HS_BC_type = Temperature
@@ -479,7 +485,6 @@
     n_wall_elems = 4
     radius_i = 0.00545
     wall_thickness = 0.0009
-    p_order = 2
   [../] 	   
 
   [./pipe240] #DRACS cold leg 1 (24)
@@ -491,7 +496,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 4.43
-    n_elems = 25
+    n_elems = 13 #25
   [../] 
   
   [./pipe250] #DRACS cold leg 2 (25)
@@ -503,7 +508,7 @@
     A = 0.03534292
     Dh = 0.15
     length = 5.95
-    n_elems = 34
+    n_elems = 17 #34
   [../] 
 
   [./Branch260] #Top branch (26)			(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
@@ -560,14 +565,16 @@
     type = PBVolumeBranch 
     inputs = 'pipe150(out)'				# A = 0.3038791	
     outputs = 'pipe010(in) pipe020(in)'   	# A = 1.327511 	A = 0.065
-    center = '0 8.02445 -5.34' 
+    center = '0 6.02445 -5.34'			# 8.02445? 
     volume = 0.2655022
     #K = '0.35964 0.0 0.3750'				# Check these
-    K = '0.35964 0.0 0.5550'
+    K = '0.35964 0.0 0.6000'
     Area = 1.327511						# L = 0.2
     eos = eos
     initial_V = 0.388
     initial_P = 3.4e5
+    width = 5
+    height = 0.2
   [../]  
 
   #[./pipe280] #placeholder
@@ -584,7 +591,7 @@
 
   [./pipe2] #Pipe to primary tank
     type = PBOneDFluidComponent
-    eos = eos3 #eos3
+    eos = eos #eos3
     position = '0 8.25 3.09'
     orientation = '0 0 1'
     A = 1
@@ -609,7 +616,7 @@
     #scale_factors = '1 1e-1 1e-2'
     display_pps = false
     covergas_component = 'cover_gas2'
-    eos = eos3 #eos3
+    eos = eos #eos3
   [../]
 
   [./cover_gas2]
@@ -648,7 +655,7 @@
 
   [./pipe1] #Pipe to DRACS tank
     type = PBOneDFluidComponent
-    eos = eos3 #eos3
+    eos = eos #eos3
     position = '0 0 5.95'
     orientation = '0 0 1'
     A = 1
@@ -672,7 +679,7 @@
     #scale_factors = '1 1e-1 1e-2'
     display_pps = true
     covergas_component = 'cover_gas1'
-    eos = eos3 #eos3
+    eos = eos #eos3
   [../]
 
   [./cover_gas1]
@@ -774,6 +781,7 @@
     Area = 0.03534292
     initial_V = 0.767
     initial_P = 2.3e5
+    scale_factors = '1 1 1e-4'
   [../]
 
   [./Branch609] # Out of DHX
@@ -782,10 +790,11 @@
     outputs = 'pipe180(in)'			# A = 0.03534292
     eos = eos
     #K = '100.3693 100.3693'				# Check K
-    K = '94.3693 94.3693'
+    K = '94.8693 94.8693'
     Area = 0.03534292
     initial_V = 0.767
     initial_P = 1.3e5
+    scale_factors = '1 1 1e-4'
   [../]
 
   [./Branch610] #In to DRACS hot leg 1	(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
@@ -798,6 +807,7 @@
     #K = '45.5 45.5'    				# Match m with h specified
     K = '45.2 45.2' 				# Match m with r5Flibe
     Area = 0.03534292
+    scale_factors = '1 1 1e-4'
   [../]
 
   [./Branch611] #In to TCHX manifold
@@ -842,6 +852,7 @@
     K = '0.3666 0.3666'
     #K = '0.0 0.3666'
     Area = 0.03534292
+    scale_factors = '1 1 1e-4'
   [../]
 
   [./Pump] 
@@ -852,7 +863,7 @@
     K = '0 0'
     Area = 0.3041
     #Head = 369119 original, 367725 match SS
-    Head = 367725
+    Head = 367475
     initial_V = 1.783
     initial_T = 970
     initial_P = 2.7e5
@@ -880,6 +891,16 @@
   [./DHXshellTop]
     type = ComponentBoundaryVariableValue
     input = 'DHX:primary_pipe(out)'
+    variable = 'temperature'
+  [../]
+  [./DHXTubeBot]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX:secondary_pipe(in)'
+    variable = 'temperature'
+  [../]
+  [./DHXTubeTop]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX:secondary_pipe(out)'
     variable = 'temperature'
   [../]
   [./Corev]
@@ -927,7 +948,8 @@
   #type = Transient  
 
   petsc_options_iname = '-ksp_gmres_restart'
-  petsc_options_value = '101'
+  petsc_options_value = '300'
+  line_search = basic
 
   #dt = 1
   #dtmin = 1e-8
@@ -944,13 +966,13 @@
   l_max_its = 200 # Number of linear iterations for each Krylov solve
 
    [./Quadrature]
-      type = TRAP
-      order = FIRST
+      type = SIMPSON
+      order = SECOND
    [../]
 []
 
 [Problem]
-  restart_file_base = 'pbfhr-t_out_cp/0083'
+  restart_file_base = 'pbfhr-t_out_cp/0275'
 []
 
 [Outputs]

@@ -111,7 +111,7 @@
   [./pipe010] #Active core region (1)	(FINISH HEAT STRUCTURE INPUT, CHECK CCFL)
     type = PBCoreChannel
     eos = eos
-    position = '0 5.94445 -5.34'
+    position = '0 4.94445 -5.34'
     orientation = '0 0 1'
     roughness = 0.000015
     A = 1.327511
@@ -141,7 +141,7 @@
   [./pipe020] #Core bypass (2)
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 7.92445 -5.34'
+    position = '0 5.92445 -5.34'
     orientation = '0 0 1'
     roughness = 0.000015
     A = 0.065
@@ -156,7 +156,7 @@
     type = PBVolumeBranch 
     inputs = 'pipe010(out) pipe020(out)'	# A = 1.327511 (0.2524495)	A = 0.065
     outputs = 'pipe040(in)'   			# A = 0.2512732
-    center = '0 5.94445 -0.76' 
+    center = '0 4.94445 -0.76' 
     volume = 0.99970002
     K = '0.3668 0.35336 0.0006'			# Check these
     Area = 0.2524495					# L = 3.96
@@ -164,7 +164,7 @@
     initial_V = 2.040
     initial_T = 970
     initial_P = 1.7e5
-    width = 4
+    width = 2
     height = 0.2
     nodal_Tbc = true
   [../]  
@@ -237,6 +237,9 @@
     initial_V = 1.783
     initial_T = 970
     initial_P = 4.6e5
+
+    WF_user_option = User
+    User_defined_WF_parameters = '0.0 5000 -2.0'
   [../]
 
   [./pipe080] #CTAH hot manifold (8)
@@ -441,7 +444,7 @@
   [./pipe210] #DRACS hot leg 2 (21)
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 0 5.95'
+    position = '0 -0.2 5.95'
     orientation = '0 -1 0'
     roughness = 0.000015
     A = 0.03534292
@@ -453,7 +456,7 @@
   [./pipe220] #TCHX Manifold (22)
     type = PBOneDFluidComponent 
     eos = eos
-    position = '0 -3.67 5.95'
+    position = '0 -3.87 5.95'
     orientation = '0 0 1'
     roughness = 0.000015
     A = 0.03534292
@@ -465,7 +468,7 @@
   [./pipe230] #TCHX salt tube (23)
     type = PBPipe 
     eos = eos
-    position = '0 -3.67 8.55'
+    position = '0 -3.87 8.55'
     orientation = '0 -5.407402334 -2.6'
     roughness = 0.000015
     A = 0.1746822
@@ -522,6 +525,8 @@
     eos = eos
     initial_V = 2.052
     initial_T = 970
+    height = 0.1
+    nodal_Tbc = true
   [../]
 
   #[./pipe260] #placeholder
@@ -547,6 +552,7 @@
     eos = eos
     initial_V = 1.784
     initial_P = 2.5e5
+    width = 0.2
   [../]
 
   #[./pipe270] #placeholder
@@ -565,7 +571,7 @@
     type = PBVolumeBranch 
     inputs = 'pipe150(out)'				# A = 0.3038791	
     outputs = 'pipe010(in) pipe020(in)'   	# A = 1.327511 	A = 0.065
-    center = '0 6.02445 -5.34'			# 8.02445? 
+    center = '0 6.53445 -5.34'			# 8.02445
     volume = 0.2655022
     #K = '0.35964 0.0 0.3750'				# Check these
     K = '0.35964 0.0 0.6000'
@@ -573,7 +579,7 @@
     eos = eos
     initial_V = 0.388
     initial_P = 3.4e5
-    width = 5
+    width = 3.18
     height = 0.2
   [../]  
 
@@ -592,7 +598,7 @@
   [./pipe2] #Pipe to primary tank
     type = PBOneDFluidComponent
     eos = eos #eos3
-    position = '0 8.25 3.09'
+    position = '0 8.25 3.19'
     orientation = '0 0 1'
     A = 1
     Dh = 1.12838
@@ -604,7 +610,7 @@
 
   [./pool2] #Primary Loop Expansion Tank
     type = PBLiquidVolume
-    center = '0 8.25 3.64'
+    center = '0 8.25 3.74'
     inputs = 'pipe2(out)'
     Steady = 1
     K = '0.0'
@@ -639,6 +645,7 @@
     eos = eos
     initial_V = 2.052
     initial_T = 970
+    width = 0.1
   [../]  
 
   #[./pipe501] #placeholder
@@ -695,7 +702,7 @@
     type = PBVolumeBranch 
     inputs = 'pipe200(out)'			# A = 0.1836403
     outputs = 'pipe210(in) pipe1(in)'   # A = 0.1836403 A = 1
-    center = '0 0 5.95' 
+    center = '0 -0.1 5.95' 
     volume = 0.003534292
     K = '0.0 0.0 0.3673'
     Area = 0.03534292
@@ -966,13 +973,13 @@
   l_max_its = 200 # Number of linear iterations for each Krylov solve
 
    [./Quadrature]
-      type = SIMPSON
+      type = GAUSS # SIMPSON
       order = SECOND
    [../]
 []
 
 [Problem]
-  restart_file_base = 'pbfhr-t_out_cp/0275'
+  restart_file_base = 'pbfhr-t_out_cp/0250'
 []
 
 [Outputs]

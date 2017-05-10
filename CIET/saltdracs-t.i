@@ -184,10 +184,10 @@
     inputs = 'DHX(secondary_in)'		# A = 0.1836403
     outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
-    #K = '50.3666 50.3666'
+    K = '50.3666 50.3666'
     #K = '44.2 44.2'    				# Match m without h specified
     #K = '45.5 45.5'    				# Match m with h specified
-    K = '45.2 45.2' 				# Match m with r5Flibe
+    #K = '45.2 45.2' 				# Match m with r5Flibe
     Area = 0.03534292
   [../]
 

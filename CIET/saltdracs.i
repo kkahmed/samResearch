@@ -68,8 +68,8 @@
     initial_V_secondary = 0.029349731 
     initial_T = 925
 
-    HT_surface_area_density = 353.0303766
-    HT_surface_area_density_secondary = 366.9724771
+    HT_surface_area_density =  441.287971 #353.0303766
+    HT_surface_area_density_secondary = 458.715596 #366.9724771
     #Hw = 526.266
     #Hw_secondary = 440
     
@@ -184,10 +184,10 @@
     inputs = 'DHX(secondary_in)'		# A = 0.1836403
     outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
-    #K = '50.3666 50.3666'
+    K = '56.3666 56.3666'
     #K = '44.2 44.2'    				# Match m without h specified
     #K = '45.5 45.5'    				# Match m with h specified
-    K = '45.2 45.2' 				# Match m with r5Flibe
+    #K = '45.2 45.2' 				# Match m with r5Flibe
     Area = 0.03534292
   [../]
 

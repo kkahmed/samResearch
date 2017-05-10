@@ -46,15 +46,23 @@
   [../]
   [./h451]
     type = SolidMaterialProps
-    k = 80
+    k = 173.49544 #80
     Cp = 1323.92
-    rho = 2.266e3
+    #rho = 2.266e3
+    #rho = 1.5937e3		#ratio=1.42185
+    #rho = 3.204608e3  	# b
+    #rho = 4.532e3   	# c
+    rho = 4914.2582      # d
   [../]
   [./fuel]
     type = SolidMaterialProps
-    k = 15
+    k = 32.5304 #15
     Cp = 1323.92
-    rho = 2.266e3
+    #rho = 2.266e3
+    #rho = 1.5937e3		#ratio=1.42185
+    #rho = 3.204608e3  	# b
+    #rho = 4.532e3   	# c
+    rho = 4914.2582      # d
   [../]
 []
 
@@ -127,13 +135,20 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     #value = min(367475,371377*exp(-0.1528583*(min(t,1100)-1000))-3862)
 
     # 1 Working low velocity implementation 
-    value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-2800)-4*(max(min(t,295),195)-195)-3.6*(max(min(t,400),260)-260)+0.1*(max(min(t,5400),1400)-1400) 
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3300)-6*(max(min(t,395),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #a
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-6*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #b
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-7*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #c
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-6*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #7d
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3000)-6*(max(min(t,375),195)-195)+0.2*(max(min(t,1300),1000)-1000)+0.2*(max(min(t,5400),1500)-1500) #4c
+    value = min(367475,371377*exp(-0.157*(min(t,130)-100))-3862)-65*(max(min(t,130),120)-120)-50*(max(min(t,140),125)-125)+5*(max(min(t,144),137)-137)-22*(max(min(t,150),144)-144)-1000*(1-exp(-1*(max(min(t,165),153)-153)))-9*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #7e
+
+    #-150*(max(min(t,163),155)-155)
 
     # 2 Pump head goes to zero only
-    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),0)
+    # value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),0)
 
     # 3 Somewhere in between 
-    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-1800)
+    # value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-1600)+0.5*(max(min(t,1700),900)-900)+1.0*(max(min(t,2500),2000)-2000)
 
     #+(0.1*(max(min(t,155),145)-145)*(200*exp(-0.3*(min(t,180)-145))-200))
   [../]
@@ -178,16 +193,25 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     #User_defined_WF_parameters = '32.1 4974.4 -1.0'
     User_defined_WF_parameters = '5.467 847.17 -1.0'
 
-    HT_surface_area_density = 211.1		#Preserves #ofpins such that core mass is = relap
+    #HT_surface_area_density = 211.1		#Preserves #ofpins such that core mass is = relap
+    HT_surface_area_density = 133.33		#Preserves surface area
     Ts_init = 950
     elem_number_of_hs = '5 5 2'
     material_hs = 'h451 fuel h451'
     n_heatstruct = 3
     fuel_type = cylinder
     name_of_hs = 'inner fuel outer'
-    width_of_hs = '0.011410887	0.002114398	0.001474715' #'0.0125 0.0015 0.0010'
+    #width_of_hs = '0.011410887	0.002114398	0.001474715' #'0.0125 0.0015 0.0010'
+    #width_of_hs = '0.017125078	0.003173219	0.002213203' #surface area, stored heat too large
+    #width_of_hs = '0.012109259	0.002243804	0.001564971' #less stored heat b
+    #width_of_hs = '0.008562539	0.001586609	0.001106602' #less stored heat c
+    width_of_hs = '0.007896334	0.001463164	0.001020503' #less stored heat d
+
     power_fraction = '0 1 0'
     power_shape_function = Paxial
+    HTC_geometry_type = Bundle
+    PoD = 1.1
+    dim_hs = 1
   [../] 
 
   [./pipe020] #Core bypass (2)
@@ -293,8 +317,8 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_P = 4.6e5
     scale_factors = '1 1e-2 1e-7'
 
-    #WF_user_option = User		#Help pump coastdown
-    #User_defined_WF_parameters = '-7.2 2000000 -1'
+    #WF_user_option = User		#Help pump coastdown case 3
+    #User_defined_WF_parameters = '-7.15 2000000 -1'
   [../]
 
   [./pipe080] #CTAH hot manifold (8)
@@ -329,7 +353,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     scale_factors = '1 1e-2 1e-7'
 
     HS_BC_type = Temperature
-    Hw = 2000
+    Hw = 2000 		#cut for transient 
     Ph = 392.9818537
     T_wall = 873.15
     Twall_init = 900
@@ -434,7 +458,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     A = 0.03534292
     Dh = 0.15
     length = 0.58
-    n_elems = 2 #3
+    n_elems = 3 #3
     initial_V = 0.767
     initial_P = 2.5e5
   [../]  
@@ -464,10 +488,15 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_P = 1.9e5
     initial_P_secondary = 2.0e5
 
-    HT_surface_area_density = 353.0303766
-    HT_surface_area_density_secondary = 366.9724771
-    Hw = 526.266
-    Hw_secondary = 440
+    #HT_surface_area_density = 353.0303766
+    #HT_surface_area_density_secondary = 366.9724771
+    HT_surface_area_density =  441.287971 #353.0303766
+    HT_surface_area_density_secondary = 458.715596 #366.9724771
+    #Hw = 526.266
+    #Hw_secondary = 440
+    HTC_geometry_type = Pipe
+    HTC_geometry_type_secondary = Pipe
+    PoD = 1.1
     
     Twall_init = 900
     wall_thickness = 0.0009
@@ -880,10 +909,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     inputs = 'DHX(secondary_in)'		# A = 0.1836403
     outputs = 'pipe200(in)'			# A = 0.03534292
     eos = eos
-    #K = '50.3666 50.3666'
+    K = '56.3666 56.3666'
     #K = '44.2 44.2'    				# Match m without h specified
     #K = '45.5 45.5'    				# Match m with h specified
-    K = '45.2 45.2' 				# Match m with r5Flibe
+    #K = '45.2 45.2' 				# Match m with r5Flibe
     Area = 0.03534292
     scale_factors = '1 1 1e-4'
   [../]
@@ -942,6 +971,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     K_reverse = '2000000 2000000'
     Area = 0.3041
     #Head = 369119 original, 367725 match SS
+    #Head = 367475
     Head_fn = Phead3
     initial_V = 1.783
     initial_T = 970
@@ -1042,7 +1072,12 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     #time_dt ='   1   1   5   5    0.2   0.2   0.5   0.5  1    1     5    5' 
     
     time_t = '   0   98  99   500   501   1000  1001  2000 2001 1e5' 
+    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6' 
     time_dt ='   1   1   0.1  0.1   0.5   0.5   1     1    5     5'
+
+    #time_t = '   0   98  99   125 126 500   501   1000  1001  2000 2001 1e5' 
+    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6' 
+    #time_dt ='   1   1   0.2  0.2 0.1 0.1 0.5   0.5   1     1    5     5'
   [../]
 
   nl_rel_tol = 1e-5
@@ -1066,6 +1101,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   #restart_file_base = 'pbfhr-t_out_cp/0658'  #c1 right after transient
   #restart_file_base = 'pbfhr-t_out_cp/3043'  #c1 after coastdown, for long term
   restart_file_base = 'pbfhr_out_cp/0001'
+  #restart_file_base = 'pbfhr-t_out_cp(c2)/3912'
 []
 
 [Outputs]

@@ -7,15 +7,30 @@
   #elem_type = QUAD4
 []
 
+[Functions]
+  [./v_in]
+    type = PiecewiseLinear
+    x = '0   100'
+    y = '0.5 0.5'
+  [../]
+  [./p_out]
+    type = PiecewiseLinear
+    x = '0   100'
+    y = '1e5 1e5'
+  [../]
+  [./a_out]
+    type = PiecewiseLinear
+    x = '0   10  40  100'
+    y = '0.0 0.0 0.1 0.1'
+  [../]
+[]
 
 [Variables]
-  #[./velocity]
-  #  order = FIRST
-  #  family = LAGRANGE
-  #  initial_condition = 0.2
-  #[../]
-
   [./alphas]
+    initial_condition = 0
+  [../]
+
+  [./velocity]
     initial_condition = 0.5
   [../]
 []
@@ -25,15 +40,25 @@
   [./eos] #const salt
   	type = PTConstantEOS
   	p_0 = 1.0e5    # Pa
-  	rho_0 = 1   # kg/m^3
+  	rho_0 = 2279.92   # kg/m^3
   	#a2 = 1.834e5  # m^2/s^2
   	beta = 0 # K^{-1}
   	cp = 2415.78
   	cv =  2415.78
   	h_0 = 2.35092e6  # J/kg
   	T_0 = 973.15      # K
-  	mu = 1.23e-5 #1x
- 	k = 0.0251 #1x
+    mu = 0.00535189 #1x
+    k = 0.7662 #1x
+  [../]
+[]
+
+[Materials]
+	active = 'generic'
+  [./generic]
+    type = GenericConstantMaterial
+    block = 0
+    prop_names  = 'friction'
+    prop_values = '0.0'
   [../]
 []
 
@@ -41,49 +66,52 @@
   [./rho]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1
+    initial_condition = 2279.92
   [../]
   [./temperature]
     order = CONSTANT
     family = MONOMIAL
     initial_condition = 973.15
   [../]
-  [./velocity]
+  [./pressure]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1
+    initial_condition = 1.0e5
   [../]
 []
 
 [Kernels]
   [./time]
-    type = FluidPressureAlphaTimeDerivative
-    variable = alphas
+    type = FluidVelocityTimeDerivative
+    variable = velocity
     rho = rho
     temperature = temperature
-    alphas = alphas
+    #alphas = alphas
+    pressure = pressure
     eos = eos
   [../]
 
   [./grad]
-    type = OneDFluidPressureAlpha
-    variable = alphas
-    velocity = velocity
+    type = OneDFluidVelocity
+    variable = velocity
     rho = rho
     temperature = temperature
-    alphas = alphas
+    #alphas = alphas
+    pressure = pressure
     eos = eos
+    gx = 0
+    dh = 0.1
   [../]
 
-  #[./diff]
-  #  type = Diffusion
-  #  variable = alphas
-  #[../]
+  [./diff]
+    type = Diffusion
+    variable = alphas
+  [../]
 
-  #[./alphadot]
-  #  type = TimeDerivative
-  #  variable = alphas
-  #[../]
+  [./alphadot]
+    type = TimeDerivative
+    variable = alphas
+  [../]
 []
 
 #[ScalarKernels]
@@ -94,48 +122,50 @@
 #[]
 
 [BCs]
-  [./bottom]
+  [./abottom]
     type = DirichletBC
     variable = alphas
     boundary = left
     value = 0.0
   [../]
 
-  [./bottom2]
-    type = OneDFluidPressureAlphaBC
+  [./atop]
+    type = FunctionDirichletBC
     variable = alphas
-    velocity = velocity
+    boundary = right
+    function = a_out
+  [../]
+
+  #[./vleft]
+  #  type = DirichletBC
+  #  variable = velocity
+  #  boundary = left
+  #  value = 0.5
+  #[../]
+
+  [./vbottom]
+    type = OneDFluidVelocityBC
+    variable = velocity
     rho = rho
     temperature = temperature
-    alphas = alphas
+    #alphas = alphas
+    pressure = pressure
     eos = eos
     boundary = left
+    v_fn = v_in
   [../]
 
-  [./top2]
-    type = OneDFluidPressureAlphaBC
-    variable = alphas
-    velocity = velocity
+  [./vtop]
+    type = OneDFluidVelocityBC
+    variable = velocity
     rho = rho
     temperature = temperature
-    alphas = alphas
+    #alphas = alphas
+    pressure = pressure
     eos = eos
     boundary = right
+    p_fn = p_out
   [../]
-
-  #[./atop]
-  #  type = DirichletBC
-  #  variable = alphas
-  #  boundary = right
-  #  value = 0.1
-  #[../]
-
-  #[./abot]
-  #  type = DirichletBC
-  #  variable = alphas
-  #  boundary = left
-  #  value = 0.1
-  #[../]
 []
 
 [Preconditioning]
@@ -143,9 +173,9 @@
   [./SMP_PJFNK]
     type = SMP                         # Single-Matrix Preconditioner
     full = true                        # Using the full set of couplings among all variables
-    solve_type = 'NEWTON'               # Using Preconditioned JFNK solution mehtod
+    solve_type = 'PJFNK'               # Using Preconditioned JFNK solution mehtod
     petsc_options_iname = '-pc_type'   # PETSc otion, using preconditiong
-    petsc_options_value = 'ilu'         # PETSc otion, using ‘LU’ precondition type in Krylov solve
+    petsc_options_value = 'lu'         # PETSc otion, using ‘LU’ precondition type in Krylov solve
   [../]
 
 [] # End preconditioning block
@@ -168,7 +198,7 @@
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
   num_steps = 1000                    # Max. simulation time steps
-  end_time = 10.0                     # Max. physical time at the end of the simulation
+  end_time = 100.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]

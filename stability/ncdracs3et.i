@@ -55,6 +55,13 @@
   [../]
 []
 
+[Functions]
+  [./T_perturb]
+    type = PiecewiseLinear
+    x = '0   30  40  60  70  1000'
+    y = '374 374 474 474 374 374'
+  [../]
+[]
 
 [Components]
   [./pipe1]
@@ -260,7 +267,8 @@
 	input = 'TCHX(secondary_in)'
     eos = eos2
 	v_bc = -9.21125
-  	T_bc = 374
+  	#T_bc = 374
+     T_fn = T_perturb
   [../]
 
   [./outlet2]
@@ -321,7 +329,7 @@
   petsc_options_iname = '-ksp_gmres_restart'
   petsc_options_value = '101'
 
-  dt = 1e0
+  dt = 1e-1
   dtmin = 1e-6
 
   nl_rel_tol = 1e-7
@@ -329,8 +337,8 @@
   nl_max_its = 100
 
   start_time = 0.0
-  num_steps = 1000
-  end_time = 100
+  num_steps = 10000
+  end_time = 1000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -342,7 +350,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs3et_out_cp/0098'
+  restart_file_base = 'ncdracs3e_out_cp/0001'
 []
 
 [Outputs]

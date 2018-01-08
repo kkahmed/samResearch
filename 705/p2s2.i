@@ -2,20 +2,27 @@
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 2.5
-  nx = 10
-  elem_type = EDGE3
+  xmax = 8.0
+  nx = 400
+  #elem_type = EDGE3
+[]
+
+[Functions]
+  [./psi_in]
+    type = ParsedFunction
+    value = '2.0/0.5773502691'
+  [../]
 []
 
 [Variables]
   [./psi0]
     initial_condition = 1
-    order = SECOND
+    order = FIRST
   [../]
 
   [./psi1]
     initial_condition = 1
-    order = SECOND
+    order = FIRST
   [../]
 []
 
@@ -25,7 +32,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = '3.0 2.5 0.0'
   [../]
 []
 
@@ -33,10 +40,10 @@
   [./source]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1
+    initial_condition = 0.0
   [../]
   [./scalar_flux]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     initial_condition = 1.0
   [../]
@@ -55,7 +62,7 @@
   [./psi_0]
     type = NeutronSNAngular
     variable = psi0
-    psi_op = psi1
+    psi_op = 'psi1'
     index = 0
     order = 2
     source = source
@@ -64,7 +71,7 @@
   [./psi_1]
     type = NeutronSNAngular
     variable = psi1
-    psi_op = psi0
+    psi_op = 'psi0'
     index = 1
     order = 2
     source = source
@@ -73,15 +80,22 @@
 
 [BCs]
   [./psi0left]
-    type = MatchedValueBC
+    type = FunctionDirichletBC
     variable = psi0
     boundary = left
-    v = psi1
+    function = psi_in
   [../]
 
   [./psi1right]
     type = DirichletBC
     variable = psi1
+    boundary = right
+    value = 0.0
+  [../]
+
+  [./psi0right]
+    type = DirichletBC
+    variable = psi0
     boundary = right
     value = 0.0
   [../]
@@ -92,6 +106,7 @@
     index = 0
     order = 2
     boundary = left
+    psi_fn = psi_in
   [../]
 
   [./psi_0right]

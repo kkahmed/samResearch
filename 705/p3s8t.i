@@ -2,9 +2,36 @@
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 2.5
-  nx = 200
+  xmax = 1.25
+  nx = 125
   #elem_type = EDGE3
+[]
+
+[Functions]
+  [./Et_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0      0.25'
+    y = '1.6480 3.6907'
+  [../]
+  [./Es0_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0      0.25'
+    y = '0.7278 3.6710'
+  [../]
+  [./Es1_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0   0.25'
+    y = '0.0 0.0'
+  [../]
+  [./source_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0   0.25'
+    y = '0.0 1.0 '
+  [../]
 []
 
 [Variables]
@@ -43,12 +70,12 @@
 []
 
 [Materials]
-	active = 'generic'
+  active = 'generic'
   [./generic]
-    type = GenericConstantMaterial
+    type = GenericFunctionMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = 'Et_fn Es0_fn Es1_fn'
   [../]
 []
 
@@ -56,12 +83,12 @@
   [./source]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0.0
   [../]
   [./scalar_flux]
     order = FIRST
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0.0
   [../]
 []
 
@@ -71,6 +98,11 @@
     variable = scalar_flux
     psi = 'psi0 psi1 psi2 psi3 psi4 psi5 psi6 psi7'
     order = 8
+  [../]
+  [./sourceAux]
+    type = FunctionAux
+    variable = source
+    function = source_fn
   [../]
 []
 
@@ -82,6 +114,7 @@
     index = 0
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_1]
     type = NeutronSNAngular
@@ -90,6 +123,7 @@
     index = 1
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_2]
     type = NeutronSNAngular
@@ -98,6 +132,7 @@
     index = 2
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_3]
     type = NeutronSNAngular
@@ -106,6 +141,7 @@
     index = 3
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_4]
     type = NeutronSNAngular
@@ -114,6 +150,7 @@
     index = 4
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_5]
     type = NeutronSNAngular
@@ -122,6 +159,7 @@
     index = 5
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_6]
     type = NeutronSNAngular
@@ -130,6 +168,7 @@
     index = 6
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_7]
     type = NeutronSNAngular
@@ -138,6 +177,7 @@
     index = 7
     order = 8
     source = source
+    Steady = false
   [../]
 []
 
@@ -166,30 +206,29 @@
     boundary = left
     v = psi4
   [../]
-
   [./psi4right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi4
     boundary = right
-    value = 0.0
+    v = psi3
   [../]
   [./psi5right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi5
     boundary = right
-    value = 0.0
+    v = psi2
   [../]
   [./psi6right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi6
     boundary = right
-    value = 0.0
+    v = psi1
   [../]
   [./psi7right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi7
     boundary = right
-    value = 0.0
+    v = psi0
   [../]
 
   [./psi_0left]
@@ -327,13 +366,13 @@
 [] # End preconditioning block
 
 [Executioner]
-  type = Steady                   # This is a transient simulation
+  type = Transient                   # This is a transient simulation
 
-  #dt = 0.1                           # Targeted time step size
-  #dtmin = 1e-5                        # The allowed minimum time step size
-  #start_time = 0.0                    # Physical time at the beginning of the simulation
-  #num_steps = 10                    # Max. simulation time steps
-  #end_time = 100.0                     # Max. physical time at the end of the simulation
+  dt = 1e-2                           # Targeted time step size
+  dtmin = 1e-5                        # The allowed minimum time step size
+  start_time = 0.0                    # Physical time at the beginning of the simulation
+  num_steps = 9000                    # Max. simulation time steps
+  end_time = 100.0                     # Max. physical time at the end of the simulation
 
   petsc_options_iname = '-ksp_gmres_restart'  # Additional PETSc settings, name list
   petsc_options_value = '100'                 # Additional PETSc settings, value list

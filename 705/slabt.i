@@ -2,8 +2,8 @@
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 2.5
-  nx = 200
+  xmax = 10
+  nx = 100
   #elem_type = EDGE3
 []
 
@@ -48,7 +48,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = '1.0 0.9 0.0'
   [../]
 []
 
@@ -61,7 +61,7 @@
   [./scalar_flux]
     order = FIRST
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0.0
   [../]
 []
 
@@ -82,6 +82,7 @@
     index = 0
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_1]
     type = NeutronSNAngular
@@ -90,6 +91,7 @@
     index = 1
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_2]
     type = NeutronSNAngular
@@ -98,6 +100,7 @@
     index = 2
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_3]
     type = NeutronSNAngular
@@ -106,6 +109,7 @@
     index = 3
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_4]
     type = NeutronSNAngular
@@ -114,6 +118,7 @@
     index = 4
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_5]
     type = NeutronSNAngular
@@ -122,6 +127,7 @@
     index = 5
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_6]
     type = NeutronSNAngular
@@ -130,6 +136,7 @@
     index = 6
     order = 8
     source = source
+    Steady = false
   [../]
   [./psi_7]
     type = NeutronSNAngular
@@ -138,58 +145,58 @@
     index = 7
     order = 8
     source = source
+    Steady = false
   [../]
 []
 
 [BCs]
   [./psi0left]
-    type = MatchedValueBC
+    type = DirichletBC
     variable = psi0
     boundary = left
-    v = psi7
+    value = 0
   [../]
   [./psi1left]
-    type = MatchedValueBC
+    type = DirichletBC
     variable = psi1
     boundary = left
-    v = psi6
+    value = 0
   [../]
   [./psi2left]
-    type = MatchedValueBC
+    type = DirichletBC
     variable = psi2
     boundary = left
-    v = psi5
+    value = 0
   [../]
   [./psi3left]
-    type = MatchedValueBC
+    type = DirichletBC
     variable = psi3
     boundary = left
-    v = psi4
+    value = 0
   [../]
-
   [./psi4right]
     type = DirichletBC
     variable = psi4
     boundary = right
-    value = 0.0
+    value = 0
   [../]
   [./psi5right]
     type = DirichletBC
     variable = psi5
     boundary = right
-    value = 0.0
+    value = 0
   [../]
   [./psi6right]
     type = DirichletBC
     variable = psi6
     boundary = right
-    value = 0.0
+    value = 0
   [../]
   [./psi7right]
     type = DirichletBC
     variable = psi7
     boundary = right
-    value = 0.0
+    value = 0
   [../]
 
   [./psi_0left]
@@ -327,13 +334,13 @@
 [] # End preconditioning block
 
 [Executioner]
-  type = Steady                   # This is a transient simulation
+  type = Transient                   # This is a transient simulation
 
-  #dt = 0.1                           # Targeted time step size
-  #dtmin = 1e-5                        # The allowed minimum time step size
-  #start_time = 0.0                    # Physical time at the beginning of the simulation
-  #num_steps = 10                    # Max. simulation time steps
-  #end_time = 100.0                     # Max. physical time at the end of the simulation
+  dt = 5e-2                           # Targeted time step size
+  dtmin = 1e-5                        # The allowed minimum time step size
+  start_time = 0.0                    # Physical time at the beginning of the simulation
+  num_steps = 8000                    # Max. simulation time steps
+  end_time = 100.0                     # Max. physical time at the end of the simulation
 
   petsc_options_iname = '-ksp_gmres_restart'  # Additional PETSc settings, name list
   petsc_options_value = '100'                 # Additional PETSc settings, value list
@@ -344,7 +351,6 @@
 
   l_tol = 1e-4                        # Relative linear tolerance for each Krylov solve
   l_max_its = 100                     # Number of linear iterations for each Krylov solve
-
 
 [] # close Executioner section
 

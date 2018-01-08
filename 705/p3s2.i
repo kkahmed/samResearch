@@ -2,30 +2,57 @@
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 2.5
-  nx = 10
-  elem_type = EDGE3
+  xmax = 1.25
+  nx = 125
+  #elem_type = EDGE3
+[]
+
+[Functions]
+  [./Et_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0      0.25'
+    y = '1.6480 3.6907'
+  [../]
+  [./Es0_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0      0.25'
+    y = '0.7278 3.6710'
+  [../]
+  [./Es1_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0   0.25'
+    y = '0.0 0.0'
+  [../]
+  [./source_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0   0.25'
+    y = '0.0 1.0 '
+  [../]
 []
 
 [Variables]
   [./psi0]
     initial_condition = 1
-    order = SECOND
+    order = FIRST
   [../]
 
   [./psi1]
     initial_condition = 1
-    order = SECOND
+    order = FIRST
   [../]
 []
 
 [Materials]
 	active = 'generic'
   [./generic]
-    type = GenericConstantMaterial
+    type = GenericFunctionMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = 'Et_fn Es0_fn Es1_fn'
   [../]
 []
 
@@ -33,10 +60,10 @@
   [./source]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1
+    initial_condition = 0.0
   [../]
   [./scalar_flux]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     initial_condition = 1.0
   [../]
@@ -48,6 +75,11 @@
     variable = scalar_flux
     psi = 'psi0 psi1'
     order = 2
+  [../]
+  [./sourceAux]
+    type = FunctionAux
+    variable = source
+    function = source_fn
   [../]
 []
 
@@ -80,10 +112,10 @@
   [../]
 
   [./psi1right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi1
     boundary = right
-    value = 0.0
+    v = psi0
   [../]
 
   [./psi_0left]

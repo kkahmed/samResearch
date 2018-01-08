@@ -3,4 +3,7 @@
 *.pvsm
 *.png
 *.csv
+*.ogv
+*.xlsx
+*.mat
 peacock*

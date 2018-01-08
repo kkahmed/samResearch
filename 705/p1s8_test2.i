@@ -48,7 +48,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = '3.0 2.5 0.0'
   [../]
 []
 

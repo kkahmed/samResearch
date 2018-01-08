@@ -2,9 +2,36 @@
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 2.5
-  nx = 200
+  xmax = 1.25
+  nx = 125
   #elem_type = EDGE3
+[]
+
+[Functions]
+  [./Et_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0      0.25'
+    y = '1.6480 3.6907'
+  [../]
+  [./Es0_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0      0.25'
+    y = '0.7278 3.6710'
+  [../]
+  [./Es1_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0   0.25'
+    y = '0.0 0.0'
+  [../]
+  [./source_fn]
+    type = PiecewiseConstant
+    axis = x
+    x = '0   0.25'
+    y = '0.0 1.0 '
+  [../]
 []
 
 [Variables]
@@ -43,12 +70,12 @@
 []
 
 [Materials]
-	active = 'generic'
+  active = 'generic'
   [./generic]
-    type = GenericConstantMaterial
+    type = GenericFunctionMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = 'Et_fn Es0_fn Es1_fn'
   [../]
 []
 
@@ -56,7 +83,7 @@
   [./source]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0.0
   [../]
   [./scalar_flux]
     order = FIRST
@@ -71,6 +98,11 @@
     variable = scalar_flux
     psi = 'psi0 psi1 psi2 psi3 psi4 psi5 psi6 psi7'
     order = 8
+  [../]
+  [./sourceAux]
+    type = FunctionAux
+    variable = source
+    function = source_fn
   [../]
 []
 
@@ -166,30 +198,29 @@
     boundary = left
     v = psi4
   [../]
-
   [./psi4right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi4
     boundary = right
-    value = 0.0
+    v = psi3
   [../]
   [./psi5right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi5
     boundary = right
-    value = 0.0
+    v = psi2
   [../]
   [./psi6right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi6
     boundary = right
-    value = 0.0
+    v = psi1
   [../]
   [./psi7right]
-    type = DirichletBC
+    type = MatchedValueBC
     variable = psi7
     boundary = right
-    value = 0.0
+    v = psi0
   [../]
 
   [./psi_0left]

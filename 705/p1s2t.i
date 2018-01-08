@@ -3,19 +3,19 @@
   dim = 1
   xmin = 0
   xmax = 2.5
-  nx = 10
-  elem_type = EDGE3
+  nx = 100
+  #elem_type = EDGE3
 []
 
 [Variables]
   [./psi0]
-    initial_condition = 1
-    order = SECOND
+    initial_condition = 0
+    order = FIRST
   [../]
 
   [./psi1]
-    initial_condition = 1
-    order = SECOND
+    initial_condition = 0
+    order = FIRST
   [../]
 []
 
@@ -38,7 +38,7 @@
   [./scalar_flux]
     order = SECOND
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0
   [../]
 []
 
@@ -59,6 +59,7 @@
     index = 0
     order = 2
     source = source
+    Steady = false
   [../]
 
   [./psi_1]
@@ -68,6 +69,7 @@
     index = 1
     order = 2
     source = source
+    Steady = false
   [../]
 []
 
@@ -133,13 +135,13 @@
 [] # End preconditioning block
 
 [Executioner]
-  type = Steady                   # This is a transient simulation
+  type = Transient                   # This is a transient simulation
 
-  #dt = 0.1                           # Targeted time step size
-  #dtmin = 1e-5                        # The allowed minimum time step size
-  #start_time = 0.0                    # Physical time at the beginning of the simulation
-  #num_steps = 10                    # Max. simulation time steps
-  #end_time = 100.0                     # Max. physical time at the end of the simulation
+  dt = 1e-3                           # Targeted time step size
+  dtmin = 1e-5                        # The allowed minimum time step size
+  start_time = 0.0                    # Physical time at the beginning of the simulation
+  num_steps = 10000                    # Max. simulation time steps
+  end_time = 3.0                     # Max. physical time at the end of the simulation
 
   petsc_options_iname = '-ksp_gmres_restart'  # Additional PETSc settings, name list
   petsc_options_value = '100'                 # Additional PETSc settings, value list

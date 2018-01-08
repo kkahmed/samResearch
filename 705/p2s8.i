@@ -2,9 +2,28 @@
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 2.5
-  nx = 200
+  xmax = 8.0
+  nx = 400
   #elem_type = EDGE3
+[]
+
+[Functions]
+  [./psi0_in]
+    type = ParsedFunction
+    value = '2.0/0.9602898564'
+  [../]
+  [./psi1_in]
+    type = ParsedFunction
+    value = '2.0/0.7966664774'
+  [../]
+  [./psi2_in]
+    type = ParsedFunction
+    value = '2.0/0.5255324099'
+  [../]
+  [./psi3_in]
+    type = ParsedFunction
+    value = '2.0/0.1834346424'
+  [../]
 []
 
 [Variables]
@@ -48,7 +67,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'Et Es0 Es1'
-    prop_values = '3.0 2.0 0.4'
+    prop_values = '3.0 2.5 0.0'
   [../]
 []
 
@@ -56,7 +75,7 @@
   [./source]
     order = CONSTANT
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0.0
   [../]
   [./scalar_flux]
     order = FIRST
@@ -143,30 +162,54 @@
 
 [BCs]
   [./psi0left]
-    type = MatchedValueBC
+    type = FunctionDirichletBC
     variable = psi0
     boundary = left
-    v = psi7
+    function = psi0_in
   [../]
   [./psi1left]
-    type = MatchedValueBC
+    type = FunctionDirichletBC
     variable = psi1
     boundary = left
-    v = psi6
+    function = psi1_in
   [../]
   [./psi2left]
-    type = MatchedValueBC
+    type = FunctionDirichletBC
     variable = psi2
     boundary = left
-    v = psi5
+    function = psi2_in
   [../]
   [./psi3left]
-    type = MatchedValueBC
+    type = FunctionDirichletBC
     variable = psi3
     boundary = left
-    v = psi4
+    function = psi3_in
   [../]
 
+  [./psi0right]
+    type = DirichletBC
+    variable = psi0
+    boundary = right
+    value = 0.0
+  [../]
+  [./psi1right]
+    type = DirichletBC
+    variable = psi1
+    boundary = right
+    value = 0.0
+  [../]
+  [./psi2right]
+    type = DirichletBC
+    variable = psi2
+    boundary = right
+    value = 0.0
+  [../]
+  [./psi3right]
+    type = DirichletBC
+    variable = psi3
+    boundary = right
+    value = 0.0
+  [../]
   [./psi4right]
     type = DirichletBC
     variable = psi4
@@ -198,6 +241,7 @@
     index = 0
     order = 8
     boundary = left
+    psi_fn = psi0_in
   [../]
   [./psi_0right]
     type = NeutronSNAngularBC
@@ -213,6 +257,7 @@
     index = 1
     order = 8
     boundary = left
+    psi_fn = psi1_in
   [../]
   [./psi_1right]
     type = NeutronSNAngularBC
@@ -228,6 +273,7 @@
     index = 2
     order = 8
     boundary = left
+    psi_fn = psi2_in
   [../]
   [./psi_2right]
     type = NeutronSNAngularBC
@@ -243,6 +289,7 @@
     index = 3
     order = 8
     boundary = left
+    psi_fn = psi3_in
   [../]
   [./psi_3right]
     type = NeutronSNAngularBC

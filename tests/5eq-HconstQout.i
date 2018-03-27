@@ -11,23 +11,34 @@
   [./v_in]
     type = PiecewiseLinear
     x = '0   100'
-    y = '0.2 0.2'
+    y = '0.1 0.1'
   [../]
   [./p_out]
     type = PiecewiseLinear
     x = '0   100'
     y = '1e5 1e5'
   [../]
-  [./f_rate]
-    type = PiecewiseLinear
-    x = '0   10  11   50   51  100'
-    y = '0.0 0.0 0.15 0.15 0.0 0.0'
-  [../]
-  [./f_axial]
+  #[./f_rate]
+  #  type = PiecewiseLinear
+  #  x = '0   10  11   50   51  100'
+  #  y = '0.0 0.0 0.15 0.15 0.0 0.0'
+  #[../]
+  #[./f_axial]
+  #  type = PiecewiseLinear
+  #  axis = x
+  #  x = '0   0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+  #  y = '0.0 13  25  35  42  48  52  55  57  58  58'
+  #[../]
+  [./heat_out]
     type = PiecewiseLinear
     axis = x
-    x = '0   0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
-    y = '0.0 13  25  35  42  48  52  55  57  58  58'
+    x = '0   1.0'
+    y = '-1.3e6 -1.3e6'
+  [../]
+  [./T_in]
+    type = PiecewiseLinear
+    x = '0   100'
+    y = '762 762'
   [../]
 []
 
@@ -37,11 +48,21 @@
   [../]
 
   [./alphas]
-    initial_condition = 0
+    initial_condition = 0.1
   [../]
 
   [./velocity]
     initial_condition = 0.2
+    #order = SECOND
+  [../]
+
+  [./temp_l]
+    initial_condition = 762
+    #order = SECOND
+  [../]
+
+  [./temp_s]
+    initial_condition = 732
     #order = SECOND
   [../]
 []
@@ -85,12 +106,12 @@
     family = MONOMIAL
     initial_condition = 2279.92
   [../]
-  [./temperature]
-    order = CONSTANT
-    family = MONOMIAL
-    initial_condition = 973.15
-  [../]
   [./freezing]
+    order = FIRST
+    family = MONOMIAL
+    initial_condition = 0.0
+  [../]
+  [./freezing_heatflux]
     order = FIRST
     family = MONOMIAL
     initial_condition = 0.0
@@ -98,7 +119,12 @@
   [./alphaliq]
     order = FIRST
     family = MONOMIAL
-    initial_condition = 1.0
+    initial_condition = 0.9
+  [../]
+  [./radius_i]
+    order = FIRST
+    family = MONOMIAL
+    initial_condition = 0.0047434
   [../]
   #[./pressure]
   #  order = CONSTANT
@@ -111,13 +137,30 @@
   [./freeze_rate]
     type = FreezingAux
     variable = freezing
-    f_rate = f_rate
-    f_axial = f_axial
+    alphas = alphas
+    temperature = temp_l
+    radius = radius_i
+    heat_ext = heat_out
+    h_int = 100
+    #f_rate = f_rate
+    #f_axial = f_axial
   [../]
   [./liquid_frac]
     type = AlphalAux
     variable = alphaliq
     alphas = alphas
+  [../]
+  [./radius_int]
+    type = RadialAux
+    variable = radius_i
+    alphas = alphas
+    Rt = 0.005
+  [../]
+  [./heat_int]
+    type = FreezingHeatFluxAux
+    variable = freezing_heatflux
+    Tfluid = temp_l
+    h_int = 100
   [../]
 []
 
@@ -126,7 +169,7 @@
     type = FluidVelocityAlphaTimeDerivative
     variable = velocity
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     alphas = alphas
     pressure = pressure
     eos = eos
@@ -136,7 +179,7 @@
     type = OneDFluidVelocityAlpha
     variable = velocity
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     alphas = alphas
     freezing = freezing
     pressure = pressure
@@ -151,7 +194,7 @@
     type = FluidPressureAlphaTimeDerivative
     variable = pressure
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     alphas = alphas
     eos = eos
   [../]
@@ -162,7 +205,7 @@
     variable = pressure
     velocity = velocity
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     alphas = alphas
     freezing = freezing
     eos = eos
@@ -178,6 +221,43 @@
     freezing = freezing
     eos = frozen
     Ax = 0.07854
+  [../]
+
+  [./temp_solid]
+    type = SolidTemperatureAlphaTimeDerivative
+    variable = temp_s
+    freezing = freezing
+    alphas = alphas
+    radius = radius_i
+    heatflux = freezing_heatflux
+    heat_ext = heat_out
+    eos = frozen
+    Ax = 0.07854
+  [../]
+
+  [./temp_dot]
+    type = FluidTemperatureAlphaTimeDerivative
+    variable = temp_l
+    rho = rho
+    pressure = pressure
+    alphas = alphas
+    eos = eos
+    Ax = 0.07854
+  [../]
+
+  [./temp_liquid]
+    type = OneDFluidTemperatureAlpha
+    variable = temp_l
+    velocity = velocity
+    rho = rho
+    pressure = pressure
+    alphas = alphas
+    freezing = freezing
+    radius = radius_i
+    heatflux = freezing_heatflux
+    eos = eos
+    Ax = 0.07854
+    element_length = 0.01
   [../]
 
   #[./diff]
@@ -217,7 +297,7 @@
     type = DirichletBC
     variable = velocity
     boundary = left
-    value = 0.2
+    value = 0.1
   [../]
 
   [./pright]
@@ -227,11 +307,18 @@
     value = 1e5
   [../]
 
+  [./Tleft]
+    type = DirichletBC
+    variable = temp_l
+    boundary = left
+    value = 762
+  [../]
+
   [./vbottom]
     type = OneDFluidVelocityAlphaBC
     variable = velocity
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     alphas = alphas
     pressure = pressure
     eos = eos
@@ -243,7 +330,7 @@
     type = OneDFluidVelocityAlphaBC
     variable = velocity
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     alphas = alphas
     pressure = pressure
     eos = eos
@@ -256,7 +343,7 @@
     type = OneDFluidPressureAlphaBC
     variable = pressure
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     velocity = velocity
     eos = eos
     v_fn = v_in
@@ -269,11 +356,37 @@
     type = OneDFluidPressureAlphaBC
     variable = pressure
     rho = rho
-    temperature = temperature
+    temperature = temp_l
     velocity = velocity
     eos = eos
     #p_fn = p_out
     alphas = alphas
+    boundary = right
+  [../]
+
+  [./tbottom]
+    #type = OneDFluidContinuityAlphaBC
+    type = OneDFluidTemperatureAlphaBC
+    variable = temp_l
+    rho = rho
+    velocity = velocity
+    pressure = pressure
+    alphas = alphas
+    eos = eos
+    v_fn = v_in
+    T_fn = T_in
+    boundary = left
+  [../]
+
+  [./ttop]
+    #type = OneDFluidContinuityAlphaBC
+    type = OneDFluidTemperatureAlphaBC
+    variable = temp_l
+    rho = rho
+    velocity = velocity
+    pressure = pressure
+    alphas = alphas
+    eos = eos
     boundary = right
   [../]
 []

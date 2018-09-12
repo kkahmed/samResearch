@@ -1,7 +1,7 @@
 [GlobalParams] #
     global_init_P = 3.0e5
-    global_init_V = 0.252 #0.06 #0.29
-    global_init_T = 1240
+    global_init_V = 0.356535 #0.06 #0.29
+    global_init_T = 934.8076
     Tsolid_sf = 1e-3
 
   [./PBModelParams]
@@ -35,15 +35,15 @@
   [./eos3] #const salt
     type = PTConstantEOS
     p_0 = 1.0e5    # Pa
-    rho_0 = 1808.412   # kg/m^3
+    rho_0 = 1957.031   # kg/m^3
     #a2 = 1.834e5  # m^2/s^2
     beta = 0.0002143124 # K^{-1}
     cp = 2415.78
     cv =  2415.78
     h_0 = 2.35092e6  # J/kg
-    T_0 = 1239.3559      # K
-    mu = 0.002178 #1x
-    k = 1.249303 #1x
+    T_0 = 934.8076      # K
+    mu = 0.006263 #1x
+    k = 1.097029 #1x
   [../]
 []
 
@@ -62,25 +62,25 @@
     x = '0   30  40  60  70  1000'
     y = '373 373 473 473 373 373'
   [../]
-  [./Q_perturb1] #Hotslug
+  [./Q_perturb1]
     type = PiecewiseLinear
-    x = '6000     6001     6003     6015     6017     1e5'
-    y = '49019791 49019791 75019791 75019791 49019791 49019791'
+    x = '0        35       40       50       55       60     70     75       1000'
+    y = '19019791 19019791 39019791 39019791 19019791 519791 519791 19019791 19019791'
   [../]
-  [./Q_perturb2] #Spiky
+  #[./Q_perturb2]
+  #  type = PiecewiseLinear
+  #  x = '0        35       40     50     55       60       70       75       1000'
+  #  y = '19019791 19019791 519791 519791 19019791 39019791 39019791 19019791 19019791'
+  #[../]
+  [./Q_perturb2]
     type = PiecewiseLinear
-    x = '6000     6003     6009     6015     6021     6024     1e5'
-    y = '49019791 19019791 75019791 19019791 79019791 49019791 49019791'
-  [../]
-  [./Q_perturb3] #Coldslug
-    type = PiecewiseLinear
-    x = '6000     6001     6003     6015     6017     1e5'
-    y = '49019791 49019791 19019791 19019791 49019791 49019791'
+    x = '2000     3000     1e5' #For restart from 6Gs
+    y = '12337162 40337162 40337162'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '6000   6024  1e5' #For restart from 5Kt3
-    y = '0.0   0.0   0.0'
+    x = '2000  3000  1e5' #For restart from 6Gs
+    y = '0.0   -2500 -2500' #y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -117,7 +117,7 @@
     length = 2.5
     n_elems = 14
 
-    initial_V = 0.0485 #0.029349731
+    initial_V = 0.068618 #0.029349731
     heat_source = Q_perturb2
   [../]
 
@@ -155,14 +155,14 @@
     eos_secondary = eos2
 
     position = '0 4.01 5.98'
-    orientation = '23.86943652456 0 -2.5'
+    orientation = '5.45435606 0 -2.5'
     orientation_secondary = '0 0 -1'
 
-    A = 0.0218353
+    A = 0.0873412
     Dh = 0.0109
-    A_secondary = 0.191292
+    A_secondary = 0.765168
     Dh_secondary = 0.0109
-    length = 24
+    length = 6
     length_secondary = 2.5 #2.73951413
     n_elems = 12
     #f = 0.238
@@ -171,14 +171,14 @@
     #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
     #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
     #Hw_secondary = 20.6241 #Converges, 100 does not
-    Hw_secondary = 26.6 #Tuned to match Mohamed's overall U
+    Hw_secondary = 25.2 #Tuned to match Mohamed's overall U
 
-  	initial_V = 0.204 #0.04855862 #0.12341942  #0.23470
+  	initial_V = 0.072136 #0.04855862 #0.12341942  #0.23470
 	initial_V_secondary = -9.21125 #Not scaled to preserve residence time
 	initial_T_secondary = 374
 
-  HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
-  HT_surface_area_density_secondary = 402.1278 #0.0109*234*pi*24/(0.191292*2.5)
+    HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
+    HT_surface_area_density_secondary = 100.5325 #0.0109*234*4*pi*6/(0.765168*2.5)
 
     Twall_init = 800
     wall_thickness = 0.0009
@@ -208,7 +208,7 @@
     outputs = 'DHX(in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
   [./Branch2]
@@ -217,7 +217,7 @@
     outputs = 'pipe2(in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
 
@@ -240,7 +240,7 @@
     outputs = 'TCHX(primary_in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
   [./Branch5]
@@ -249,7 +249,7 @@
     outputs = 'pipe4(in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
   #[./Branch6]
@@ -290,7 +290,7 @@
   #  Area = 3
   #  volume = 30
   #  initial_level = 5.0
-  #  initial_T = 1353
+  #  initial_T = 885
   #  initial_V = 0.0
   #  #scale_factors = '1 1e-1 1e-2'
   #  display_pps = true
@@ -303,7 +303,7 @@
 	#name_of_liquidvolume = 'pool1'
 	#initial_P = 1e5
 	#initial_Vol = 15.0
-	#initial_T = 1353
+	#initial_T = 885
   #[../]
   [./p_out]
   	type = PBTDV
@@ -339,7 +339,7 @@
   [./TCHX_Re]
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
-    scale_factor = 229.2353
+    scale_factor = 19.92709
     execute_on = timestep_end
   [../]
   [./TCHX_umin]
@@ -358,14 +358,14 @@
     type = ComponentBoundaryVariableValue
     input = DHX(out)
     variable = temperature
-    scale_factor = 3.101e11
+    scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
     input = DHX(in)
     variable = temperature
-    scale_factor = 3.101e11
+    scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
   [./DHX_Gr]
@@ -376,7 +376,7 @@
   [../]
   [./TCHX_q]
     type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 8.012946 #64.10357
+    heated_perimeter = 32.05178 #64.10357
     block = 'TCHX:primary_pipe'
     execute_on = timestep_end
   [../]
@@ -435,7 +435,7 @@
   [./Residence]
     type = InverseLinearCombinationPostprocessor
     pp_names = 'v1   v0  v2   v3   v6 v4'
-    pp_coefs = '4.52 2.5 3.48 5.01 24 3.48'
+    pp_coefs = '4.52 2.5 3.48 5.01 6  3.48'
     b = 0.0
     execute_on = timestep_end
   [../]
@@ -486,7 +486,7 @@
 
   start_time = 0.0
   num_steps = 10000
-  end_time = 8000
+  end_time = 6000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -498,7 +498,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs5Kt3_out_cp/4003'
+  restart_file_base = 'ncdracs6Gs_out_cp/3846'
 []
 
 [Outputs]

@@ -25,8 +25,8 @@
   	rho_0 = 0.5959   # kg/m^3
   	#a2 = 1.834e5  # m^2/s^2
   	beta = 0.00289 # K^{-1}
-  	cp = 207300 #100x scaled (boils over ~10 K)
-  	cv =  155136    #100x scaled (boils over ~10 K)
+    cp = 2073000 #1000x scaled (boils over ~1 K)
+  	cv =  1551360    #1000x scaled (boils over ~1 K)
   	h_0 = 2.678e6  # J/kg
   	T_0 = 374      # K
   	mu = 1.23e-5 #1x
@@ -79,13 +79,19 @@
   #[../]
   [./Q_perturb2]
     type = PiecewiseLinear
-    x = '1000     2000     1e5' #For restart from 6Cs
+    x = '2000     3000     1e5' #For restart from 6Cs
     y = '10280968 30280968 30280968'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '1000  2000  1e5' #For restart from 5Ks
-    y = '0.0  -300 -300'
+    x = '2000  3000  1e5' #For restart from 5Ks
+    y = '0.0  -400 -400'
+  [../]
+  [./PBTDVTemp]
+    type = ParsedFunction
+    vals = 'pipe5out'
+    vars = 'poolTemp'
+    value = poolTemp
   [../]
 []
 
@@ -93,13 +99,13 @@
   [./pipe1]
     type = PBOneDFluidComponent
     eos = eos3
-    position = '0 1 0'
+    position = '0 4.52 0'
     orientation = '0 -1 0'
 
     A = 0.01767146
     Dh = 0.15
-    length = 1
-    n_elems = 3
+    length = 4.52
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1129
   [../]
@@ -129,7 +135,7 @@
     A = 0.01767146
     Dh = 0.15
     length = 3.48
-    n_elems = 3
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1353
   [../]
@@ -142,8 +148,8 @@
 
     A = 0.01767146
     Dh = 0.15
-    length = 1
-    n_elems = 3
+    length = 4.01
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1353
   [../]
@@ -153,7 +159,7 @@
     eos = eos3
     eos_secondary = eos2
 
-    position = '0 1.0 5.98'
+    position = '0 4.01 5.98'
     orientation = '5.45435606 0 -2.5'
     orientation_secondary = '0 0 -1'
 
@@ -190,13 +196,13 @@
   [./pipe4]
     type = PBOneDFluidComponent
     eos = eos3
-    position = '0 1.0 3.48'
+    position = '0 4.52 3.48'
     orientation = '0 0 -1'
 
     A = 0.01767146
     Dh = 0.15
     length = 3.48
-    n_elems = 3
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1129
   [../]
@@ -276,41 +282,41 @@
 
     A = 0.01767146
     Dh = 0.15
-    length = 0.1
-    n_elems = 3
+    length = 0.5
+    n_elems = 5
     #initial_T = 1353
   [../]
-  [./pool1]
-    type = PBLiquidVolume
-    center = '0 0 7.08'
-    inputs = 'pipe5(out)'
-    Steady = 0
-    K = '0.5'
-    Area = 3
-    volume = 30
-    initial_level = 5.0
-    initial_T = 885
-    initial_V = 0.0
-    #scale_factors = '1 1e-1 1e-2'
-    display_pps = true
-    covergas_component = 'cover_gas1'
+  #[./pool1]
+  #  type = PBLiquidVolume
+  #  center = '0 0 7.08'
+  #  inputs = 'pipe5(out)'
+  #  Steady = 0
+  #  K = '0.5'
+  #  Area = 3
+  #  volume = 30
+  #  initial_level = 5.0
+  #  initial_T = 885
+  #  initial_V = 0.0
+  #  #scale_factors = '1 1e-1 1e-2'
+  #  display_pps = true
+  #  covergas_component = 'cover_gas1'
+  #  eos = eos3
+  #[../]
+  #[./cover_gas1]
+	#type = CoverGas
+	#n_liquidvolume =1
+	#name_of_liquidvolume = 'pool1'
+	#initial_P = 1e5
+	#initial_Vol = 15.0
+	#initial_T = 885
+  #[../]
+  [./p_out]
+  	type = PBTDV
+  	input = 'pipe5(out)'
     eos = eos3
+  	p_bc = 1.01e5
+  	T_fn = PBTDVTemp
   [../]
-  [./cover_gas1]
-	type = CoverGas
-	n_liquidvolume =1
-	name_of_liquidvolume = 'pool1'
-	initial_P = 1e5
-	initial_Vol = 15.0
-	initial_T = 885
-  [../]
-#  [./p_out]
-#  	type = PBTDV
-#  	input = 'pipe5(out)'
-#	eos = eos
-#  	p_bc = 1.01e5
-#  	T_bc = 1050
-#  [../]
 
   [./inlet2]
   	type = PBTDJ
@@ -433,10 +439,15 @@
   [../]
   [./Residence]
     type = InverseLinearCombinationPostprocessor
-    pp_names = 'v1  v0  v2   v3  v6 v4'
-    pp_coefs = '1.0 2.5 3.48 2.0 6  3.48'
+    pp_names = 'v1   v0  v2   v3   v6 v4'
+    pp_coefs = '4.52 2.5 3.48 5.01 6  3.48'
     b = 0.0
     execute_on = timestep_end
+  [../]
+  [./pipe5out]
+    type = ComponentBoundaryVariableValue
+    input = 'pipe5(out)'
+    variable = 'temperature'
   [../]
 []
 
@@ -480,7 +491,7 @@
 
   start_time = 0.0
   num_steps = 10000
-  end_time = 3000
+  end_time = 4000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -492,7 +503,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Cs_out_cp/2860'
+  restart_file_base = 'ncdracs6Cs_out_cp/3865'
 []
 
 [Outputs]

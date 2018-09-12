@@ -62,25 +62,25 @@
     x = '0   30  40  60  70  1000'
     y = '373 373 473 473 373 373'
   [../]
-  [./Q_perturb1] #Hotslug
+  [./Q_perturb1]
     type = PiecewiseLinear
-    x = '6000     6001     6003     6015     6017     1e5'
-    y = '49019791 49019791 75019791 75019791 49019791 49019791'
+    x = '0        35       40       50       55       60     70     75       1000'
+    y = '19019791 19019791 39019791 39019791 19019791 519791 519791 19019791 19019791'
   [../]
-  [./Q_perturb2] #Spiky
+  #[./Q_perturb2]
+  #  type = PiecewiseLinear
+  #  x = '0        35       40     50     55       60       70       75       1000'
+  #  y = '19019791 19019791 519791 519791 19019791 39019791 39019791 19019791 19019791'
+  #[../]
+  [./Q_perturb2]
     type = PiecewiseLinear
-    x = '6000     6003     6009     6015     6021     6024     1e5'
-    y = '49019791 19019791 75019791 19019791 79019791 49019791 49019791'
-  [../]
-  [./Q_perturb3] #Coldslug
-    type = PiecewiseLinear
-    x = '6000     6001     6003     6015     6017     1e5'
-    y = '49019791 49019791 19019791 19019791 49019791 49019791'
+    x = '2000     3000     1e5' #For restart from 5Ks
+    y = '19019791 49019791 49019791'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '6000   6024  1e5' #For restart from 5Kt3
-    y = '0.0   0.0   0.0'
+    x = '2000  3000  1e5' #For restart from 5Ks
+    y = '0.0   -3550 -3550' #y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -177,8 +177,8 @@
 	initial_V_secondary = -9.21125 #Not scaled to preserve residence time
 	initial_T_secondary = 374
 
-  HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
-  HT_surface_area_density_secondary = 402.1278 #0.0109*234*pi*24/(0.191292*2.5)
+    HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
+    HT_surface_area_density_secondary = 402.1278 #0.0109*234*pi*24/(0.191292*2.5)
 
     Twall_init = 800
     wall_thickness = 0.0009
@@ -208,7 +208,7 @@
     outputs = 'DHX(in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0' #K = '8.5 8.5'
   [../]
 
   [./Branch2]
@@ -217,7 +217,7 @@
     outputs = 'pipe2(in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0' #K = '8.5 8.5'
   [../]
 
 
@@ -240,7 +240,7 @@
     outputs = 'TCHX(primary_in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0' #K = '8.5 8.5'
   [../]
 
   [./Branch5]
@@ -249,7 +249,7 @@
     outputs = 'pipe4(in)'
     eos = eos3
     Area = 0.01767146
-    K = '8.5 8.5'
+    K = '0.0 0.0' #K = '8.5 8.5'
   [../]
 
   #[./Branch6]
@@ -486,7 +486,7 @@
 
   start_time = 0.0
   num_steps = 10000
-  end_time = 8000
+  end_time = 6000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -498,7 +498,8 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs5Kt3_out_cp/4003'
+  #restart_file_base = 'ncdracs5Kt_out_cp/1007'
+  restart_file_base = 'ncdracs5Ks_out_cp/3858'
 []
 
 [Outputs]

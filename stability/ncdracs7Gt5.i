@@ -88,24 +88,12 @@
     vars = 'poolTemp'
     value = poolTemp
   [../]
-  [./Gr_alt]
-    type = ParsedFunction
-    vals = 'DHXRhoTop DHXRhoBot DHX_Gr3 DHX_Gr4'
-    vars = 'p1 p2 Gr3 Gr4'
-    value = (Gr3-Gr4)*((1/3)*(p1-p2)^2+(p1*p2))
-  [../]
-  [./Gr_boundary]
-    type = ParsedFunction
-    vals = 'TCHX_Re'
-    vars = 'Re'
-    value = (if(Re<=180.389,1,0))*(Re*4.941e10-3.059e12)+(if(Re<245.706,1,0))*(if(Re>180.389,1,0))*(Re*7.186e10-7.109e12)+(if(Re>=245.706,1,0))*(Re*1.220e11-1.943e13)
-  [../]
 []
 
 [Components]
   [./pipe1]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 4.52 0'
     orientation = '0 -1 0'
 
@@ -119,7 +107,7 @@
 
   [./DHX]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
 
     position = '0 0.0 0'
     orientation = '0 0 1'
@@ -135,7 +123,7 @@
 
   [./pipe2]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 2.5'
     orientation = '0 0 1'
 
@@ -149,7 +137,7 @@
 
   [./pipe3]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 5.98'
     orientation = '0 1 0'
 
@@ -163,7 +151,7 @@
 
   [./TCHX]
     type = PBHeatExchanger
-    eos = eos3
+    eos = eos
     eos_secondary = eos2
 
     position = '0 4.01 5.98'
@@ -202,7 +190,7 @@
 
   [./pipe4]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 4.52 3.48'
     orientation = '0 0 -1'
 
@@ -218,7 +206,7 @@
     type = PBBranch
     inputs = 'pipe1(out)'
     outputs = 'DHX(in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0'
   [../]
@@ -227,7 +215,7 @@
     type = PBBranch
     inputs = 'DHX(out)'
     outputs = 'pipe2(in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0'
   [../]
@@ -243,14 +231,14 @@
     #Area =   0.44934
     Area = 0.01767146
     #initial_P = 9.5e4
-    eos = eos3
+    eos = eos
   [../]
 
   [./Branch4]
     type = PBBranch
     inputs = 'pipe3(out)'
     outputs = 'TCHX(primary_in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0'
   [../]
@@ -259,7 +247,7 @@
     type = PBBranch
     inputs = 'TCHX(primary_out)'
     outputs = 'pipe4(in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0'
   [../]
@@ -268,11 +256,11 @@
   #  type = PBSingleJunction
   #  inputs = 'pipe4(out)'
   #  outputs = 'pipe1(in)'
-  #  eos = eos3
+  #  eos = eos
   #[../]
   [./Pump_p]
     type = PBPump                               # This is a PBPump component
-    eos = eos3
+    eos = eos
     inputs = 'pipe4(out)'
     outputs = 'pipe1(in)'
     K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
@@ -283,7 +271,7 @@
 
   [./pipe5]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 5.98'
     orientation = '0 0 1'
 
@@ -307,7 +295,7 @@
   #  #scale_factors = '1 1e-1 1e-2'
   #  display_pps = true
   #  covergas_component = 'cover_gas1'
-  #  eos = eos3
+  #  eos = eos
   #[../]
   #[./cover_gas1]
 	#type = CoverGas
@@ -320,7 +308,7 @@
   [./p_out]
   	type = PBTDV
   	input = 'pipe5(out)'
-    eos = eos3
+    eos = eos
   	p_bc = 1.01e5
   	T_fn = PBTDVTemp
   [../]
@@ -348,7 +336,7 @@
     input = DHX(in)
     execute_on = timestep_end
   [../]
-  [./TCHX_Re] #Constant rho, constant mu
+  [./TCHX_Re]
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
     scale_factor = 19.92709
@@ -380,41 +368,7 @@
     scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
-  [./DHX_Gr3]
-    type = ComponentBoundaryVariableValue
-    input = DHX(out)
-    variable = temperature
-    scale_factor = 1.146e4
-    execute_on = timestep_end
-  [../]
-  [./DHX_Gr4]
-    type = ComponentBoundaryVariableValue
-    input = DHX(in)
-    variable = temperature
-    scale_factor = 1.146e4
-    execute_on = timestep_end
-  [../]
-  [./DHXRhoTop]
-    type = ComponentBoundaryVariableValue
-    input = 'DHX(out)'
-    variable = 'rho'
-  [../]
-  [./DHXRhoBot]
-    type = ComponentBoundaryVariableValue
-    input = 'DHX(in)'
-    variable = 'rho'
-  [../]
-  [./DHX_GrAlt] #DHX integral rho, constant mu
-    type = FunctionValuePostprocessor
-    function = Gr_alt
-    execute_on = timestep_end
-  [../]
-  [./DHX_GrBoundary]
-    type = FunctionValuePostprocessor
-    function = Gr_boundary
-    execute_on = timestep_end
-  [../]
-  [./DHX_Gr] #Constant rho, constant mu
+  [./DHX_Gr]
     type = DifferencePostprocessor
     value1 = DHX_Gr1
     value2 = DHX_Gr2
@@ -544,7 +498,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Gs_out_cp/3846'
+  restart_file_base = 'ncdracs7Gs_out_cp/3846'
 []
 
 [Outputs]

@@ -88,6 +88,18 @@
     vars = 'poolTemp'
     value = poolTemp
   [../]
+  [./Gr_alt]
+    type = ParsedFunction
+    vals = 'DHXRhoTop DHXRhoBot DHX_Gr3 DHX_Gr4'
+    vars = 'p1 p2 Gr3 Gr4'
+    value = (Gr3-Gr4)*((1/3)*(p1-p2)^2+(p1*p2))
+  [../]
+  [./Gr_boundary]
+    type = ParsedFunction
+    vals = 'TCHX_Re'
+    vars = 'Re'
+    value = (if(Re<=180.389,1,0))*(Re*4.941e10-3.059e12)+(if(Re<245.706,1,0))*(if(Re>180.389,1,0))*(Re*7.186e10-7.109e12)+(if(Re>=245.706,1,0))*(Re*1.220e11-1.943e13)
+  [../]
 []
 
 [Components]
@@ -336,7 +348,7 @@
     input = DHX(in)
     execute_on = timestep_end
   [../]
-  [./TCHX_Re]
+  [./TCHX_Re] #Constant rho, constant mu
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
     scale_factor = 19.92709
@@ -368,7 +380,41 @@
     scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
-  [./DHX_Gr]
+  [./DHX_Gr3]
+    type = ComponentBoundaryVariableValue
+    input = DHX(out)
+    variable = temperature
+    scale_factor = 1.146e4
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr4]
+    type = ComponentBoundaryVariableValue
+    input = DHX(in)
+    variable = temperature
+    scale_factor = 1.146e4
+    execute_on = timestep_end
+  [../]
+  [./DHXRhoTop]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX(out)'
+    variable = 'rho'
+  [../]
+  [./DHXRhoBot]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX(in)'
+    variable = 'rho'
+  [../]
+  [./DHX_GrAlt] #DHX integral rho, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_alt
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrBoundary]
+    type = FunctionValuePostprocessor
+    function = Gr_boundary
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr] #Constant rho, constant mu
     type = DifferencePostprocessor
     value1 = DHX_Gr1
     value2 = DHX_Gr2

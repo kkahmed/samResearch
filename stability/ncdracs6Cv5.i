@@ -99,11 +99,23 @@
     vars = 'p1 p2 Gr3 Gr4'
     value = (Gr3-Gr4)*((1/3)*(p1-p2)^2+(p1*p2))
   [../]
+  [./Gr_loop]
+    type = ParsedFunction
+    vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
+    vars = 'p1 p2 Gr5 Gr6'
+    value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/((p1+p2)/2)
+  [../]
   [./Gr_boundary]
     type = ParsedFunction
     vals = 'TCHX_Re'
     vars = 'Re'
     value = (if(Re<=128.432,1,0))*(Re*2.850e10-1.374e11)+(if(Re<138.797,1,0))*(if(Re>128.432,1,0))*(Re*3.560e10-1.049e12)+(if(Re>=138.797,1,0))*(Re*4.272e10-2.037e12)
+  [../]
+  [./Gr_bound2]
+    type = ParsedFunction
+    vals = 'TCHX_Re'
+    vars = 'Re'
+    value = (if(Re<=128.432,1,0))*(Re*3.321e10-2.532e11)+(if(Re<138.797,1,0))*(if(Re>128.432,1,0))*(Re*4.160e10-1.331e12)+(if(Re>=138.797,1,0))*(Re*4.992e10-2.486e12)
   [../]
 []
 
@@ -385,28 +397,42 @@
     type = ComponentBoundaryVariableValue
     input = DHX(out)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 1.972e10 #(p^2)Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
     input = DHX(in)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 1.972e10 #(p^2)Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHX_Gr3]
     type = ComponentBoundaryVariableValue
     input = DHX(out)
     variable = temperature
-    scale_factor = 4.919e3
+    scale_factor = 4.919e3 #Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHX_Gr4]
     type = ComponentBoundaryVariableValue
     input = DHX(in)
     variable = temperature
-    scale_factor = 4.919e3
+    scale_factor = 4.919e3 #Bg(H^3)/(u^2)
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr5]
+    type = ComponentBoundaryVariableValue
+    input = DHX(out)
+    variable = temperature
+    scale_factor = 1.120e7 #(dp/dT)g(H^3)/(u^2)
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr6]
+    type = ComponentBoundaryVariableValue
+    input = DHX(in)
+    variable = temperature
+    scale_factor = 1.120e7 #(dp/dT)g(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHXRhoTop]
@@ -427,6 +453,16 @@
   [./DHX_GrBoundary]
     type = FunctionValuePostprocessor
     function = Gr_boundary
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop] #DHX integral rho, improved Beta, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_loop
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrBound2] #Alternate T-dep Beta in calculation
+    type = FunctionValuePostprocessor
+    function = Gr_bound2
     execute_on = timestep_end
   [../]
   [./DHX_Gr] #Constant rho, constant mu
@@ -559,7 +595,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Cu_out_cp/3870'
+  restart_file_base = 'ncdracs6Cu_out_cp/3868'
 []
 
 [Outputs]

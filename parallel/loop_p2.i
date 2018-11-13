@@ -299,6 +299,7 @@
 
 [Outputs]
   print_linear_residuals = false
+  perf_graph = true #1 thread 105s, 2 thread 84s, exact 1000 steps
   [./out_displaced]
     type = Exodus
     use_displaced = true
@@ -310,6 +311,5 @@
   []
   [./console]
     type = Console
-    perf_graph = true
   [../]
 []

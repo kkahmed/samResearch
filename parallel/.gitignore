@@ -1,0 +1,10 @@
+*_out_cp
+*.e
+*.pvsm
+*.png
+*.pdf
+*.svg
+*.csv
+*.mat
+*.ogv
+peacock*

@@ -299,6 +299,7 @@
 
 [Outputs]
   print_linear_residuals = false
+  perf_graph = true #4 thread 80s, 8 thread 329s, 150s->32s
   [./out_displaced]
     type = Exodus
     use_displaced = true
@@ -310,6 +311,5 @@
   []
   [./console]
     type = Console
-    perf_graph = true
   [../]
 []

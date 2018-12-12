@@ -94,11 +94,29 @@
     vars = 'p1 p2 Gr3 Gr4'
     value = (Gr3-Gr4)*((1/3)*(p1-p2)^2+(p1*p2))
   [../]
-  [./Gr_loop]
+  [./Gr_loop1]
     type = ParsedFunction
     vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
     vars = 'p1 p2 Gr5 Gr6'
     value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/((p1+p2)/2)
+  [../]
+  [./Gr_loop2]
+    type = ParsedFunction
+    vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
+    vars = 'p1 p2 Gr5 Gr6'
+    value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/(p2)
+  [../]
+  [./Gr_loop3]
+    type = ParsedFunction
+    vals = 'rho1 rho2 rho3 rho4'
+    vars = 'p1 p2 p3 p4'
+    value = (1.338e11)*((5/48)*p3+p4-p2-p1)
+  [../]
+  [./Gr_loop4]
+    type = ParsedFunction
+    vals = 'rho1 rho2 rho3 rho4 DHXRhoTop DHXRhoBot'
+    vars = 'p1 p2 p3 p4 p5 p6'
+    value = (7.398e07)*((5/48)*p3+p4-p2-p1)*((p5+p6)/2)
   [../]
   [./Gr_boundary]
     type = ParsedFunction
@@ -110,7 +128,7 @@
     type = ParsedFunction
     vals = 'TCHX_Re'
     vars = 'Re'
-    value = (if(Re<=1832.520,1,0))*(Re*7.395e10+5.295e13)+(if(Re<1871.592,1,0))*(if(Re>1832.520,1,0))*(Re*8.989e10+2.374e13)+(if(Re>=1871.592,1,0))*(Re*8.990e10+2.373e13)
+    value = (3.48/5.98)*((if(Re<=1832.520,1,0))*(Re*5.400e10+5.054e13)+(if(Re<1871.592,1,0))*(if(Re>1832.520,1,0))*(Re*6.641e10+2.779e13)+(if(Re>=1871.592,1,0))*(Re*6.620e10+2.818e13))
   [../]
 []
 
@@ -430,6 +448,30 @@
     input = 'DHX(in)'
     variable = 'rho'
   [../]
+  [./rho1]
+    type = ElementIntegralVariablePostprocessor
+    block = 'DHX'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./rho2]
+    type = ElementIntegralVariablePostprocessor
+    block = 'pipe2'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./rho3]
+    type = ElementIntegralVariablePostprocessor
+    block = 'TCHX:primary_pipe'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./rho4]
+    type = ElementIntegralVariablePostprocessor
+    block = 'pipe4'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
   [./DHX_GrAlt] #DHX integral rho, constant mu
     type = FunctionValuePostprocessor
     function = Gr_alt
@@ -440,9 +482,24 @@
     function = Gr_boundary
     execute_on = timestep_end
   [../]
-  [./DHX_GrLoop] #DHX integral rho, improved Beta, constant mu
+  [./DHX_GrLoop1] #DHX integral rho, improved Beta, constant mu
     type = FunctionValuePostprocessor
-    function = Gr_loop
+    function = Gr_loop1
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop2] #DHX integral rho, improved Beta, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_loop2
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop3] #DHX integral rho, nonBeta nonT form, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_loop3
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop4] #DHX integral rho, nonBeta nonT form, constant mu, mod 2nd rho
+    type = FunctionValuePostprocessor
+    function = Gr_loop4
     execute_on = timestep_end
   [../]
   [./DHX_GrBound2] #Alternate T-dep Beta in calculation

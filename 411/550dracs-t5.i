@@ -51,7 +51,7 @@
   [./T_step]
     type = PiecewiseLinear
     x = '0   360   1800 10000'
-    y = '973 1073  1032 1032'
+    y = '973 1273  1032 1032'
   [../]
   [./T_slug]
     type = PiecewiseLinear

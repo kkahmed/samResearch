@@ -1,12 +1,13 @@
-[GlobalParams] #double heat exchanger 
+[GlobalParams] #double heat exchanger
     global_init_P = 1.0e5
     global_init_V = 0.1525 #0.06 #0.29
-    global_init_T = 850  
-    Tsolid_sf = 1e-3  
+    global_init_T = 850
+    Tsolid_sf = 1e-3
 
   [./PBModelParams]
 	pspg = false
-	pbm_scaling_factors = '1 1e-1 1e-4'
+  p_order = 2
+	pbm_scaling_factors = '1 1e-2 1e-5'
 	#variable_bounding = true
 	#V_bounds = '0 10'
   [../]
@@ -44,7 +45,7 @@
   	mu = 1.23e-5 #1x
  	k = 0.0251 #1x
   [../]
-[] 
+[]
 
 [Materials]
   [./ss-mat]
@@ -62,13 +63,13 @@
     eos = eos
     position = '0 1 0'
     orientation = '0 -1 0'
-  
+
     A = 0.01767146
     Dh = 0.15
     length = 1
     n_elems = 1
     #f = 0.03903
-  [../] 
+  [../]
 
   [./DHX]
     type = PBHeatExchanger
@@ -90,47 +91,47 @@
     #Hw = 582 #604.98482473 #Overall Ux2
     #Hw_secondary = 582 #Overall Ux2
 
-  	initial_V = -0.0045 #0.23470 #0.104 #0.04855862 
+  	initial_V = -0.0045 #0.23470 #0.104 #0.04855862
 	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
 	initial_T = 925
 
     HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
     HT_surface_area_density_secondary = 366.9724771
-    
+
     Twall_init = 900
     wall_thickness = 0.0009
-    
+
     dim_wall = 2
     material_wall = ss-mat
     n_wall_elems = 8
   [../]
 
   [./pipe2]
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 0 2.5'
     orientation = '0 0 1'
-    
+
     A = 0.01767146
     Dh = 0.15
     length = 15.0
     n_elems = 3
     #f = 0.03903
-  [../]  
+  [../]
 
-  [./pipe3] 
-    type = PBOneDFluidComponent 
+  [./pipe3]
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 0 17.50'
     orientation = '0 1 0'
-    
+
     A = 0.01767146
     Dh = 0.15
-    length = 1 
+    length = 1
     n_elems = 1
     #f = 0.03903
-  [../] 
-  
+  [../]
+
   [./TCHX]
     type = PBHeatExchanger
     eos = eos
@@ -159,29 +160,29 @@
 	initial_T_secondary = 374
 
     HT_surface_area_density = 366.97
-    HT_surface_area_density_secondary = 402.1278 #Scaled to satisfy Phf conditions 
-    
+    HT_surface_area_density_secondary = 402.1278 #Scaled to satisfy Phf conditions
+
     Twall_init = 800
     wall_thickness = 0.0009
-    
+
     dim_wall = 1
     material_wall = ss-mat
     n_wall_elems = 12
   [../]
-  
-  [./pipe4] 
-    type = PBOneDFluidComponent 
+
+  [./pipe4]
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 1.0 15.0'
     orientation = '0 0 -1'
-    
+
     A = 0.01767146
     Dh = 0.15
     length = 15.0
     n_elems = 3
     #f = 0.03903
-  [../] 
-  
+  [../]
+
   [./Branch1]
     type = PBSingleJunction
     inputs = 'pipe1(out)'
@@ -198,13 +199,13 @@
 
 
   [./Branch3]
-    type = PBVolumeBranch #type=PBBranch 
+    type = PBVolumeBranch #type=PBBranch
     inputs = 'pipe2(out)'
     outputs = 'pipe3(in) pipe5(in)'
-    center = '0 0 17.5' 
+    center = '0 0 17.5'
     volume = 0.01767146 #0.003534292
     K = '0.0 0.0 10.0'
-    #Area =   0.44934 
+    #Area =   0.44934
     Area = 0.01767146
     #initial_P = 9.5e4
     eos = eos
@@ -223,7 +224,7 @@
     outputs = 'pipe4(in)'
     eos = eos
   [../]
-  
+
   [./Branch6]
     type = PBSingleJunction
     inputs = 'pipe4(out)'
@@ -231,12 +232,12 @@
     eos = eos
   [../]
 
-  [./pipe5] 
+  [./pipe5]
     type = PBOneDFluidComponent
     eos = eos3
     position = '0 0 17.5'
     orientation = '0 0 1'
-    
+
     A = 0.01767146
     Dh = 0.15
     length = 0.1
@@ -281,14 +282,14 @@
 	v_bc = -9.21125
   	T_bc = 374
   [../]
- 
+
   [./outlet2]
   	type = PBTDV
   	input = 'TCHX(secondary_out)'
     eos = eos2
   	p_bc = 1.01e5
   	T_bc = 384
-  [../]  
+  [../]
 
   [./inlet1]
   	type = PBTDJ
@@ -297,19 +298,19 @@
 	v_bc = -0.009
   	T_bc = 973
   [../]
- 
+
   [./outlet1]
   	type = PBTDV
   	input = 'DHX(primary_in)'
     eos = eos
   	p_bc = 10.5e4
   	T_bc = 973
-  [../] 
+  [../]
 []
 
 [Postprocessors]
   [./DHX_flow]
-    type = ComponentBoundaryFlow 
+    type = ComponentBoundaryFlow
     input = DHX(secondary_out)
     #execute_on = timestep_end
   [../]
@@ -348,7 +349,7 @@
     variable = 'temperature'
   [../]
 []
-  
+
 [Preconditioning]
   active = 'SMP_PJFNK'
   [./SMP_PJFNK]
@@ -369,29 +370,33 @@
 
 [Executioner]
   type = Steady
-  #type = Transient  
+  #type = Transient
 
   petsc_options_iname = '-ksp_gmres_restart'
   petsc_options_value = '101'
 
-  #dt = 1e-2
-  #dtmin = 1e-8
+  #dt = 1e-1
+  #dtmin = 1e-3
 
   nl_rel_tol = 1e-7
   nl_abs_tol = 1e-5
   nl_max_its = 100
 
   #start_time = 0.0
-  #num_steps = 15000
+  #num_steps = 1000
   #end_time = 100
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
 
    [./Quadrature]
-      type = TRAP
-      order = FIRST
+      type = GAUSS
+      order = SECOND
    [../]
+[]
+
+[Problem]
+  restart_file_base = 'fxdracs_out_cp/0001'
 []
 
 [Outputs]
@@ -404,7 +409,7 @@
     type = Exodus
     use_displaced = true
     execute_on = 'initial timestep_end'
-    sequence = false  
+    sequence = false
   [../]
 
   [./console]
@@ -416,9 +421,3 @@
 [Debug]
   show_var_residual_norms = true
 []
-
-
-
-
-
-

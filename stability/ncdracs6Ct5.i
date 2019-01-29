@@ -47,7 +47,7 @@
   [../]
 []
 
-[Materials]
+[MaterialProperties]
   [./ss-mat]
     type = SolidMaterialProps
     k = 2000 #20

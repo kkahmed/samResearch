@@ -1,7 +1,7 @@
 [GlobalParams] #
     global_init_P = 3.0e5
-    global_init_V = 0.252 #0.06 #0.29
-    global_init_T = 1240
+    global_init_V = 0.278037 #0.06 #0.29
+    global_init_T = 841.7258
     Tsolid_sf = 1e-3
 
   [./PBModelParams]
@@ -35,15 +35,15 @@
   [./eos3] #const salt
     type = PTConstantEOS
     p_0 = 1.0e5    # Pa
-    rho_0 = 1808.412   # kg/m^3
+    rho_0 = 2002.455   # kg/m^3
     #a2 = 1.834e5  # m^2/s^2
     beta = 0.0002143124 # K^{-1}
     cp = 2415.78
     cv =  2415.78
     h_0 = 2.35092e6  # J/kg
-    T_0 = 1239.3559      # K
-    mu = 0.002178 #1x
-    k = 1.249303 #1x
+    T_0 = 841.7258      # K
+    mu = 0.00956 #1x
+    k = 1.050488 #1x
   [../]
 []
 
@@ -74,13 +74,13 @@
   #[../]
   [./Q_perturb2]
     type = PiecewiseLinear
-    x = '2000     3000     1e5' #For restart from 5Ks
-    y = '19019791 34019791 34019791'
+    x = '0        1e5'
+    y = '10280968 10280968'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '2000  3000  1e5' #For restart from 5Ks
-    y = '0.0   -1850 -1850' #y = '0.0   0.0   0.0'
+    x = '1000  2000  1e5' #For restart from 5Ks
+    y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -88,47 +88,17 @@
     vars = 'poolTemp'
     value = poolTemp
   [../]
-  [./Gr_alt]
-    type = ParsedFunction
-    vals = 'DHXRhoTop DHXRhoBot DHX_Gr3 DHX_Gr4'
-    vars = 'p1 p2 Gr3 Gr4'
-    value = (Gr3-Gr4)*((1/3)*(p1-p2)^2+(p1*p2))
-  [../]
-  [./Gr_loop1]
-    type = ParsedFunction
-    vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
-    vars = 'p1 p2 Gr5 Gr6'
-    value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/((p1+p2)/2)
-  [../]
-  [./Gr_loop2]
-    type = ParsedFunction
-    vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
-    vars = 'p1 p2 Gr5 Gr6'
-    value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/(p2)
-  [../]
   [./Gr_loop3]
     type = ParsedFunction
     vals = 'rho1 rho2 rho3 rho4'
     vars = 'p1 p2 p3 p4'
-    value = (1.338e11)*((5/48)*p3+p4-p2-p1)
+    value = (7.686e9)*((5/12)*p3+p4-p2-p1)
   [../]
-  [./Gr_loop4]
+  [./Gr_loop5]
     type = ParsedFunction
-    vals = 'rho1 rho2 rho3 rho4 DHXRhoTop DHXRhoBot'
-    vars = 'p1 p2 p3 p4 p5 p6'
-    value = (7.398e07)*((5/48)*p3+p4-p2-p1)*((p5+p6)/2)
-  [../]
-  [./Gr_boundary]
-    type = ParsedFunction
-    vals = 'TCHX_Re'
-    vars = 'Re'
-    value = (if(Re<=1832.520,1,0))*(Re*5.400e10+5.054e13)+(if(Re<1871.592,1,0))*(if(Re>1832.520,1,0))*(Re*6.641e10+2.779e13)+(if(Re>=1871.592,1,0))*(Re*6.620e10+2.818e13)
-  [../]
-  [./Gr_bound2]
-    type = ParsedFunction
-    vals = 'TCHX_Re'
-    vars = 'Re'
-    value = (3.48/5.98)*((if(Re<=1832.520,1,0))*(Re*5.400e10+5.054e13)+(if(Re<1871.592,1,0))*(if(Re>1832.520,1,0))*(Re*6.641e10+2.779e13)+(if(Re>=1871.592,1,0))*(Re*6.620e10+2.818e13))
+    vals = 'rho1 rho2 rho3 rho4'
+    vars = 'p1 p2 p3 p4'
+    value = (0.8783)*(7.686e9)*((5/12)*p3+p4-p2-p1)
   [../]
 []
 
@@ -159,7 +129,7 @@
     length = 2.5
     n_elems = 14
 
-    initial_V = 0.0485 #0.029349731
+    initial_V = 0.05351 #0.029349731
     heat_source = Q_perturb2
   [../]
 
@@ -197,14 +167,14 @@
     eos_secondary = eos2
 
     position = '0 4.01 5.98'
-    orientation = '23.86943652456 0 -2.5'
+    orientation = '5.45435606 0 -2.5'
     orientation_secondary = '0 0 -1'
 
-    A = 0.0218353
+    A = 0.0873412
     Dh = 0.0109
-    A_secondary = 0.191292
+    A_secondary = 0.765168
     Dh_secondary = 0.0109
-    length = 24
+    length = 6
     length_secondary = 2.5 #2.73951413
     n_elems = 12
     #f = 0.238
@@ -213,14 +183,14 @@
     #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
     #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
     #Hw_secondary = 20.6241 #Converges, 100 does not
-    Hw_secondary = 26.6 #Tuned to match Mohamed's overall U
+    Hw_secondary = 26.2 #Tuned to match Mohamed's overall U
 
-  	initial_V = 0.204 #0.04855862 #0.12341942  #0.23470
+  	initial_V = 0.056254 #0.04855862 #0.12341942  #0.23470
 	initial_V_secondary = -9.21125 #Not scaled to preserve residence time
 	initial_T_secondary = 374
 
     HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
-    HT_surface_area_density_secondary = 402.1278 #0.0109*234*pi*24/(0.191292*2.5)
+    HT_surface_area_density_secondary = 100.5325 #0.0109*234*4*pi*6/(0.765168*2.5)
 
     Twall_init = 800
     wall_thickness = 0.0009
@@ -250,7 +220,7 @@
     outputs = 'DHX(in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0' #K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
   [./Branch2]
@@ -259,7 +229,7 @@
     outputs = 'pipe2(in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0' #K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
 
@@ -282,7 +252,7 @@
     outputs = 'TCHX(primary_in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0' #K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
   [./Branch5]
@@ -291,7 +261,7 @@
     outputs = 'pipe4(in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0' #K = '8.5 8.5'
+    K = '0.0 0.0'
   [../]
 
   #[./Branch6]
@@ -332,7 +302,7 @@
   #  Area = 3
   #  volume = 30
   #  initial_level = 5.0
-  #  initial_T = 1353
+  #  initial_T = 885
   #  initial_V = 0.0
   #  #scale_factors = '1 1e-1 1e-2'
   #  display_pps = true
@@ -345,7 +315,7 @@
 	#name_of_liquidvolume = 'pool1'
 	#initial_P = 1e5
 	#initial_Vol = 15.0
-	#initial_T = 1353
+	#initial_T = 885
   #[../]
   [./p_out]
   	type = PBTDV
@@ -378,10 +348,10 @@
     input = DHX(in)
     execute_on = timestep_end
   [../]
-  [./TCHX_Re]  #Constant rho, constant mu
+  [./TCHX_Re]
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
-    scale_factor = 229.2353
+    scale_factor = 13.05379
     execute_on = timestep_end
   [../]
   [./TCHX_umin]
@@ -400,53 +370,15 @@
     type = ComponentBoundaryVariableValue
     input = DHX(out)
     variable = temperature
-    scale_factor = 3.101e11 #(p^2)Bg(H^3)/(u^2)
+    scale_factor = 1.972e10
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
     input = DHX(in)
     variable = temperature
-    scale_factor = 3.101e11 #(p^2)Bg(H^3)/(u^2)
+    scale_factor = 1.972e10
     execute_on = timestep_end
-  [../]
-  [./DHX_Gr3]
-    type = ComponentBoundaryVariableValue
-    input = DHX(out)
-    variable = temperature
-    scale_factor = 9.481e4 #Bg(H^3)/(u^2)
-    execute_on = timestep_end
-  [../]
-  [./DHX_Gr4]
-    type = ComponentBoundaryVariableValue
-    input = DHX(in)
-    variable = temperature
-    scale_factor = 9.481e4 #Bg(H^3)/(u^2)
-    execute_on = timestep_end
-  [../]
-  [./DHX_Gr5]
-    type = ComponentBoundaryVariableValue
-    input = DHX(out)
-    variable = temperature
-    scale_factor = 2.159e8 #(dp/dT)g(H^3)/(u^2)
-    execute_on = timestep_end
-  [../]
-  [./DHX_Gr6]
-    type = ComponentBoundaryVariableValue
-    input = DHX(in)
-    variable = temperature
-    scale_factor = 2.159e8 #(dp/dT)g(H^3)/(u^2)
-    execute_on = timestep_end
-  [../]
-  [./DHXRhoTop]
-    type = ComponentBoundaryVariableValue
-    input = 'DHX(out)'
-    variable = 'rho'
-  [../]
-  [./DHXRhoBot]
-    type = ComponentBoundaryVariableValue
-    input = 'DHX(in)'
-    variable = 'rho'
   [../]
   [./rho1]
     type = ElementIntegralVariablePostprocessor
@@ -472,42 +404,17 @@
     variable = 'rho'
     execute_on = timestep_end
   [../]
-  [./DHX_GrAlt] #DHX integral rho, constant mu
-    type = FunctionValuePostprocessor
-    function = Gr_alt
-    execute_on = timestep_end
-  [../]
-  [./DHX_GrBoundary]
-    type = FunctionValuePostprocessor
-    function = Gr_boundary
-    execute_on = timestep_end
-  [../]
-  [./DHX_GrLoop1] #DHX integral rho, improved Beta, constant mu
-    type = FunctionValuePostprocessor
-    function = Gr_loop1
-    execute_on = timestep_end
-  [../]
-  [./DHX_GrLoop2] #DHX integral rho, improved Beta, constant mu
-    type = FunctionValuePostprocessor
-    function = Gr_loop2
-    execute_on = timestep_end
-  [../]
   [./DHX_GrLoop3] #DHX integral rho, nonBeta nonT form, constant mu
     type = FunctionValuePostprocessor
     function = Gr_loop3
     execute_on = timestep_end
   [../]
-  [./DHX_GrLoop4] #DHX integral rho, nonBeta nonT form, constant mu, mod 2nd rho
+  [./DHX_GrLoop5] #DHX integral rho, nonBeta nonT form, constant mu
     type = FunctionValuePostprocessor
-    function = Gr_loop4
+    function = Gr_loop5
     execute_on = timestep_end
   [../]
-  [./DHX_GrBound2] #Alternate T-dep Beta in calculation
-    type = FunctionValuePostprocessor
-    function = Gr_bound2
-    execute_on = timestep_end
-  [../]
-  [./DHX_Gr] #Constant rho, constant mu
+  [./DHX_Gr]
     type = DifferencePostprocessor
     value1 = DHX_Gr1
     value2 = DHX_Gr2
@@ -515,7 +422,7 @@
   [../]
   [./TCHX_q]
     type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 8.012946 #64.10357
+    heated_perimeter = 32.05178 #64.10357
     block = 'TCHX:primary_pipe'
     execute_on = timestep_end
   [../]
@@ -574,7 +481,7 @@
   [./Residence]
     type = InverseLinearCombinationPostprocessor
     pp_names = 'v1   v0  v2   v3   v6 v4'
-    pp_coefs = '4.52 2.5 3.48 5.01 24 3.48'
+    pp_coefs = '4.52 2.5 3.48 5.01 6  3.48'
     b = 0.0
     execute_on = timestep_end
   [../]
@@ -625,7 +532,7 @@
 
   start_time = 0.0
   num_steps = 10000
-  end_time = 6000
+  end_time = 2000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -638,7 +545,6 @@
 
 [Problem]
   #restart_file_base = 'ncdracs5Kt_out_cp/1007'
-  restart_file_base = 'ncdracs5Ks_out_cp/3858'
 []
 
 [Outputs]

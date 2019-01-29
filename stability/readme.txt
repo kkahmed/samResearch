@@ -71,12 +71,13 @@ ncdracs5K.i -------------------------------
 Shallow TCHX, heated pipe, constant properties,
 q=19019791 Re=1833 Gr=7.09e13 Gr=1.50e14 (boundary)
 5Ks: Stable, starts at uniform temp (file specified IC)
+5Ks_v2: Modified with new Gr for Journal paper
 5Kt1: Creates artificial normal Re high Gr case using K factors
 5Kt2: Uses 5Kt1 to restart a return to normal conditions transient - stable
 5Kt3: Creates artificial normal Re high Gr case using K factors
 5Kt4: Uses 5Kt3 to restart a perturbation transient, same K factors - stable
 5Kt5: Creates artificial normal Re high Gr case using pump loss, GrALT
-5Kt6: Unused
+5Kt6: 5Kt5 then returns below boundary to 5Kt7 level
 5Kt7: Creates artificial normal Re moderate Gr case using pump loss, GrALT
 5Ku: Attempted to start at higher temps from s, not effective
 

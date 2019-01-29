@@ -74,13 +74,13 @@
   #[../]
   [./Q_perturb2]
     type = PiecewiseLinear
-    x = '2000     3000     1e5' #For restart from 5Ks
-    y = '19019791 34019791 34019791'
+    x = '2000     3000     5000     6000     1e5' #For restart from 5Ks
+    y = '19019791 49019791 49019791 34019791 34019791'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '2000  3000  1e5' #For restart from 5Ks
-    y = '0.0   -1850 -1850' #y = '0.0   0.0   0.0'
+    x = '2000  3000  5000  6000  1e5' #For restart from 5Ks
+    y = '0.0   -3550 -3550 -1850 -1850' #y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -378,7 +378,7 @@
     input = DHX(in)
     execute_on = timestep_end
   [../]
-  [./TCHX_Re]  #Constant rho, constant mu
+  [./TCHX_Re] #Constant rho, constant mu
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
     scale_factor = 229.2353
@@ -624,8 +624,8 @@
   nl_max_its = 100
 
   start_time = 0.0
-  num_steps = 10000
-  end_time = 6000
+  num_steps = 12000
+  end_time = 8000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve

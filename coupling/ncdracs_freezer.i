@@ -45,6 +45,30 @@
     x = '0   100'
     y = '862 862'
   [../]
+  [./ftleft]
+    type = ParsedFunction
+    vals = 'from_master_Tbc_in'
+    vars = 'tleft'
+    value = tleft
+  [../]
+  [./fvleft]
+    type = ParsedFunction
+    vals = 'from_master_vbc_in inletr'
+    vars = 'vleft radiusi'
+    value = vleft*0.01767146*0.000025/((0.07854)*(radiusi^2))
+  [../]
+  [./fvright]
+    type = ParsedFunction
+    vals = 'outletvRAW outletr'
+    vars = 'vright radiusi'
+    value = vright*0.07854*(radiusi^2)/((0.01767146)*0.000025)
+  [../]
+  [./fpright]
+    type = ParsedFunction
+    vals = from_master_pbc_out
+    vars = 'pright'
+    value = pright
+  [../]
 []
 
 [Variables]
@@ -107,7 +131,7 @@
 
 [AuxVariables]
   [./rho]
-    order = FIRST
+    order = CONSTANT
     family = MONOMIAL
     initial_condition = 2279.92
   [../]
@@ -167,13 +191,6 @@
     Tfluid = temp_l
     h_int = 1000
   [../]
-  [./density]
-    type = DensityAux
-    variable = rho
-    pressure = pressure
-    temperature = temp_l
-    eos = eos
-  [../]
 []
 
 [Kernels]
@@ -198,7 +215,7 @@
     eos = eos
     element_length = 0.025
     Ax = 0.07854
-    gx = -9.81
+    gx = 9.81
     dh = 0.01
   [../]
 
@@ -223,7 +240,7 @@
     eos = eos
     element_length = 0.025
     Ax = 0.07854
-    gx = -9.81
+    gx = 9.81
     dh = 0.01
   [../]
 
@@ -306,24 +323,24 @@
   #[../]
 
   [./vleft]
-    type = DirichletBC
+    type = FunctionDirichletBC
     variable = velocity
     boundary = left
-    value = 0.1
+    function = fvleft #0.1
   [../]
 
   [./pright]
-    type = DirichletBC
+    type = PostprocessorDirichletBC
     variable = pressure
     boundary = right
-    value = 1e5
+    postprocessor = from_master_pbc_out #1e5
   [../]
 
   [./Tleft]
-    type = DirichletBC
+    type = PostprocessorDirichletBC
     variable = temp_l
     boundary = left
-    value = 862
+    postprocessor = from_master_Tbc_in #862
   [../]
 
   [./vbottom]
@@ -335,7 +352,8 @@
     pressure = pressure
     eos = eos
     boundary = left
-    v_fn = v_in
+    v_fn = fvleft
+    #v_fn = v_in
   [../]
 
   [./vtop]
@@ -347,7 +365,8 @@
     pressure = pressure
     eos = eos
     boundary = right
-    p_fn = p_out
+    p_fn = fpright
+    #p_fn = p_out
   [../]
 
   [./pbottom]
@@ -358,7 +377,8 @@
     temperature = temp_l
     velocity = velocity
     eos = eos
-    v_fn = v_in
+    v_fn = fvleft
+    #v_fn = v_in
     alphas = alphas
     boundary = left
   [../]
@@ -385,8 +405,10 @@
     pressure = pressure
     alphas = alphas
     eos = eos
-    v_fn = v_in
-    T_fn = T_in
+    v_fn = fvleft #
+    #v_fn = v_in
+    T_fn = ftleft #
+    #T_fn = T_in
     boundary = left
   [../]
 
@@ -400,6 +422,60 @@
     alphas = alphas
     eos = eos
     boundary = right
+  [../]
+[]
+
+[Postprocessors]
+  [./from_master_vbc_in]
+    type = Receiver
+    default = 0.1
+  [../]
+  [./from_master_Tbc_in]
+    type = Receiver
+    default = 828.15
+  [../]
+  [./from_master_pbc_out]
+    type = Receiver
+    default = 1.45e5
+  [../]
+  [./from_master_Tbc_out]
+    type = Receiver
+    default = 728.15
+  [../]
+  [./outletvRAW]
+    type = PointValue
+    variable = velocity
+    point = '2.5 0 0'
+  [../]
+  [./outletv]
+    type = FunctionValuePostprocessor
+    function = fvright
+    execute_on = 'timestep_end'
+  [../]
+  [./inlett]
+    type = PointValue
+    variable = temp_l
+    point = '0 0 0'
+  [../]
+  [./outlett]
+    type = PointValue
+    variable = temp_l
+    point = '2.5 0 0'
+  [../]
+  [./inletp]
+    type = PointValue
+    variable = pressure
+    point = '0 0 0'
+  [../]
+  [./inletr]
+    type = PointValue
+    variable = radius_i
+    point = '0 0 0'
+  [../]
+  [./outletr]
+    type = PointValue
+    variable = radius_i
+    point = '2.5 0 0'
   [../]
 []
 
@@ -418,7 +494,7 @@
 [Executioner]
   type = Transient                    # This is a transient simulation
 
-  dt = 0.1                           # Targeted time step size
+  #dt = 0.1                           # Targeted time step size
   dtmin = 1e-3                        # The allowed minimum time step size
   [./TimeStepper]
     type = FunctionDT

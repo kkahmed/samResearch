@@ -21,13 +21,19 @@
   [./f_rate]
     type = PiecewiseLinear
     x = '0   10  11   50   51  100'
-    y = '0.0 0.0 0.15 0.15 0.0 0.0'
+    y = '0.0 0.0 0.015 0.015 0.0 0.0'
   [../]
   [./f_axial]
     type = PiecewiseLinear
     axis = x
     x = '0   0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
     y = '0.0 13  25  35  42  48  52  55  57  58  58'
+  [../]
+  [./heat_out]
+    type = PiecewiseLinear
+    axis = x
+    x = '0   1.0'
+    y = '-1.3e6 -1.3e6'
   [../]
 []
 
@@ -100,6 +106,11 @@
     family = MONOMIAL
     initial_condition = 1.0
   [../]
+  [./radius_i]
+    order = FIRST
+    family = MONOMIAL
+    initial_condition = 0.0047434
+  [../]
   #[./pressure]
   #  order = CONSTANT
   #  family = MONOMIAL
@@ -113,6 +124,11 @@
     variable = freezing
     f_rate = f_rate
     f_axial = f_axial
+    alphas = alphaliq
+    temperature = temperature
+    radius = radius_i
+    heat_ext = heat_out
+    h_int = 10000
   [../]
   [./liquid_frac]
     type = AlphalAux
@@ -143,7 +159,7 @@
     eos = eos
     element_length = 0.01
     Ax = 0.07854
-    gx = -10
+    gx = -9.81
     dh = 0.01
   [../]
 
@@ -168,7 +184,7 @@
     eos = eos
     element_length = 0.01
     Ax = 0.07854
-    gx = -10
+    gx = -9.81
     dh = 0.01
   [../]
 

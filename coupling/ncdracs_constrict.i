@@ -11,24 +11,24 @@
   [./v_in]
     type = PiecewiseLinear
     x = '0   100'
-    y = '0.1 0.1'
+    y = '0.2 0.2'
   [../]
   [./p_out]
     type = PiecewiseLinear
     x = '0   100'
     y = '1e5 1e5'
   [../]
-  #[./f_rate]
-  #  type = PiecewiseLinear
-  #  x = '0   10  11   50   51  100'
-  #  y = '0.0 0.0 0.15 0.15 0.0 0.0'
-  #[../]
-  #[./f_axial]
-  #  type = PiecewiseLinear
-  #  axis = x
-  #  x = '0   0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
-  #  y = '0.0 13  25  35  42  48  52  55  57  58  58'
-  #[../]
+  [./f_rate]
+    type = PiecewiseLinear
+    x = '0   10  11   50   51  100'
+    y = '0.0 0.0 0.015 0.015 0.0 0.0'
+  [../]
+  [./f_axial]
+    type = PiecewiseLinear
+    axis = x
+    x = '0   0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0'
+    y = '0.0 13  25  35  42  48  52  55  57  58  58'
+  [../]
   [./time_stepper_sub]
     type = PiecewiseLinear
     x = '0.0  50   51  1e5'
@@ -40,10 +40,29 @@
     x = '0   2.5'
     y = '-1.2e6 -8.0e5'
   [../]
-  [./T_in]
-    type = PiecewiseLinear
-    x = '0   100'
-    y = '862 862'
+  [./ftleft]
+    type = ParsedFunction
+    vals = 'from_master_Tbc_in'
+    vars = 'tleft'
+    value = tleft
+  [../]
+  [./fvleft]
+    type = ParsedFunction
+    vals = 'from_master_vbc_in inletr'
+    vars = 'vleft radiusi'
+    value = vleft*0.01767146*0.000025/((0.07854)*(radiusi^2))
+  [../]
+  [./fvright]
+    type = ParsedFunction
+    vals = 'outletvRAW outletr'
+    vars = 'vright radiusi'
+    value = vright*0.07854*(radiusi^2)/((0.01767146)*0.000025)
+  [../]
+  [./fpright]
+    type = ParsedFunction
+    vals = from_master_pbc_out
+    vars = 'pright'
+    value = pright
   [../]
 []
 
@@ -53,21 +72,11 @@
   [../]
 
   [./alphas]
-    initial_condition = 0.1
+    initial_condition = 0
   [../]
 
   [./velocity]
     initial_condition = 0.2
-    #order = SECOND
-  [../]
-
-  [./temp_l]
-    initial_condition = 802
-    #order = SECOND
-  [../]
-
-  [./temp_s]
-    initial_condition = 732
     #order = SECOND
   [../]
 []
@@ -107,16 +116,16 @@
 
 [AuxVariables]
   [./rho]
-    order = FIRST
+    order = CONSTANT
     family = MONOMIAL
     initial_condition = 2279.92
   [../]
-  [./freezing]
-    order = FIRST
+  [./temperature]
+    order = CONSTANT
     family = MONOMIAL
-    initial_condition = 0.0
+    initial_condition = 973.15
   [../]
-  [./freezing_heatflux]
+  [./freezing]
     order = FIRST
     family = MONOMIAL
     initial_condition = 0.0
@@ -124,7 +133,7 @@
   [./alphaliq]
     order = FIRST
     family = MONOMIAL
-    initial_condition = 0.9
+    initial_condition = 1.0
   [../]
   [./radius_i]
     order = FIRST
@@ -142,13 +151,13 @@
   [./freeze_rate]
     type = FreezingAux
     variable = freezing
-    alphas = alphas
-    temperature = temp_l
+    f_rate = f_rate
+    f_axial = f_axial
+    alphas = alphaliq
+    temperature = temperature
     radius = radius_i
     heat_ext = heat_out
     h_int = 10000
-    #f_rate = f_rate
-    #f_axial = f_axial
   [../]
   [./liquid_frac]
     type = AlphalAux
@@ -161,17 +170,11 @@
     alphas = alphas
     Rt = 0.005
   [../]
-  [./heat_int]
-    type = FreezingHeatFluxAux
-    variable = freezing_heatflux
-    Tfluid = temp_l
-    h_int = 1000
-  [../]
   [./density]
     type = DensityAux
     variable = rho
     pressure = pressure
-    temperature = temp_l
+    temperature = temperature
     eos = eos
   [../]
 []
@@ -181,7 +184,7 @@
     type = FluidVelocityAlphaTimeDerivative
     variable = velocity
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     alphas = alphas
     pressure = pressure
     eos = eos
@@ -191,14 +194,14 @@
     type = OneDFluidVelocityAlpha
     variable = velocity
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     alphas = alphas
     freezing = freezing
     pressure = pressure
     eos = eos
-    element_length = 0.025
+    element_length = 0.01
     Ax = 0.07854
-    gx = -9.81
+    gx = 0.0
     dh = 0.01
   [../]
 
@@ -206,7 +209,7 @@
     type = FluidPressureAlphaTimeDerivative
     variable = pressure
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     alphas = alphas
     eos = eos
   [../]
@@ -217,13 +220,13 @@
     variable = pressure
     velocity = velocity
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     alphas = alphas
     freezing = freezing
     eos = eos
-    element_length = 0.025
+    element_length = 0.01
     Ax = 0.07854
-    gx = -9.81
+    gx = 0.0
     dh = 0.01
   [../]
 
@@ -233,43 +236,6 @@
     freezing = freezing
     eos = frozen
     Ax = 0.07854
-  [../]
-
-  [./temp_solid]
-    type = SolidTemperatureAlphaTimeDerivative
-    variable = temp_s
-    freezing = freezing
-    alphas = alphas
-    radius = radius_i
-    heatflux = freezing_heatflux
-    heat_ext = heat_out
-    eos = frozen
-    Ax = 0.07854
-  [../]
-
-  [./temp_dot]
-    type = FluidTemperatureAlphaTimeDerivative
-    variable = temp_l
-    rho = rho
-    pressure = pressure
-    alphas = alphas
-    eos = eos
-    Ax = 0.07854
-  [../]
-
-  [./temp_liquid]
-    type = OneDFluidTemperatureAlpha
-    variable = temp_l
-    velocity = velocity
-    rho = rho
-    pressure = pressure
-    alphas = alphas
-    freezing = freezing
-    radius = radius_i
-    heatflux = freezing_heatflux
-    eos = eos
-    Ax = 0.07854
-    element_length = 0.025
   [../]
 
   #[./diff]
@@ -306,48 +272,51 @@
   #[../]
 
   [./vleft]
-    type = DirichletBC
+    #type = DirichletBC
+    #variable = velocity
+    #boundary = left
+    #value = 0.2
+    type = FunctionDirichletBC
     variable = velocity
     boundary = left
-    value = 0.1
+    function = fvleft #0.1
   [../]
 
   [./pright]
-    type = DirichletBC
+    #type = DirichletBC
+    #variable = pressure
+    #boundary = right
+    #value = 1e5
+    type = PostprocessorDirichletBC
     variable = pressure
     boundary = right
-    value = 1e5
-  [../]
-
-  [./Tleft]
-    type = DirichletBC
-    variable = temp_l
-    boundary = left
-    value = 862
+    postprocessor = from_master_pbc_out #1e5
   [../]
 
   [./vbottom]
     type = OneDFluidVelocityAlphaBC
     variable = velocity
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     alphas = alphas
     pressure = pressure
     eos = eos
     boundary = left
-    v_fn = v_in
+    #v_fn = v_in
+    v_fn = fvleft
   [../]
 
   [./vtop]
     type = OneDFluidVelocityAlphaBC
     variable = velocity
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     alphas = alphas
     pressure = pressure
     eos = eos
     boundary = right
-    p_fn = p_out
+    #p_fn = p_out
+    p_fn = fpright
   [../]
 
   [./pbottom]
@@ -355,10 +324,11 @@
     type = OneDFluidPressureAlphaBC
     variable = pressure
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     velocity = velocity
     eos = eos
-    v_fn = v_in
+    #v_fn = v_in
+    v_fn = fvleft
     alphas = alphas
     boundary = left
   [../]
@@ -368,38 +338,66 @@
     type = OneDFluidPressureAlphaBC
     variable = pressure
     rho = rho
-    temperature = temp_l
+    temperature = temperature
     velocity = velocity
     eos = eos
     #p_fn = p_out
     alphas = alphas
     boundary = right
   [../]
+[]
 
-  [./tbottom]
-    #type = OneDFluidContinuityAlphaBC
-    type = OneDFluidTemperatureAlphaBC
-    variable = temp_l
-    rho = rho
-    velocity = velocity
-    pressure = pressure
-    alphas = alphas
-    eos = eos
-    v_fn = v_in
-    T_fn = T_in
-    boundary = left
+[Postprocessors]
+  [./from_master_vbc_in]
+    type = Receiver
+    default = 0.1
   [../]
-
-  [./ttop]
-    #type = OneDFluidContinuityAlphaBC
-    type = OneDFluidTemperatureAlphaBC
-    variable = temp_l
-    rho = rho
-    velocity = velocity
-    pressure = pressure
-    alphas = alphas
-    eos = eos
-    boundary = right
+  [./from_master_Tbc_in]
+    type = Receiver
+    default = 828.15
+  [../]
+  [./from_master_pbc_out]
+    type = Receiver
+    default = 1.45e5
+  [../]
+  [./from_master_Tbc_out]
+    type = Receiver
+    default = 728.15
+  [../]
+  [./outletvRAW]
+    type = PointValue
+    variable = velocity
+    point = '2.5 0 0'
+  [../]
+  [./outletv]
+    type = FunctionValuePostprocessor
+    function = fvright
+    execute_on = 'timestep_end'
+  [../]
+  [./inlett]
+    type = PointValue
+    variable = temperature
+    point = '0 0 0'
+  [../]
+  [./outlett]
+    type = PointValue
+    variable = temperature
+    point = '2.5 0 0'
+  [../]
+  [./inletp]
+    type = PointValue
+    variable = pressure
+    point = '0 0 0'
+  [../]
+  [./inletr]
+    type = PointValue
+    variable = radius_i
+    point = '0 0 0'
+  [../]
+  [./outletr]
+    type = PointValue
+    variable = radius_i
+    point = '2.5 0 0'
   [../]
 []
 
@@ -419,12 +417,7 @@
   type = Transient                    # This is a transient simulation
 
   dt = 0.1                           # Targeted time step size
-  dtmin = 1e-3                        # The allowed minimum time step size
-  [./TimeStepper]
-    type = FunctionDT
-    function = time_stepper_sub
-    min_dt = 1e-3
-  [../]
+  dtmin = 1e-5                        # The allowed minimum time step size
 
   petsc_options_iname = '-ksp_gmres_restart'  # Additional PETSc settings, name list
   petsc_options_value = '100'                 # Additional PETSc settings, value list
@@ -437,8 +430,8 @@
   l_max_its = 100                     # Number of linear iterations for each Krylov solve
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
-  num_steps = 10000                    # Max. simulation time steps
-  end_time = 2000.0                     # Max. physical time at the end of the simulation
+  num_steps = 1000                    # Max. simulation time steps
+  end_time = 100.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]

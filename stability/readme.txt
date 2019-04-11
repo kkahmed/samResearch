@@ -71,6 +71,7 @@ ncdracs5K.i -------------------------------
 Shallow TCHX, heated pipe, constant properties,
 q=19019791 Re=1833 Gr=7.09e13 Gr=1.50e14 (boundary)
 5Ks: Stable, starts at uniform temp (file specified IC)
+5Ksb: Mesh refinement
 5Ks_v2: Modified with new Gr for Journal paper
 5Kt1: Creates artificial normal Re high Gr case using K factors
 5Kt2: Uses 5Kt1 to restart a return to normal conditions transient - stable
@@ -78,6 +79,8 @@ q=19019791 Re=1833 Gr=7.09e13 Gr=1.50e14 (boundary)
 5Kt4: Uses 5Kt3 to restart a perturbation transient, same K factors - stable
 5Kt5: Creates artificial normal Re high Gr case using pump loss, GrALT
 5Kt6: 5Kt5 then returns below boundary to 5Kt7 level
+5Kt6a: Finer time step
+5Kt6b: Mesh refinement
 5Kt7: Creates artificial normal Re moderate Gr case using pump loss, GrALT
 5Ku: Attempted to start at higher temps from s, not effective
 
@@ -95,10 +98,13 @@ q=10280968 Re=128 Gr=1.98e12 Gr=3.52e12 (boundary)
 6Ct8: Unused
 6Ct9: Creates artificial normal Re boundary Gr case using pump loss
 6Cu: Stable, starts at uniform temp (file specified IC)
+6Cub: Mesh refinement (not running yet)
 6Cu5: 6Ct5 but split pump, matches exactly
 6Cu6: Unused
 6Cu7: 6Ct7 but split pump, matches exactly
 6Cv5: 6Cu5 but aims left on Gr vs Re to go unstable, GrALT
+6Cv5a: Finer time step
+6Cv5b: Mesh refinement (not running yet)
 6Cv6: 6CvX but aims up-right on Gr vs Re to go (unstable?), GrALT
 6Cv7: 6Cu7 but aims right to Gr vs Re stay stable, GrALT
 

@@ -21,7 +21,7 @@
   [./f_rate]
     type = PiecewiseLinear
     x = '0   10  11   50   51  100'
-    y = '0.0 0.0 0.015 0.015 0.0 0.0'
+    y = '0.0 0.0 0.000 0.000 0.0 0.0' #y = '0.0 0.0 0.015 0.015 0.0 0.0'
   [../]
   [./f_axial]
     type = PiecewiseLinear
@@ -79,6 +79,10 @@
     initial_condition = 0.2
     #order = SECOND
   [../]
+
+  [./temperature]
+    initial_condition = 823.15
+  [../]
 []
 
 [UserObjects]
@@ -120,11 +124,11 @@
     family = MONOMIAL
     initial_condition = 2279.92
   [../]
-  [./temperature]
-    order = CONSTANT
-    family = MONOMIAL
-    initial_condition = 973.15
-  [../]
+  #[./temperature]
+  #  order = CONSTANT
+  #  family = MONOMIAL
+  #  initial_condition = 823.15
+  #[../]
   [./freezing]
     order = FIRST
     family = MONOMIAL
@@ -180,6 +184,31 @@
 []
 
 [Kernels]
+  [./temp_dot]
+    type = FluidTemperatureAlphaTimeDerivative
+    variable = temperature
+    rho = rho
+    pressure = pressure
+    alphas = alphas
+    eos = eos
+    Ax = 0.07854
+  [../]
+
+  [./temp_liquid]
+    type = OneDFluidTemperatureAlpha
+    variable = temperature
+    velocity = velocity
+    rho = rho
+    pressure = pressure
+    alphas = alphas
+    freezing = freezing
+    radius = radius_i
+    heatflux = freezing #freezing_heatflux
+    eos = eos
+    Ax = 0.07854
+    element_length = 0.025
+  [../]
+
   [./velocity_dot]
     type = FluidVelocityAlphaTimeDerivative
     variable = velocity
@@ -199,7 +228,7 @@
     freezing = freezing
     pressure = pressure
     eos = eos
-    element_length = 0.01
+    element_length = 0.025
     Ax = 0.07854
     gx = 0.0
     dh = 0.01
@@ -224,7 +253,7 @@
     alphas = alphas
     freezing = freezing
     eos = eos
-    element_length = 0.01
+    element_length = 0.025
     Ax = 0.07854
     gx = 0.0
     dh = 0.01
@@ -270,6 +299,41 @@
   #  boundary = right
   #  function = a_out
   #[../]
+
+  [./tleft]
+    type = FunctionDirichletBC
+    variable = temperature
+    boundary = left
+    function = ftleft
+  [../]
+
+  [./tbottom]
+    #type = OneDFluidContinuityAlphaBC
+    type = OneDFluidTemperatureAlphaBC
+    variable = temperature
+    rho = rho
+    velocity = velocity
+    pressure = pressure
+    alphas = alphas
+    eos = eos
+    v_fn = fvleft #
+    #v_fn = v_in
+    T_fn = ftleft #
+    #T_fn = T_in
+    boundary = left
+  [../]
+
+  [./ttop]
+    #type = OneDFluidContinuityAlphaBC
+    type = OneDFluidTemperatureAlphaBC
+    variable = temperature
+    rho = rho
+    velocity = velocity
+    pressure = pressure
+    alphas = alphas
+    eos = eos
+    boundary = right
+  [../]
 
   [./vleft]
     #type = DirichletBC
@@ -431,7 +495,7 @@
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
   num_steps = 1000                    # Max. simulation time steps
-  end_time = 100.0                     # Max. physical time at the end of the simulation
+  end_time = 200.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]

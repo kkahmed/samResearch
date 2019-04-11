@@ -56,8 +56,8 @@
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '0 100  1e5' #For restart from 5Ks
-    y = '1500   1500   1500'
+    x = '0   100  1e5' #For restart from 5Ks
+    y = '15  1500  1500'
   [../]
   [./T_perturb]
     type = ParsedFunction
@@ -123,8 +123,9 @@
     #Hw_secondary = 582 #Overall Ux2
 
   	initial_V = -0.0045 #0.23470 #0.104 #0.04855862
-	initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
-	initial_T = 925
+    initial_V_secondary = 0.029349731 #0.0558126 #0.0115474345
+    initial_T = 973
+    initial_T_secondary = 860
 
     HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
     HT_surface_area_density_secondary = 366.9724771
@@ -579,7 +580,7 @@
     positions = '0 4.52 5.98'
     execute_on = timestep_end
     type = TransientMultiApp
-    input_files = ncdracs_constrict.i
+    input_files = ncdracs_freezer.i
   [../]
 []
 

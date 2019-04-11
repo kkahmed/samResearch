@@ -4,7 +4,7 @@
   xmin = 0
   xmax = 2.5
   nx = 100
-  #elem_type = EDGE3
+  elem_type = EDGE3
 []
 
 [Functions]
@@ -38,7 +38,7 @@
     type = PiecewiseLinear
     axis = x
     x = '0   2.5'
-    y = '-1.2e6 -8.0e5'
+    y = '-1.2e4 -8.0e3'
   [../]
   [./T_in]
     type = PiecewiseLinear
@@ -74,24 +74,34 @@
 [Variables]
   [./pressure]
     initial_condition = 1e5
+    order = SECOND
+    family = LAGRANGE
   [../]
 
   [./alphas]
     initial_condition = 0.1
+    order = SECOND
+    family = LAGRANGE
   [../]
 
   [./velocity]
     initial_condition = 0.2
+    order = FIRST
+    family = LAGRANGE
     #order = SECOND
   [../]
 
   [./temp_l]
     initial_condition = 802
+    order = SECOND
+    family = LAGRANGE
     #order = SECOND
   [../]
 
   [./temp_s]
     initial_condition = 732
+    order = SECOND
+    family = LAGRANGE
     #order = SECOND
   [../]
 []
@@ -131,28 +141,28 @@
 
 [AuxVariables]
   [./rho]
-    order = CONSTANT
-    family = MONOMIAL
+    order = SECOND
+    family = LAGRANGE
     initial_condition = 2279.92
   [../]
   [./freezing]
-    order = FIRST
-    family = MONOMIAL
+    order = SECOND
+    family = LAGRANGE
     initial_condition = 0.0
   [../]
   [./freezing_heatflux]
-    order = FIRST
-    family = MONOMIAL
+    order = SECOND
+    family = LAGRANGE
     initial_condition = 0.0
   [../]
   [./alphaliq]
-    order = FIRST
-    family = MONOMIAL
+    order = SECOND
+    family = LAGRANGE
     initial_condition = 0.9
   [../]
   [./radius_i]
-    order = FIRST
-    family = MONOMIAL
+    order = SECOND
+    family = LAGRANGE
     initial_condition = 0.0047434
   [../]
   #[./pressure]
@@ -191,6 +201,13 @@
     Tfluid = temp_l
     h_int = 1000
   [../]
+  [./density]
+    type = DensityAux
+    variable = rho
+    pressure = pressure
+    temperature = temp_l
+    eos = eos
+  [../]
 []
 
 [Kernels]
@@ -215,7 +232,7 @@
     eos = eos
     element_length = 0.025
     Ax = 0.07854
-    gx = 9.81
+    gx = 0.00
     dh = 0.01
   [../]
 
@@ -240,7 +257,7 @@
     eos = eos
     element_length = 0.025
     Ax = 0.07854
-    gx = 9.81
+    gx = 0.00
     dh = 0.01
   [../]
 

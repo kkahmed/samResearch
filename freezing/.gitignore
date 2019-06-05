@@ -2,6 +2,9 @@
 *.e
 *.pvsm
 *.png
+*.pdf
+*.svg
+*.csv
+*.mat
 *.ogv
-*.mp4
 peacock*

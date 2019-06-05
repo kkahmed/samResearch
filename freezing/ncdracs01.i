@@ -1,7 +1,7 @@
 [GlobalParams] #
     global_init_P = 3.0e5
-    global_init_V = 0.278037 #0.06 #0.29
-    global_init_T = 841.7258
+    global_init_V = 0.356535 #0.06 #0.29
+    global_init_T = 834.8076
     Tsolid_sf = 1e-3
 
   [./PBModelParams]
@@ -15,7 +15,7 @@
 
 
 [EOS]
-	active = 'eos eos2 eos3'
+	active = 'eos eos2 eos3 eos4'
   [./eos]
   	type = SaltEquationOfState
   [../]
@@ -35,19 +35,22 @@
   [./eos3] #const salt
     type = PTConstantEOS
     p_0 = 1.0e5    # Pa
-    rho_0 = 2002.455   # kg/m^3
+    rho_0 = 1957.031   # kg/m^3
     #a2 = 1.834e5  # m^2/s^2
     beta = 0.0002143124 # K^{-1}
     cp = 2415.78
     cv =  2415.78
     h_0 = 2.35092e6  # J/kg
-    T_0 = 841.7258      # K
-    mu = 0.00956 #1x
-    k = 1.050488 #1x
+    T_0 = 934.8076      # K
+    mu = 0.006263 #1x
+    k = 1.097029 #1x
+  [../]
+  [./eos4]
+  	type = FrozenEquationOfState
   [../]
 []
 
-[MaterialProperties]
+[Materials]
   [./ss-mat]
     type = SolidMaterialProps
     k = 2000 #20
@@ -75,7 +78,17 @@
   [./Q_perturb2]
     type = PiecewiseLinear
     x = '0        1e5'
-    y = '10280968 10280968'
+    y = '12337162 12337162'
+  [../]
+  [./Q_perturb3]
+    type = PiecewiseLinear
+    x = '0        1e5'
+    y = '-5404168 -5404168'
+  [../]
+  [./Q_perturb4]
+    type = PiecewiseLinear
+    x = '0        1e5'
+    y = '0 0'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
@@ -93,7 +106,7 @@
 [Components]
   [./pipe1]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 4.52 0'
     orientation = '0 -1 0'
 
@@ -105,25 +118,60 @@
     #initial_T = 1129
   [../]
 
+  #[./DHX]
+  #  type = PBOneDFluidComponent
+  #  eos = eos
+  #
+  #  position = '0 0.0 0'
+  #  orientation = '0 0 1'
+  #  A = 0.09182015
+  #  Dh = 0.0109
+  #  roughness = 0.000015
+  #  length = 2.5
+  #  n_elems = 14
+  #
+  #  initial_V = 0.068618 #0.029349731
+  #  heat_source = Q_perturb2
+  #[../]
+
   [./DHX]
-    type = PBOneDFluidComponent
-    eos = eos3
+    type = PBHeatExchanger
+    eos = eos
+    eos_secondary = eos
+    hs_type = cylinder
+    radius_i = 0.00545
 
-    position = '0 0.0 0'
+    position = '0 0 0'
     orientation = '0 0 1'
-    A = 0.09182015
-    Dh = 0.0109
-    roughness = 0.000015
+    A = 0.1112081702
+    Dh = 0.0108544891
+    A_secondary = 0.09182015
+    Dh_secondary = 0.0109
     length = 2.5
-    n_elems = 14
+    n_elems = 12
+    #f = 0.238
+    #f_secondary = 0.045
+    #Hw = 582 #604.98482473 #Overall Ux2
+    #Hw_secondary = 582 #Overall Ux2
 
-    initial_V = 0.05351 #0.029349731
-    heat_source = Q_perturb2
+  	initial_V = -0.0045 #0.23470 #0.104 #0.04855862
+	initial_V_secondary = -0.029349731 #0.0558126 #0.0115474345
+	initial_T = 925
+
+    HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
+    HT_surface_area_density_secondary = 366.9724771
+
+    Twall_init = 900
+    wall_thickness = 0.0009
+
+    dim_wall = 2
+    material_wall = ss-mat
+    n_wall_elems = 12
   [../]
 
   [./pipe2]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 2.5'
     orientation = '0 0 1'
 
@@ -137,7 +185,7 @@
 
   [./pipe3]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 5.98'
     orientation = '0 1 0'
 
@@ -149,48 +197,66 @@
     #initial_T = 1353
   [../]
 
+  #[./TCHX]
+  #  type = PBHeatExchanger
+  #  eos = eos
+  #  eos_secondary = eos2
+  #
+  #  position = '0 4.01 5.98'
+  #  orientation = '5.45435606 0 -2.5'
+  #  orientation_secondary = '0 0 -1'
+  #
+  #  A = 0.0873412
+  #  Dh = 0.0109
+  #  A_secondary = 0.765168
+  #  Dh_secondary = 0.0109
+  #  length = 6
+  #  length_secondary = 2.5 #2.73951413
+  #  n_elems = 12
+  #  #f = 0.238
+  #  f_secondary = 0.045
+  #  Hw = 1.5e5 #Turned this down from e5
+  #  #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
+  #  #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
+  #  #Hw_secondary = 20.6241 #Converges, 100 does not
+  #  Hw_secondary = 25.2 #Tuned to match Mohamed's overall U
+  #
+  #	initial_V = 0.072136 #0.04855862 #0.12341942  #0.23470
+	#initial_V_secondary = -9.21125 #Not scaled to preserve residence time
+	#initial_T_secondary = 374
+  #
+  #  HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
+  #  HT_surface_area_density_secondary = 100.5325 #0.0109*234*4*pi*6/(0.765168*2.5)
+  #
+  #  Twall_init = 800
+  #  wall_thickness = 0.0009
+  #
+  #  dim_wall = 1
+  #  material_wall = ss-mat
+  #  n_wall_elems = 12
+  #[../]
+
   [./TCHX]
-    type = PBHeatExchanger
-    eos = eos3
-    eos_secondary = eos2
+    type = PBOneDFluidComponent
+    eos = eos
+    eos_solid = eos4
+    h_int = 100
 
     position = '0 4.01 5.98'
     orientation = '5.45435606 0 -2.5'
-    orientation_secondary = '0 0 -1'
-
     A = 0.0873412
     Dh = 0.0109
-    A_secondary = 0.765168
-    Dh_secondary = 0.0109
+    roughness = 0.000015
     length = 6
-    length_secondary = 2.5 #2.73951413
-    n_elems = 6
-    #f = 0.238
-    f_secondary = 0.045
-    Hw = 1.5e5 #Turned this down from e5
-    #Hw_secondary = 20.6226325 #22.6 #Overall U, scaled by (2.5/24)*(As/A)
-    #Hw_secondary = 197.977272 #22.6 #Overall U, scaled by (As/A)
-    #Hw_secondary = 20.6241 #Converges, 100 does not
-    Hw_secondary = 26.2 #Tuned to match Mohamed's overall U
+    n_elems = 12
 
-  	initial_V = 0.056254 #0.04855862 #0.12341942  #0.23470
-	initial_V_secondary = -9.21125 #Not scaled to preserve residence time
-	initial_T_secondary = 374
-
-    HT_surface_area_density = 366.97 #0.0109/(0.00545^2)
-    HT_surface_area_density_secondary = 100.5325 #0.0109*234*4*pi*6/(0.765168*2.5)
-
-    Twall_init = 800
-    wall_thickness = 0.0009
-
-    dim_wall = 1
-    material_wall = ss-mat
-    n_wall_elems = 6
+    initial_V = 0.068618 #0.029349731
+    heat_source = Q_perturb3
   [../]
 
   [./pipe4]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 4.52 3.48'
     orientation = '0 0 -1'
 
@@ -205,19 +271,19 @@
   [./Branch1]
     type = PBBranch
     inputs = 'pipe1(out)'
-    outputs = 'DHX(in)'
-    eos = eos3
+    outputs = 'DHX(secondary_out)'
+    eos = eos
     Area = 0.01767146
-    K = '0.0 0.0'
+    K = '1.0 1.0'
   [../]
 
   [./Branch2]
     type = PBBranch
-    inputs = 'DHX(out)'
+    inputs = 'DHX(secondary_in)'
     outputs = 'pipe2(in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
-    K = '0.0 0.0'
+    K = '1.0 1.0'
   [../]
 
 
@@ -231,46 +297,36 @@
     #Area =   0.44934
     Area = 0.01767146
     #initial_P = 9.5e4
-    eos = eos3
+    eos = eos
   [../]
 
   [./Branch4]
     type = PBBranch
     inputs = 'pipe3(out)'
-    outputs = 'TCHX(primary_in)'
-    eos = eos3
+    outputs = 'TCHX(in)'
+    eos = eos
     Area = 0.01767146
-    K = '0.0 0.0'
+    K = '1.0 1.0'
   [../]
 
-  #[./Branch5]
-  #  type = PBBranch
-  #  inputs = 'TCHX(primary_out)'
-  #  outputs = 'pipe4(in)'
-  #  eos = eos3
-  #  Area = 0.01767146
-  #  K = '0.0 0.0'
-  #[../]
-  [./P2]
-    type = PBPump                               # This is a PBPump component
-    eos = eos3
-    inputs = 'TCHX(primary_out)'
+  [./Branch5]
+    type = PBBranch
+    inputs = 'TCHX(out)'
     outputs = 'pipe4(in)'
-    K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
-    Area = 0.01767146                           # Reference pump flow area
-    #initial_P = 1.5e5                           # Initial pressure
-    Head_fn = PumpFN                                  # Pump head, Pa
+    eos = eos
+    Area = 0.01767146
+    K = '1.0 1.0'
   [../]
 
   #[./Branch6]
   #  type = PBSingleJunction
   #  inputs = 'pipe4(out)'
   #  outputs = 'pipe1(in)'
-  #  eos = eos3
+  #  eos = eos
   #[../]
-  [./P1]
+  [./Pump_p]
     type = PBPump                               # This is a PBPump component
-    eos = eos3
+    eos = eos
     inputs = 'pipe4(out)'
     outputs = 'pipe1(in)'
     K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
@@ -281,7 +337,7 @@
 
   [./pipe5]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 5.98'
     orientation = '0 0 1'
 
@@ -305,7 +361,7 @@
   #  #scale_factors = '1 1e-1 1e-2'
   #  display_pps = true
   #  covergas_component = 'cover_gas1'
-  #  eos = eos3
+  #  eos = eos
   #[../]
   #[./cover_gas1]
 	#type = CoverGas
@@ -318,64 +374,64 @@
   [./p_out]
   	type = PBTDV
   	input = 'pipe5(out)'
-    eos = eos3
+    eos = eos
   	p_bc = 1.01e5
   	T_fn = PBTDVTemp
   [../]
 
   [./inlet2]
   	type = PBTDJ
-	input = 'TCHX(secondary_in)'
-    eos = eos2
-	v_bc = -9.21125
-     T_bc = 373 #T_fn = T_perturb
+	input = 'DHX(primary_out)'
+    eos = eos
+	v_bc = -0.0045
+     T_bc = 973 #T_fn = T_perturb
   [../]
 
   [./outlet2]
   	type = PBTDV
-  	input = 'TCHX(secondary_out)'
-    eos = eos2
+  	input = 'DHX(primary_in)'
+    eos = eos
   	p_bc = 1.01e5
-  	T_bc = 383
+  	T_bc = 883
   [../]
 []
 
 [Postprocessors]
   [./DHX_flow]
     type = ComponentBoundaryFlow
-    input = DHX(in)
+    input = DHX(primary_in)
     execute_on = timestep_end
   [../]
   [./TCHX_Re]
     type = ComponentBoundaryFlow
-    input = TCHX(primary_in)
-    scale_factor = 13.05379
+    input = TCHX(in)
+    scale_factor = 19.92709
     execute_on = timestep_end
   [../]
   [./TCHX_umin]
     type = ComponentBoundaryVariableValue
-    input = TCHX(primary_out)
+    input = TCHX(out)
     variable = velocity
     execute_on = timestep_end
   [../]
   [./TCHX_umax]
     type = ComponentBoundaryVariableValue
-    input = TCHX(primary_in)
+    input = TCHX(in)
     variable = velocity
     execute_on = timestep_end
   [../]
   [./DHX_Gr1]
     type = ComponentBoundaryVariableValue
-    input = DHX(out)
+    input = DHX(primary_out)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
-    input = DHX(in)
+    input = DHX(primary_in)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
   [./DHX_Gr]
@@ -384,20 +440,20 @@
     value2 = DHX_Gr2
     execute_on = timestep_end
   [../]
-  [./TCHX_q]
-    type = HeatExchangerHeatRemovalRate
-    heated_perimeter = 32.05178 #64.10357
-    block = 'TCHX:primary_pipe'
-    execute_on = timestep_end
-  [../]
+  #[./TCHX_q]
+  #  type = HeatExchangerHeatRemovalRate
+  #  heated_perimeter = 32.05178 #64.10357
+  #  block = 'TCHX:primary_pipe'
+  #  execute_on = timestep_end
+  #[../]
   [./DHXTubeTop]
     type = ComponentBoundaryVariableValue
-    input = 'DHX(out)'
+    input = 'DHX(primary_out)'
     variable = 'temperature'
   [../]
   [./DHXTubeBot]
     type = ComponentBoundaryVariableValue
-    input = 'DHX(in)'
+    input = 'DHX(primary_in)'
     variable = 'temperature'
   [../]
   [./DHXTubeAvg_K]
@@ -414,7 +470,7 @@
   [../]
   [./v0]
     type = ComponentBoundaryVariableValue
-    input = 'DHX(out)'
+    input = 'DHX(primary_out)'
     variable = 'velocity'
   [../]
   [./v2]
@@ -434,7 +490,7 @@
   [../]
   [./v6]
     type = ComponentBoundaryVariableValue
-    input = 'TCHX(primary_out)'
+    input = 'TCHX(out)'
     variable = 'velocity'
   [../]
   [./v4]

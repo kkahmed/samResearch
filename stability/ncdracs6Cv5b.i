@@ -147,7 +147,7 @@
     A = 0.01767146
     Dh = 0.15
     length = 4.52
-    n_elems = 10
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1129
   [../]
@@ -177,7 +177,7 @@
     A = 0.01767146
     Dh = 0.15
     length = 3.48
-    n_elems = 10
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1353
   [../]
@@ -191,7 +191,7 @@
     A = 0.01767146
     Dh = 0.15
     length = 4.01
-    n_elems = 10
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1353
   [../]
@@ -211,7 +211,7 @@
     Dh_secondary = 0.0109
     length = 6
     length_secondary = 2.5 #2.73951413
-    n_elems = 24
+    n_elems = 6
     #f = 0.238
     f_secondary = 0.045
     Hw = 1.5e5 #Turned this down from e5
@@ -232,7 +232,7 @@
 
     dim_wall = 1
     material_wall = ss-mat
-    n_wall_elems = 24
+    n_wall_elems = 6
   [../]
 
   [./pipe4]
@@ -244,7 +244,7 @@
     A = 0.01767146
     Dh = 0.15
     length = 3.48
-    n_elems = 10
+    n_elems = 5
     #f = 0.03903
     #initial_T = 1129
   [../]
@@ -652,7 +652,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Cub_out_cp/3868'
+  restart_file_base = 'ncdracs6Cub_out_cp/3862'
 []
 
 [Outputs]

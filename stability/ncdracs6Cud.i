@@ -164,7 +164,7 @@
     Dh_secondary = 0.0109
     length = 6
     length_secondary = 2.5 #2.73951413
-    n_elems = 6
+    n_elems = 9
     #f = 0.238
     f_secondary = 0.045
     Hw = 1.5e5 #Turned this down from e5
@@ -185,7 +185,7 @@
 
     dim_wall = 1
     material_wall = ss-mat
-    n_wall_elems = 6
+    n_wall_elems = 9
   [../]
 
   [./pipe4]

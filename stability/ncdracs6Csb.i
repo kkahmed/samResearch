@@ -243,23 +243,13 @@
     K = '0.0 0.0'
   [../]
 
-  #[./Branch5]
-  #  type = PBBranch
-  #  inputs = 'TCHX(primary_out)'
-  #  outputs = 'pipe4(in)'
-  #  eos = eos3
-  #  Area = 0.01767146
-  #  K = '0.0 0.0'
-  #[../]
-  [./P2]
-    type = PBPump                               # This is a PBPump component
-    eos = eos3
+  [./Branch5]
+    type = PBBranch
     inputs = 'TCHX(primary_out)'
     outputs = 'pipe4(in)'
-    K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
-    Area = 0.01767146                           # Reference pump flow area
-    #initial_P = 1.5e5                           # Initial pressure
-    Head_fn = PumpFN                                  # Pump head, Pa
+    eos = eos3
+    Area = 0.01767146
+    K = '0.0 0.0'
   [../]
 
   #[./Branch6]
@@ -268,7 +258,7 @@
   #  outputs = 'pipe1(in)'
   #  eos = eos3
   #[../]
-  [./P1]
+  [./Pump_p]
     type = PBPump                               # This is a PBPump component
     eos = eos3
     inputs = 'pipe4(out)'

@@ -7,5 +7,7 @@
 *.csv
 *.mat
 *.ogv
+*.mp4
+*.wmv
 *.docx
 peacock*

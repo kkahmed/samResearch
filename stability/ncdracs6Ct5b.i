@@ -72,21 +72,68 @@
   #  x = '0        35       40     50     55       60       70       75       1000'
   #  y = '19019791 19019791 519791 519791 19019791 39019791 39019791 19019791 19019791'
   #[../]
+  #[./Q_perturb2]
+  #  type = PiecewiseLinear
+  #  x = '0        1e5'
+  #  y = '30280968 30280968'
+  #[../]
   [./Q_perturb2]
     type = PiecewiseLinear
-    x = '0        1e5'
-    y = '10280968 10280968'
+    x = '2000     3000     1e5' #For restart from 6Cs
+    y = '10280968 30280968 30280968'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '1000  2000  1e5' #For restart from 5Ks
-    y = '0.0   0.0   0.0'
+    x = '2000  3000  1e5' #For restart from 5Ks
+    y = '0.0   -2400  -2400' #y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
     vals = 'pipe5out'
     vars = 'poolTemp'
     value = poolTemp
+  [../]
+  [./Gr_alt]
+    type = ParsedFunction
+    vals = 'DHXRhoTop DHXRhoBot DHX_Gr3 DHX_Gr4'
+    vars = 'p1 p2 Gr3 Gr4'
+    value = (Gr3-Gr4)*((1/3)*(p1-p2)^2+(p1*p2))
+  [../]
+  [./Gr_loop1]
+    type = ParsedFunction
+    vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
+    vars = 'p1 p2 Gr5 Gr6'
+    value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/((p1+p2)/2)
+  [../]
+  [./Gr_loop2]
+    type = ParsedFunction
+    vals = 'DHXRhoTop DHXRhoBot DHX_Gr5 DHX_Gr6'
+    vars = 'p1 p2 Gr5 Gr6'
+    value = (Gr5-Gr6)*((1/3)*(p1-p2)^2+(p1*p2))/(p2)
+  [../]
+  [./Gr_loop3]
+    type = ParsedFunction
+    vals = 'rho1 rho2 rho3 rho4'
+    vars = 'p1 p2 p3 p4'
+    value = (7.686e9)*((5/12)*p3+p4-p2-p1)
+  [../]
+  [./Gr_loop4]
+    type = ParsedFunction
+    vals = 'rho1 rho2 rho3 rho4 DHXRhoTop DHXRhoBot'
+    vars = 'p1 p2 p3 p4 p5 p6'
+    value = (3.838e6)*((5/12)*p3+p4-p2-p1)*((p5+p6)/2)
+  [../]
+  [./Gr_boundary]
+    type = ParsedFunction
+    vals = 'TCHX_Re'
+    vars = 'Re'
+    value = (if(Re<=128.432,1,0))*(Re*2.850e10-1.374e11)+(if(Re<138.797,1,0))*(if(Re>128.432,1,0))*(Re*3.560e10-1.049e12)+(if(Re>=138.797,1,0))*(Re*4.272e10-2.037e12)
+  [../]
+  [./Gr_bound2]
+    type = ParsedFunction
+    vals = 'TCHX_Re'
+    vars = 'Re'
+    value = (3.48/5.98)*((if(Re<=128.432,1,0))*(Re*3.321e10-2.532e11)+(if(Re<138.797,1,0))*(if(Re>128.432,1,0))*(Re*4.160e10-1.331e12)+(if(Re>=138.797,1,0))*(Re*4.992e10-2.486e12))
   [../]
 []
 
@@ -208,7 +255,7 @@
     outputs = 'DHX(in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0'
+    K = '0.0 0.0' #K = '6.2 6.2'
   [../]
 
   [./Branch2]
@@ -217,7 +264,7 @@
     outputs = 'pipe2(in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0'
+    K = '0.0 0.0' #K = '6.2 6.2'
   [../]
 
 
@@ -240,26 +287,16 @@
     outputs = 'TCHX(primary_in)'
     eos = eos3
     Area = 0.01767146
-    K = '0.0 0.0'
+    K = '0.0 0.0' #K = '6.2 6.2'
   [../]
 
-  #[./Branch5]
-  #  type = PBBranch
-  #  inputs = 'TCHX(primary_out)'
-  #  outputs = 'pipe4(in)'
-  #  eos = eos3
-  #  Area = 0.01767146
-  #  K = '0.0 0.0'
-  #[../]
-  [./P2]
-    type = PBPump                               # This is a PBPump component
-    eos = eos3
+  [./Branch5]
+    type = PBBranch
     inputs = 'TCHX(primary_out)'
     outputs = 'pipe4(in)'
-    K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
-    Area = 0.01767146                           # Reference pump flow area
-    #initial_P = 1.5e5                           # Initial pressure
-    Head_fn = PumpFN                                  # Pump head, Pa
+    eos = eos3
+    Area = 0.01767146
+    K = '0.0 0.0' #K = '6.2 6.2'
   [../]
 
   #[./Branch6]
@@ -268,7 +305,7 @@
   #  outputs = 'pipe1(in)'
   #  eos = eos3
   #[../]
-  [./P1]
+  [./Pump_p]
     type = PBPump                               # This is a PBPump component
     eos = eos3
     inputs = 'pipe4(out)'
@@ -346,7 +383,7 @@
     input = DHX(in)
     execute_on = timestep_end
   [../]
-  [./TCHX_Re]
+  [./TCHX_Re] #Constant rho, constant mu
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
     scale_factor = 13.05379
@@ -368,17 +405,114 @@
     type = ComponentBoundaryVariableValue
     input = DHX(out)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 1.972e10 #(p^2)Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
     input = DHX(in)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 1.972e10 #(p^2)Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
-  [./DHX_Gr]
+  [./DHX_Gr3]
+    type = ComponentBoundaryVariableValue
+    input = DHX(out)
+    variable = temperature
+    scale_factor = 4.919e3 #Bg(H^3)/(u^2)
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr4]
+    type = ComponentBoundaryVariableValue
+    input = DHX(in)
+    variable = temperature
+    scale_factor = 4.919e3 #Bg(H^3)/(u^2)
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr5]
+    type = ComponentBoundaryVariableValue
+    input = DHX(out)
+    variable = temperature
+    scale_factor = 1.120e7 #(dp/dT)g(H^3)/(u^2)
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr6]
+    type = ComponentBoundaryVariableValue
+    input = DHX(in)
+    variable = temperature
+    scale_factor = 1.120e7 #(dp/dT)g(H^3)/(u^2)
+    execute_on = timestep_end
+  [../]
+  [./DHXRhoTop]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX(out)'
+    variable = 'rho'
+  [../]
+  [./DHXRhoBot]
+    type = ComponentBoundaryVariableValue
+    input = 'DHX(in)'
+    variable = 'rho'
+  [../]
+  [./rho1]
+    type = ElementIntegralVariablePostprocessor
+    block = 'DHX'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./rho2]
+    type = ElementIntegralVariablePostprocessor
+    block = 'pipe2'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./rho3]
+    type = ElementIntegralVariablePostprocessor
+    block = 'TCHX:primary_pipe'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./rho4]
+    type = ElementIntegralVariablePostprocessor
+    block = 'pipe4'
+    variable = 'rho'
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrAlt] #DHX integral rho, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_alt
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrBoundary]
+    type = FunctionValuePostprocessor
+    function = Gr_boundary
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop1] #DHX integral rho, improved Beta, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_loop1
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop2] #DHX integral rho, improved Beta, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_loop2
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop3] #DHX integral rho, nonBeta nonT form, constant mu
+    type = FunctionValuePostprocessor
+    function = Gr_loop3
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrLoop4] #DHX integral rho, nonBeta nonT form, constant mu, mod 2nd rho
+    type = FunctionValuePostprocessor
+    function = Gr_loop4
+    execute_on = timestep_end
+  [../]
+  [./DHX_GrBound2] #Alternate T-dep Beta in calculation
+    type = FunctionValuePostprocessor
+    function = Gr_bound2
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr] #Constant rho, constant mu
     type = DifferencePostprocessor
     value1 = DHX_Gr1
     value2 = DHX_Gr2
@@ -496,7 +630,7 @@
 
   start_time = 0.0
   num_steps = 10000
-  end_time = 2000
+  end_time = 6000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -508,7 +642,7 @@
 []
 
 [Problem]
-  #restart_file_base = 'ncdracs5Kt_out_cp/1007'
+  restart_file_base = 'ncdracs6Csb_out_cp/3864'
 []
 
 [Outputs]

@@ -88,23 +88,28 @@ ncdracs6C.i -------------------------------
 Steep TCHX, heated pipe, constant properties,
 q=10280968 Re=128 Gr=1.98e12 Gr=3.52e12 (boundary)
 6Cs: Stable, starts at uniform temp (file specified IC)
+6Csb: Mesh coarsening
 6Ct1: Creates artificial normal Re high Gr case using K factors
 6Ct2: Uses 6Ct1 to restart a return to normal conditions transient - stable
 6Ct3: Creates artificial normal Re high Gr case using K factors
 6Ct4: Uses 6Ct3 to restart a perturbation transient, same K factors - stable
 6Ct5: Creates artificial normal Re high Gr case using pump loss, GrALT
+6Ct5b: Mesh coarsening
 6Ct6: Unused
 6Ct7: Creates artificial normal Re moderate Gr case using pump loss, GrALT
 6Ct8: Unused
 6Ct9: Creates artificial normal Re boundary Gr case using pump loss
 6Cu: Stable, starts at uniform temp (file specified IC)
-6Cub: Mesh refinement (not running yet)
+6Cub: Mesh coarsening
+6Cud: Mesh coarsening
 6Cu5: 6Ct5 but split pump, matches exactly
 6Cu6: Unused
 6Cu7: 6Ct7 but split pump, matches exactly
 6Cv5: 6Cu5 but aims left on Gr vs Re to go unstable, GrALT
 6Cv5a: Finer time step
-6Cv5b: Mesh refinement (not running yet)
+6Cv5b: Mesh coarsening
+6Cv5c: Finer time step
+6Cv5d: Mesh coarsening
 6Cv6: 6CvX but aims up-right on Gr vs Re to go (unstable?), GrALT
 6Cv7: 6Cu7 but aims right to Gr vs Re stay stable, GrALT
 

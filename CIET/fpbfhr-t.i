@@ -1,7 +1,7 @@
-[GlobalParams] 
+[GlobalParams]
     global_init_P = 1.0e5
     global_init_V = 1.796
-    global_init_T = 874 
+    global_init_T = 874
     Tsolid_sf = 1e-2
 
   [./PBModelParams]
@@ -35,7 +35,7 @@
   	mu = 1.23e-5 #1x
  	k = 0.0251 #1x
   [../]
-[] 
+[]
 
 [Materials]
   [./ss-mat]
@@ -77,7 +77,7 @@
     type = PiecewiseConstant                  # Function type
     axis = 0                                 # X-co-ordinate is used for x
     direction = right
-    xy_data = 
+    xy_data =
 		'0.176153846153846	0.0939862040
 		0.352307692307692	0.2648701900
 		0.528461538461539	0.4186657800
@@ -106,33 +106,33 @@
 		4.580000000000000	1.2132763760'
   [../]
 
-  [./Phead]     
-    type = PiecewiseLinear  
-x = 	'0		1000		1004.5	1009		1013.5	1018		1022.5	
-	1027		1031.5	1036		1040.5	1045		1049.5	1054	
+  [./Phead]
+    type = PiecewiseLinear
+x = 	'0		1000		1004.5	1009		1013.5	1018		1022.5
+	1027		1031.5	1036		1040.5	1045		1049.5	1054
 	1058.5	1063		1067.5	1072		1076.5	1081		10000'
-y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3 
-	2127.7 	-851.3 	-2348.7 	-3101.3 	-3479.6 	-3669.8 	-3765.4	
+y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
+	2127.7 	-851.3 	-2348.7 	-3101.3 	-3479.6 	-3669.8 	-3765.4
 	-3813.4	-3837.6	-3849.7	-3855.8	-3858.9	-3860.4	-3861.9'
   [../]
 
-  [./Phead2]     
-    type = PiecewiseLinear  
+  [./Phead2]
+    type = PiecewiseLinear
     #x = '0 	 100    104.5  109 	  113.5 118   122.5 127  131.5 136   140.5 145   148   150.5 152    154   157.5 160    170   175   185   200   300   10000'
     #y = '367475 367475 182810 89969  43302 19845 8054  2128 -851  -1500 -1700 -1720 -1720 -1730 -1760 -1790 -1830 -1850 -1980  -2010 -2100 -2200 -2500 -2500'
     x = '0 	 100    104.5  109 	  113.5 118   122.5 127  131.5 136   140.5 145   148   150.5 152    154   157.5 160   180   200   300   10000'
     y = '367475 367475 182810 89969  43302 19845 8054  2128 -851  -1500 -1700 -1720 -1720 -1730 -1760 -1790 -1830 -1870 -2150 -2350 -2500 -2500'
   [../]
 
-  [./Phead3]     
+  [./Phead3]
     type = ParsedFunction
     #value = min(367475,367475*exp(-0.14*(min(t,135)-100))-10000)+((max(min(t,131),130)-130)*(50000*exp(-0.5*(min(t,155)-130))-50000))
-    #value = min(367475,377475*exp(-0.14*(min(t,200)-100))-10000) 
-    #value = min(367475,400377*exp(-0.1528583*(min(t,131)-100))-3862) 
+    #value = min(367475,377475*exp(-0.14*(min(t,200)-100))-10000)
+    #value = min(367475,400377*exp(-0.1528583*(min(t,131)-100))-3862)
     #value = min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862)
     #value = min(367475,371377*exp(-0.1528583*(min(t,1100)-1000))-3862)
 
-    # 1 Working low velocity implementation 
+    # 1 Working low velocity implementation
     #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3300)-6*(max(min(t,395),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #a
     #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-6*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #b
     #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-7*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #c
@@ -142,25 +142,25 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     # 2 Pump head goes to zero only
     value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),0)
 
-    # 3 Somewhere in between 
+    # 3 Somewhere in between
     # value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-1600)+0.5*(max(min(t,1700),900)-900)+1.0*(max(min(t,2500),2000)-2000)
 
     #+(0.1*(max(min(t,155),145)-145)*(200*exp(-0.3*(min(t,180)-145))-200))
   [../]
 
-  [./shutdownPower]     
-    type = PiecewiseLinear  
+  [./shutdownPower]
+    type = PiecewiseLinear
     x = '0	1000	1001	1002	1004	1008	1016	1024	1032	1040	1048	1060	1120	1240	1480	1960	2440	2920	3400	3880	4360	4600	13200'
     y = '1.0000000000	1.0000000000	0.0529661017	0.0508474576	0.0478813559	0.0440677966	0.0402966102	0.0378389831	0.0360593220	0.0347033898	0.0335593220	0.0321610169	0.0279237288	0.0242372881	0.0210169492	0.0179237288	0.0161016949	0.0147881356	0.0137711864	0.0130084746	0.0123728814	0.0120762712	0.0081355932'
   [../]
 
-  [./shutdownPower2]     
-    type = PiecewiseLinear  
+  [./shutdownPower2]
+    type = PiecewiseLinear
     x = '0	100	101	102	104	108	116	124	132	140	148	160	220	340	580	1060	1540	2020	2500	2980	3460	3700	12300'
     y = '1.0000000000	1.0000000000	0.0529661017	0.0508474576	0.0478813559	0.0440677966	0.0402966102	0.0378389831	0.0360593220	0.0347033898	0.0335593220	0.0321610169	0.0279237288	0.0242372881	0.0210169492	0.0179237288	0.0161016949	0.0147881356	0.0137711864	0.0130084746	0.0123728814	0.0120762712	0.0081355932'
   [../]
 
-[] 
+[]
 
 [Components]
 
@@ -206,10 +206,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     HTC_geometry_type = Bundle
     PoD = 1.1
     dim_hs = 2
-  [../] 
+  [../]
 
   [./pipe020] #Core bypass (2)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 5.92445 -5.34'
     orientation = '0 0 1'
@@ -220,13 +220,13 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_elems = 13 #26
     initial_V = 1.993
     initial_P = 2.6e5
-  [../] 
+  [../]
 
   [./Branch030] #Outlet plenum (3)			(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
-    type = PBVolumeBranch 
+    type = PBVolumeBranch
     inputs = 'pipe010(out) pipe020(out)'	# A = 1.327511 (0.2524495)	A = 0.065
     outputs = 'pipe040(in)'   			# A = 0.2512732
-    center = '0 4.94445 -0.76' 
+    center = '0 4.94445 -0.76'
     volume = 0.99970002
     K = '0.3668 0.35336 0.0006'			# Check these
     Area = 0.2524495					# L = 3.96
@@ -237,10 +237,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     width = 2
     height = 0.2
     nodal_Tbc = true
-  [../]  
+  [../]
 
   #[./pipe030] #placeholder
-  #  type = PBOneDFluidComponent 
+  #  type = PBOneDFluidComponent
   #  eos = eos
   #  position = '0 7.92445 -0.76'
   #  orientation = '0 -1 0'
@@ -248,11 +248,11 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   #  A = 0.2524495
   #  Dh = 0.5669468
   #  length = 3.96
-  #  n_elems = 
+  #  n_elems =
   #[../]
 
   [./pipe040] #Hot salt extraction pipe (4)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 3.96445 -0.76'
     orientation = '0 0 1'
@@ -264,10 +264,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 2.050
     initial_T = 970
     initial_P = 1.3e5
-  [../] 
+  [../]
 
   [./pipe050] #Reactor vessel to hot salt well (5)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 4.46445 3.01'
     orientation = '0 3.72912 0.081'
@@ -279,10 +279,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 2.05
     initial_T = 970
     scale_factors = '1 1e-2 1e-7'
-  [../] 
+  [../]
 
   [./pipe060] #Hot well (6)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 8.30 3.09' #'0 8.19357 3.091'
     orientation = '0 1.970888 0.34'
@@ -294,12 +294,12 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 0.164
     initial_T = 970
     scale_factors = '1 1e-2 1e-7'
-  [../] 
+  [../]
 
   [./pipe070] #Hot salt well to CTAH (7)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
-    position = '0 10.271 3.43' 
+    position = '0 10.271 3.43'
     orientation = '0 3.22967 -0.046'
     roughness = 0.000015
     A = 0.3041
@@ -316,9 +316,9 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe080] #CTAH hot manifold (8)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
-    position = '0 13.5 3.384' 
+    position = '0 13.5 3.384'
     orientation = '0 0 -1'
     roughness = 0.000015
     A = 0.4926017
@@ -332,7 +332,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe090] #CTAH tubes (salt side) (9)
-    type = PBPipe 
+    type = PBPipe
     eos = eos
     position = '0 13.5 -0.034'
     orientation = '0 18.4692719 -0.164'
@@ -347,7 +347,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     scale_factors = '1 1e-2 1e-7'
 
     HS_BC_type = Temperature
-    Hw = 2 #000 		#cut for transient 
+    Hw = 2 #000 		#cut for transient
     Ph = 392.9818537
     T_wall = 873.15
     Twall_init = 900
@@ -356,10 +356,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_wall_elems = 4
     radius_i = 0.002286
     wall_thickness = 0.000889
-  [../] 
+  [../]
 
   [./pipe100] #CTAH cold manifold (10)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 18.2055 -0.197'
     orientation = '0 0 -1'
@@ -374,7 +374,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe110] #CTAH to drain tank (11)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 18.2055 -3.615'
     orientation = '0 -3.4791917 -0.075'
@@ -388,7 +388,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe120] #Stand pipe (12)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 14.7263 -3.69'
     orientation = '0 0 1'
@@ -402,7 +402,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe130] #Stand pipe to reactor vessel (13)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 14.7263 2.82'
     orientation = '0 -6.6018536 0.14'
@@ -416,7 +416,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe140] #Injection plenum (14)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 8.12445 2.96'
     orientation = '0 0 -1'
@@ -430,7 +430,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe150] #Downcomer (15)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 8.12445 -0.58'
     orientation = '0 0 -1'
@@ -444,7 +444,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe160] #Downcomer to DHX (16)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 1 -0.58'
     orientation = '0 0 1'
@@ -455,7 +455,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_elems = 2 #3
     initial_V = 0.767
     initial_P = 2.5e5
-  [../]  
+  [../]
 
   [./DHX] # DHX shell side (17), DHX tube side (19), DHX tubes structure
     type = PBHeatExchanger
@@ -475,8 +475,8 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     length = 2.5
     n_elems = 7 #14
 
-    initial_V = 0.122 #0.11969487  
-    initial_V_secondary = 0.029349731 
+    initial_V = 0.122 #0.11969487
+    initial_V_secondary = 0.029349731
     initial_T = 870
     initial_T_secondary = 830
     initial_P = 1.9e5
@@ -488,7 +488,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     HT_surface_area_density_secondary = 458.715596 #366.9724771
     #Hw = 526.266
     #Hw_secondary = 440
-    
+
     Twall_init = 900
     wall_thickness = 0.0009
     dim_wall = 2
@@ -497,7 +497,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe180] #DHX to hot leg (18)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 1 2.5'
     orientation = '0 2.96445 .51'
@@ -512,7 +512,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./pipe200] #DRACS hot leg 1 (20)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 0 2.5'
     orientation = '0 0 1'
@@ -521,10 +521,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Dh = 0.15
     length = 3.45
     n_elems = 10 #20
-  [../]  
+  [../]
 
   [./pipe210] #DRACS hot leg 2 (21)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 -0.2 5.95'
     orientation = '0 -1 0'
@@ -533,10 +533,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Dh = 0.15
     length = 3.67
     n_elems = 11 #21
-  [../] 
+  [../]
 
   [./pipe220] #TCHX Manifold (22)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '0 -3.87 5.95'
     orientation = '0 0 1'
@@ -545,10 +545,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Dh = 0.15
     length = 2.60
     n_elems = 8 #15
-  [../] 
+  [../]
 
   [./pipe230] #TCHX salt tube (23)
-    type = PBPipe 
+    type = PBPipe
     eos = eos
     position = '0 -3.87 8.55'
     orientation = '0 -5.407402334 -2.6'
@@ -561,7 +561,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 
     HS_BC_type = Temperature
     Hw = 1000
-    #Ph = 64.10356978 
+    #Ph = 64.10356978
     HT_surface_area_density = 366.972535
     T_wall = 799.15
     Twall_init = 800
@@ -570,10 +570,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_wall_elems = 4
     radius_i = 0.00545
     wall_thickness = 0.0009
-  [../] 	   
+  [../]
 
   [./pipe240] #DRACS cold leg 1 (24)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '1 -4.43 5.95'
     orientation = '0 1 0'
@@ -582,10 +582,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Dh = 0.15
     length = 4.43
     n_elems = 13 #25
-  [../] 
-  
+  [../]
+
   [./pipe250] #DRACS cold leg 2 (25)
-    type = PBOneDFluidComponent 
+    type = PBOneDFluidComponent
     eos = eos
     position = '1 0 5.95'
     orientation = '0 0 -1'
@@ -594,13 +594,13 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Dh = 0.15
     length = 5.95
     n_elems = 17 #34
-  [../] 
+  [../]
 
   [./Branch260] #Top branch (26)			(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
-    type = PBVolumeBranch 
+    type = PBVolumeBranch
     inputs = 'pipe180(out) pipe040(out)'	# A = 0.03534292	A = 0.2512732
     outputs = 'pipe050(in)'   			# A = 0.264208
-    center = '0 4.21445 3.01' 
+    center = '0 4.21445 3.01'
     volume = 0.132104
     K = '0.3713 0.00636 0.0'				# Check these
     Area = 0.264208						# L = 0.5
@@ -612,7 +612,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   #[./pipe260] #placeholder
-  #  type = PBOneDFluidComponent 
+  #  type = PBOneDFluidComponent
   #  eos = eos
   #  position = '0 3.96445 3.01'
   #  orientation = '0 1 0'
@@ -620,12 +620,12 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   #  A = 0.264208
   #  Dh = 0.58
   #  length = 0.5
-  #  n_elems = 
-  #[../]  
+  #  n_elems =
+  #[../]
 
   [./Branch270] #Middle branch (27)		(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
-    type = PBVolumeBranch 
-    inputs = 'pipe140(out)'				# A = 0.3019068	
+    type = PBVolumeBranch
+    inputs = 'pipe140(out)'				# A = 0.3019068
     outputs = 'pipe150(in) pipe160(in)'   	# A = 0.3038791	A = 0.03534292
     center = '0 8.12445 -0.33'
     volume = 0.15193955
@@ -638,7 +638,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   #[./pipe270] #placeholder
-  #  type = PBOneDFluidComponent 
+  #  type = PBOneDFluidComponent
   #  eos = eos
   #  position = '0 8.12445 -0.08'
   #  orientation = '0 -1 0'
@@ -646,12 +646,12 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   #  A = 0.3038791
   #  Dh = 0.0560284
   #  length = 0.5
-  #  n_elems = 
-  #[../]  
+  #  n_elems =
+  #[../]
 
   [./Branch280] #Bottom branch (28)		(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
-    type = PBVolumeBranch 
-    inputs = 'pipe150(out)'				# A = 0.3038791	
+    type = PBVolumeBranch
+    inputs = 'pipe150(out)'				# A = 0.3038791
     outputs = 'pipe010(in) pipe020(in)'   	# A = 1.327511 	A = 0.065
     center = '0 6.53445 -5.34'			# 8.02445
     volume = 0.2655022
@@ -663,10 +663,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_P = 3.4e5
     width = 3.18
     height = 0.2
-  [../]  
+  [../]
 
   #[./pipe280] #placeholder
-  #  type = PBOneDFluidComponent 
+  #  type = PBOneDFluidComponent
   #  eos = eos
   #  position = '0 8.12445 -5.34'
   #  orientation = '0 -1 0'
@@ -674,7 +674,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   #  A = 1.327511
   #  Dh = 0.03
   #  length = 0.2
-  #  n_elems = 
+  #  n_elems =
   #[../]
 
   [./pipe2] #Pipe to primary tank
@@ -717,11 +717,11 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./Branch501] #Primary tank branch 		(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
-    type = PBVolumeBranch 
-    inputs = 'pipe050(out)'				# A = 0.264208 	
+    type = PBVolumeBranch
+    inputs = 'pipe050(out)'				# A = 0.264208
     outputs = 'pipe060(in) pipe2(in)'   	# A = 3.3145 (0.264208)	A = 1 (0.264208)
-    center = '0 8.25 3.09' 
-    volume = 0.0264208 
+    center = '0 8.25 3.09'
+    volume = 0.0264208
     K = '0 0.3744 0.35187'				# Check these
     Area = 0.264208 					# L = 0.2
     eos = eos
@@ -729,18 +729,18 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_T = 970
     scale_factors = '1 1e-2 1e-7'
     width = 0.1
-  [../]  
+  [../]
 
   #[./pipe501] #placeholder
-  #  type = PBOneDFluidComponent 
+  #  type = PBOneDFluidComponent
   #  eos = eos
-  #  position = '0 8.20 3.09' 
+  #  position = '0 8.20 3.09'
   #  orientation = '0 1 0'
   #  roughness = 0.000015
   #  A = 0.264208
   #  Dh = 0.58
   #  length = 0.1
-  #  n_elems = 
+  #  n_elems =
   #[../]
 
   [./pipe1] #Pipe to DRACS tank
@@ -782,10 +782,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [../]
 
   [./Branch502] #DRACS tank branch 	(CHECK ABRUPT AREA CHANGE MODEL)
-    type = PBVolumeBranch 
+    type = PBVolumeBranch
     inputs = 'pipe200(out)'			# A = 0.1836403
     outputs = 'pipe210(in) pipe1(in)'   # A = 0.1836403 A = 1
-    center = '0 -0.1 5.95' 
+    center = '0 -0.1 5.95'
     volume = 0.003534292
     K = '0.0 0.0 0.3673'
     Area = 0.03534292
@@ -934,7 +934,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     #K = '0.3655 0.0'
     Area = 0.03534292
   [../]
-  
+
   [./Branch614] #In to DRACS cold leg 2
     type = PBSingleJunction
     inputs = 'pipe240(out)'
@@ -953,10 +953,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     scale_factors = '1 1 1e-4'
   [../]
 
-  [./Pump] 
+  [./Pump]
     type = PBPump
-    inputs = 'pipe060(out)'		# A = 
-    outputs = 'pipe070(in)'		# A = 
+    inputs = 'pipe060(out)'		# A =
+    outputs = 'pipe070(in)'		# A =
     eos = eos
     K = '0 0'
     K_reverse = '2000000 2000000'
@@ -974,7 +974,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 
 [Postprocessors]
   [./DHX_flow]
-    type = ComponentBoundaryFlow 
+    type = ComponentBoundaryFlow
     input = DHX(primary_out)
     execute_on = timestep_end
   [../]
@@ -1025,7 +1025,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     variable = 'rho'
   [../]
 []
-  
+
 [Preconditioning]
   active = 'SMP_PJFNK'
   [./SMP_PJFNK]
@@ -1046,7 +1046,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 
 [Executioner]
   #type = Steady
-  type = Transient  
+  type = Transient
 
   petsc_options_iname = '-ksp_gmres_restart'
   petsc_options_value = '300'
@@ -1054,20 +1054,20 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   dt = 1
   dtmin = 1e-3
 
-  [./TimeStepper]    
+  [./TimeStepper]
     type = FunctionDT
-    #time_t = '   0   99   100    700   701   1e5'   
-    #time_t = '   0   999  1000   1600  1601  1e5'   
-    
+    #time_t = '   0   99   100    700   701   1e5'
+    #time_t = '   0   999  1000   1600  1601  1e5'
+
     #time_t = '   0   400 401 998  999   1250  1251  1500 1501 4000 4001 1e5'
-    #time_dt ='   1   1   5   5    0.2   0.2   0.5   0.5  1    1     5    5' 
-    
-    #time_t = '   0   98  99   500   501   1000  1001  2000 2001 1e5' 
-    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6' 
+    #time_dt ='   1   1   5   5    0.2   0.2   0.5   0.5  1    1     5    5'
+
+    #time_t = '   0   98  99   500   501   1000  1001  2000 2001 1e5'
+    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6'
     #time_dt ='   1   1   0.2  0.2   0.5   0.5   1     1    5     5'
 
-    time_t = '   0   98  99   125 126 500   501   1000  1001  2000 2001 1e5' 
-    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6' 
+    time_t = '   0   98  99   125 126 500   501   1000  1001  2000 2001 1e5'
+    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6'
     time_dt ='   1   1   0.2  0.2 0.1 0.1 0.5   0.5   1     1    5     5'
   [../]
 
@@ -1106,7 +1106,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     use_displaced = true
     execute_on = 'initial timestep_end'
     interval = 5
-    sequence = false  
+    sequence = false
   [../]
   [./csv]
     type = CSV
@@ -1122,9 +1122,3 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 [Debug]
   show_var_residual_norms = true
 []
-
-
-
-
-
-

@@ -7,7 +7,7 @@
   [./PBModelParams]
     #pspg = true
     p_order = 2
-    pbm_scaling_factors = '1 1e-2 1e-5'
+    #pbm_scaling_factors = '1 1e-2 1e-5'
     #variable_bounding = true
     #V_bounds = '0 10'
   [../]
@@ -273,7 +273,7 @@
     inputs = 'pipe2(out)'
     outputs = 'pipe3(in) pipe5(in)'
     center = '0 0 5.98'
-    volume = 0.01767146 #0.003534292
+    volume = 0.001767146 #0.003534292
     K = '0.0 0.0 10.0'
     #Area =   0.44934
     Area = 0.01767146
@@ -541,46 +541,51 @@
     b = -273.15
     execute_on = timestep_end
   [../]
-  [./v1]
-    type = ComponentBoundaryVariableValue
-    input = 'pipe1(out)'
-    variable = 'velocity'
-  [../]
-  [./v0]
-    type = ComponentBoundaryVariableValue
-    input = 'DHX(out)'
-    variable = 'velocity'
-  [../]
-  [./v2]
-    type = ComponentBoundaryVariableValue
-    input = 'pipe2(out)'
-    variable = 'velocity'
-  [../]
+  # [./v1]
+  #   type = ComponentBoundaryVariableValue
+  #   input = 'pipe1(out)'
+  #   variable = 'velocity'
+  # [../]
+  # [./v0]
+  #   type = ComponentBoundaryVariableValue
+  #   input = 'DHX(out)'
+  #   variable = 'velocity'
+  # [../]
+  # [./v2]
+  #   type = ComponentBoundaryVariableValue
+  #   input = 'pipe2(out)'
+  #   variable = 'velocity'
+  # [../]
   #[./v3a]
   #  type = ComponentBoundaryVariableValue
   #  input = 'Branch3(in)'
   #  variable = 'velocity'
   #[../]
-  [./v3]
-    type = ComponentBoundaryVariableValue
-    input = 'pipe3(out)'
-    variable = 'velocity'
-  [../]
-  [./v6]
-    type = ComponentBoundaryVariableValue
-    input = 'TCHX(primary_out)'
-    variable = 'velocity'
-  [../]
-  [./v4]
-    type = ComponentBoundaryVariableValue
-    input = 'pipe4(out)'
-    variable = 'velocity'
-  [../]
+  # [./v3]
+  #   type = ComponentBoundaryVariableValue
+  #   input = 'pipe3(out)'
+  #   variable = 'velocity'
+  # [../]
+  # [./v6]
+  #   type = ComponentBoundaryVariableValue
+  #   input = 'TCHX(primary_out)'
+  #   variable = 'velocity'
+  # [../]
+  # [./v4]
+  #   type = ComponentBoundaryVariableValue
+  #   input = 'pipe4(out)'
+  #   variable = 'velocity'
+  # [../]
+  # [./Residence]
+  #   type = InverseLinearCombinationPostprocessor
+  #   pp_names = 'v1   v0  v2   v3   v6 v4'
+  #   pp_coefs = '4.52 2.5 3.48 5.01 6  3.48'
+  #   b = 0.0
+  #   execute_on = timestep_end
+  # [../]
   [./Residence]
-    type = InverseLinearCombinationPostprocessor
-    pp_names = 'v1   v0  v2   v3   v6 v4'
-    pp_coefs = '4.52 2.5 3.48 5.01 6  3.48'
-    b = 0.0
+    type = ResidenceTime
+    comp_names = 'pipe1 DHX pipe2 pipe3 TCHX:primary_pipe pipe4'
     execute_on = timestep_end
   [../]
   [./pipe5out]
@@ -642,7 +647,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Cs_out_cp/3868'
+  restart_file_base = 'ncdracs6Cs_v2_out_cp/3868'
 []
 
 [Outputs]

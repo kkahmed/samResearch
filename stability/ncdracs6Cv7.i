@@ -7,7 +7,7 @@
   [./PBModelParams]
     #pspg = true
     p_order = 2
-    pbm_scaling_factors = '1 1e-2 1e-5'
+    pbm_scaling_factors = '1 1e-3 1e-4'
     #variable_bounding = true
     #V_bounds = '0 10'
   [../]
@@ -652,7 +652,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Cu_out_cp/3868'
+  restart_file_base = 'ncdracs6Cu_out_cp/3862'
 []
 
 [Outputs]

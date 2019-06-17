@@ -510,7 +510,7 @@
   #dtmin = 1e-6
   [./TimeStepper]
     type = FunctionDT
-    time_t = '0.0   5.0   5.1  200  201  1e5'
+    time_t = '0.0   5.0   5.1  80   81   1e5'
     time_dt ='0.05  0.05  0.1  0.1  1.0  1.0'
     min_dt = 1e-3
   [../]

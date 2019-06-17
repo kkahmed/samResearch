@@ -7,7 +7,7 @@
   [./PBModelParams]
     #pspg = true
     p_order = 2
-    pbm_scaling_factors = '1 1e-3 1e-4'
+    #pbm_scaling_factors = '1 1e-3 1e-4'
     #variable_bounding = true
     #V_bounds = '0 10'
   [../]
@@ -50,8 +50,8 @@
 [MaterialProperties]
   [./ss-mat]
     type = SolidMaterialProps
-    k = 2000 #20
-    Cp = 0.01 #638
+    k = 20 #2000
+    Cp = 638 #0.01
     rho = 6e3
   [../]
 []
@@ -80,12 +80,12 @@
   [./Q_perturb2]
     type = PiecewiseLinear
     x = '2000     3000     1e5' #For restart from 6Cs
-    y = '10280968 16280968 16280968'
+    y = '10280968 18280968 18280968'
   [../]
   [./PumpFN]
     type = PiecewiseLinear
     x = '2000  3000  1e5' #For restart from 5Ks
-    y = '0.0   -375  -375' #y = '0.0   0.0   0.0'
+    y = '0.0   -1000  -1000' #y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -140,7 +140,7 @@
 [Components]
   [./pipe1]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 4.52 0'
     orientation = '0 -1 0'
 
@@ -154,7 +154,7 @@
 
   [./DHX]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
 
     position = '0 0.0 0'
     orientation = '0 0 1'
@@ -170,7 +170,7 @@
 
   [./pipe2]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 2.5'
     orientation = '0 0 1'
 
@@ -184,7 +184,7 @@
 
   [./pipe3]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 5.98'
     orientation = '0 1 0'
 
@@ -198,7 +198,7 @@
 
   [./TCHX]
     type = PBHeatExchanger
-    eos = eos3
+    eos = eos
     eos_secondary = eos2
 
     position = '0 4.01 5.98'
@@ -237,7 +237,7 @@
 
   [./pipe4]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 4.52 3.48'
     orientation = '0 0 -1'
 
@@ -253,7 +253,7 @@
     type = PBBranch
     inputs = 'pipe1(out)'
     outputs = 'DHX(in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0' #K = '6.2 6.2'
   [../]
@@ -262,7 +262,7 @@
     type = PBBranch
     inputs = 'DHX(out)'
     outputs = 'pipe2(in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0' #K = '6.2 6.2'
   [../]
@@ -278,14 +278,14 @@
     #Area =   0.44934
     Area = 0.01767146
     #initial_P = 9.5e4
-    eos = eos3
+    eos = eos
   [../]
 
   [./Branch4]
     type = PBBranch
     inputs = 'pipe3(out)'
     outputs = 'TCHX(primary_in)'
-    eos = eos3
+    eos = eos
     Area = 0.01767146
     K = '0.0 0.0' #K = '6.2 6.2'
   [../]
@@ -294,13 +294,13 @@
   #  type = PBBranch
   #  inputs = 'TCHX(primary_out)'
   #  outputs = 'pipe4(in)'
-  #  eos = eos3
+  #  eos = eos
   #  Area = 0.01767146
   #  K = '0.0 0.0'
   #[../]
   [./P2]
     type = PBPump                               # This is a PBPump component
-    eos = eos3
+    eos = eos
     inputs = 'TCHX(primary_out)'
     outputs = 'pipe4(in)'
     K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
@@ -313,11 +313,11 @@
   #  type = PBSingleJunction
   #  inputs = 'pipe4(out)'
   #  outputs = 'pipe1(in)'
-  #  eos = eos3
+  #  eos = eos
   #[../]
   [./P1]
     type = PBPump                               # This is a PBPump component
-    eos = eos3
+    eos = eos
     inputs = 'pipe4(out)'
     outputs = 'pipe1(in)'
     K = '0. 0.'                                 # Form loss coefficient at pump inlet and outlet
@@ -328,7 +328,7 @@
 
   [./pipe5]
     type = PBOneDFluidComponent
-    eos = eos3
+    eos = eos
     position = '0 0 5.98'
     orientation = '0 0 1'
 
@@ -352,7 +352,7 @@
   #  #scale_factors = '1 1e-1 1e-2'
   #  display_pps = true
   #  covergas_component = 'cover_gas1'
-  #  eos = eos3
+  #  eos = eos
   #[../]
   #[./cover_gas1]
 	#type = CoverGas
@@ -365,7 +365,7 @@
   [./p_out]
   	type = PBTDV
   	input = 'pipe5(out)'
-    eos = eos3
+    eos = eos
   	p_bc = 1.01e5
   	T_fn = PBTDVTemp
   [../]
@@ -393,7 +393,7 @@
     input = DHX(in)
     execute_on = timestep_end
   [../]
-  [./TCHX_Re]
+  [./TCHX_Re] #Constant rho, constant mu
     type = ComponentBoundaryFlow
     input = TCHX(primary_in)
     scale_factor = 13.05379
@@ -415,14 +415,14 @@
     type = ComponentBoundaryVariableValue
     input = DHX(out)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 1.972e10 #(p^2)Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
     input = DHX(in)
     variable = temperature
-    scale_factor = 1.972e10
+    scale_factor = 1.972e10 #(p^2)Bg(H^3)/(u^2)
     execute_on = timestep_end
   [../]
   [./DHX_Gr3]
@@ -507,11 +507,6 @@
     function = Gr_loop2
     execute_on = timestep_end
   [../]
-  [./DHX_GrBound2] #Alternate T-dep Beta in calculation
-    type = FunctionValuePostprocessor
-    function = Gr_bound2
-    execute_on = timestep_end
-  [../]
   [./DHX_GrLoop3] #DHX integral rho, nonBeta nonT form, constant mu
     type = FunctionValuePostprocessor
     function = Gr_loop3
@@ -522,7 +517,12 @@
     function = Gr_loop4
     execute_on = timestep_end
   [../]
-  [./DHX_Gr]
+  [./DHX_GrBound2] #Alternate T-dep Beta in calculation
+    type = FunctionValuePostprocessor
+    function = Gr_bound2
+    execute_on = timestep_end
+  [../]
+  [./DHX_Gr] #Constant rho, constant mu
     type = DifferencePostprocessor
     value1 = DHX_Gr1
     value2 = DHX_Gr2
@@ -657,7 +657,7 @@
 []
 
 [Problem]
-  restart_file_base = 'ncdracs6Cu_out_cp/3869'
+  restart_file_base = 'ncdracs7Cu_out_cp/3856'
 []
 
 [Outputs]

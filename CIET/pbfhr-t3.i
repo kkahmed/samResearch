@@ -6,11 +6,11 @@
 
   [./PBModelParams]
 	#pspg = false
-	pbm_scaling_factors = '1 1e-3 1e-4'
+	#pbm_scaling_factors = '1 1e-2 1e-6'
 	#variable_bounding = true
 	#V_bounds = '0 10'
-     scaling_velocity = 1
-     #supg_max = true
+     #scaling_velocity = 1
+     supg_max = true
      p_order = 2
   [../]
 []
@@ -20,7 +20,7 @@
 	active = 'eos eos3'
   [./eos]
   	type = SaltEquationOfState
-     # salt_type = r5Flibe
+     #salt_type = r5Flibe
   [../]
   [./eos3] #const salt
   	type = PTConstantEOS
@@ -67,17 +67,17 @@
 []
 
 [Functions]
-  active = 'Paxial Phead shutdownPower'
+  active = 'Paxial Phead3 shutdownPower2'
   [./uniform]                                # Function name
     type = PiecewiseLinear                   # Function type
-    axis = x                                 # X-co-ordinate is used for x
+    axis = 0                                 # X-co-ordinate is used for x
     x = '0  4.58'                            # The x abscissa values
     y = '1  1'                               # The y abscissa values
   [../]
 
   [./Paxial]                                 # Function name
     type = PiecewiseConstant                  # Function type
-    axis = x                                 # X-co-ordinate is used for x
+    axis = 0                                 # X-co-ordinate is used for x
     direction = right
     xy_data =
 		'0.176153846153846	0.0939862040
@@ -122,7 +122,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     type = PiecewiseLinear
     #x = '0 	 100    104.5  109 	  113.5 118   122.5 127  131.5 136   140.5 145   148   150.5 152    154   157.5 160    170   175   185   200   300   10000'
     #y = '367475 367475 182810 89969  43302 19845 8054  2128 -851  -1500 -1700 -1720 -1720 -1730 -1760 -1790 -1830 -1850 -1980  -2010 -2100 -2200 -2500 -2500'
-    x = '0 	 100    104.5  109 	  113.5 118   122.5 127  131.5 136   140.5 145   148   150.5 152    154   157.5 160   180   200   300   10000'
+    x = '0 	 400    404.5  409 	  413.5 418   422.5 427  431.5 436   440.5 445   448   450.5 452    454   457.5 460   480   500   600   10000'
     y = '367475 367475 182810 89969  43302 19845 8054  2128 -851  -1500 -1700 -1720 -1720 -1730 -1760 -1790 -1830 -1870 -2150 -2350 -2500 -2500'
   [../]
 
@@ -137,7 +137,13 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     # 1 Working low velocity implementation
     #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3300)-6*(max(min(t,395),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #a
     #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-6*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #b
-    value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-5*(max(min(t,365),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #c
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-7*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #c
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3200)-6*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #7d
+    #value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),-3000)-6*(max(min(t,375),195)-195)+0.2*(max(min(t,1300),1000)-1000)+0.2*(max(min(t,5400),1500)-1500) #4c
+    #value = min(367475,371377*exp(-0.157*(min(t,130)-100))-3862)-65*(max(min(t,130),120)-120)-50*(max(min(t,140),125)-125)+5*(max(min(t,144),137)-137)-22*(max(min(t,150),144)-144)-1000*(1-exp(-1*(max(min(t,165),153)-153)))-9*(max(min(t,375),195)-195)-3.6*(max(min(t,400),260)-260)+0.2*(max(min(t,5400),1000)-1000) #7e
+    value = min(367475,371377*exp(-0.157*(min(t,430)-400))-3862)-65*(max(min(t,430),420)-420)-50*(max(min(t,440),425)-425)+5*(max(min(t,444),437)-437)-22*(max(min(t,450),444)-444)-1000*(1-exp(-1*(max(min(t,465),453)-453)))-9*(max(min(t,675),495)-495)-3.6*(max(min(t,700),560)-560)+0.2*(max(min(t,5700),1300)-1300) #7e
+
+    #-150*(max(min(t,163),155)-155)
 
     # 2 Pump head goes to zero only
     # value = max(min(367475,371377*exp(-0.1528583*(min(t,200)-100))-3862),0)
@@ -156,7 +162,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 
   [./shutdownPower2]
     type = PiecewiseLinear
-    x = '0	100	101	102	104	108	116	124	132	140	148	160	220	340	580	1060	1540	2020	2500	2980	3460	3700	12300'
+    x = '0	400	401	402	404	408	416	424	432	440	448	460	520	640	880	1360	1840	2320	2800	3280	3760	4000	12600'
     y = '1.0000000000	1.0000000000	0.0529661017	0.0508474576	0.0478813559	0.0440677966	0.0402966102	0.0378389831	0.0360593220	0.0347033898	0.0335593220	0.0321610169	0.0279237288	0.0242372881	0.0210169492	0.0179237288	0.0161016949	0.0147881356	0.0137711864	0.0130084746	0.0123728814	0.0120762712	0.0081355932'
   [../]
 
@@ -167,7 +173,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
   [./reactor]
     type = ReactorPower
     initial_power = 2.36e8				# Initial total reactor power
-    decay_heat = shutdownPower
+    decay_heat = shutdownPower2
   [../]
 
   [./pipe010] #Active core region (1)	(FINISH HEAT STRUCTURE INPUT, CHECK CCFL)
@@ -279,6 +285,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_elems = 11 #21
     initial_V = 2.05
     initial_T = 970
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe060] #Hot well (6)
@@ -293,6 +300,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_elems = 6 #11
     initial_V = 0.164
     initial_T = 970
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe070] #Hot salt well to CTAH (7)
@@ -308,9 +316,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 1.783
     initial_T = 970
     initial_P = 4.6e5
+    scale_factors = '1 1e-1 1e-6'
 
-    #WF_user_option = User
-    #User_defined_WF_parameters = '0.0 5000 -2.0'
+    #WF_user_option = User		#Help pump coastdown case 3
+    #User_defined_WF_parameters = '-7.15 2000000 -1'
   [../]
 
   [./pipe080] #CTAH hot manifold (8)
@@ -326,6 +335,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 1.100
     initial_T = 970
     initial_P = 4.9e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe090] #CTAH tubes (salt side) (9)
@@ -341,9 +351,10 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 1.207
     initial_T = 920
     initial_P = 4.1e5
+    scale_factors = '1 1e-1 1e-6'
 
     HS_BC_type = Temperature
-    Hw = 2000
+    Hw = 2 #000 		#cut for transient
     Ph = 392.9818537
     T_wall = 873.15
     Twall_init = 900
@@ -367,6 +378,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     n_elems = 10 #19
     initial_V = 2.818
     initial_P = 2.8e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe110] #CTAH to drain tank (11)
@@ -380,6 +392,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     length = 3.48
     n_elems = 10 #20
     initial_P = 3.1e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe120] #Stand pipe (12)
@@ -393,6 +406,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     length = 6.51
     n_elems = 19 #37
     initial_P = 2.5e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe130] #Stand pipe to reactor vessel (13)
@@ -406,6 +420,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     length = 6.6033378
     n_elems = 19 #37
     initial_P = 1.8e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe140] #Injection plenum (14)
@@ -419,6 +434,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     length = 3.04
     n_elems = 9 #17
     initial_P = 2.1e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./pipe150] #Downcomer (15)
@@ -723,6 +739,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     eos = eos
     initial_V = 2.052
     initial_T = 970
+    scale_factors = '1 1e-1 1e-6'
     width = 0.1
   [../]
 
@@ -797,6 +814,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 1.783
     initial_T = 970
     initial_P = 4.6e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Branch602] # In to CTAH salt side
@@ -809,6 +827,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     initial_V = 1.207
     initial_T = 970
     initial_P = 5.2e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Branch603] # In to cold manifold
@@ -820,6 +839,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Area = 0.1924226
     initial_V = 2.818
     initial_P = 2.5e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Branch604] # In to pipe to drain tank
@@ -831,7 +851,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     K_reverse = '2000000 2000000'
     Area = 0.1924226
     initial_P = 3.1e5
-    scale_factors = '1 1e-2 1e-7'
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Branch605] # In to stand pipe
@@ -840,6 +860,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     outputs = 'pipe120(in)'
     eos = eos
     initial_P = 3.1e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Branch606] # In to pipe to reactor vessel
@@ -848,6 +869,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     outputs = 'pipe130(in)'
     eos = eos
     initial_P = 1.9e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Branch607] # In to injection plenum
@@ -856,6 +878,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     outputs = 'pipe140(in)'
     eos = eos
     initial_P = 1.8e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
   [./Diode608] # Fluidic diode		(CHECK FORWARD AND REVERSE K)
@@ -868,7 +891,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Area = 0.03534292
     initial_V = 0.767
     initial_P = 2.3e5
-    scale_factors = '1 1 1e-4'
+    scale_factors = '1 1e-2 1e-6'
   [../]
 
   [./Branch609] # Out of DHX
@@ -881,7 +904,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     Area = 0.03534292
     initial_V = 0.767
     initial_P = 1.3e5
-    scale_factors = '1 1 1e-4'
+    scale_factors = '1 1e-2 1e-6'
   [../]
 
   [./Branch610] #In to DRACS hot leg 1	(CHECK ABRUPT AREA CHANGE MODEL AND COEFFS)
@@ -894,7 +917,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     #K = '45.5 45.5'    				# Match m with h specified
     #K = '45.2 45.2' 				# Match m with r5Flibe
     Area = 0.03534292
-    scale_factors = '1 1 1e-4'
+    scale_factors = '1 1e-2 1e-6'
   [../]
 
   [./Branch611] #In to TCHX manifold
@@ -939,7 +962,7 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     K = '0.3666 0.3666'
     #K = '0.0 0.3666'
     Area = 0.03534292
-    scale_factors = '1 1 1e-4'
+    scale_factors = '1 1e-2 1e-6'
   [../]
 
   [./Pump]
@@ -948,12 +971,17 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     outputs = 'pipe070(in)'		# A =
     eos = eos
     K = '0 0'
+    K_reverse = '2000000 2000000'
     Area = 0.3041
     #Head = 369119 original, 367725 match SS
-    Head = 367475
+    #Head = 367475
+    #Head_fn = Phead3
+    Desired_mass_flow_rate = 0.0
+    Mass_flow_rate_tolerance = 0.000001
     initial_V = 1.783
     initial_T = 970
     initial_P = 2.7e5
+    scale_factors = '1 1e-1 1e-6'
   [../]
 
 []
@@ -1031,23 +1059,39 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 
 
 [Executioner]
-  type = Steady
-  #type = Transient
+  #type = Steady
+  type = Transient
 
   petsc_options_iname = '-ksp_gmres_restart'
   petsc_options_value = '300'
-  line_search = basic
 
-  #dt = 1
-  #dtmin = 1e-8
+  dt = 1
+  dtmin = 1e-3
 
-  nl_rel_tol = 1e-7
-  nl_abs_tol = 1e-5
-  nl_max_its = 100
+  [./TimeStepper]
+    type = FunctionDT
+    #time_t = '   0   99   100    700   701   1e5'
+    #time_t = '   0   999  1000   1600  1601  1e5'
 
-  #start_time = 0.0
-  #num_steps = 200
-  #end_time = 1000
+    #time_t = '   0   400 401 998  999   1250  1251  1500 1501 4000 4001 1e5'
+    #time_dt ='   1   1   5   5    0.2   0.2   0.5   0.5  1    1     5    5'
+
+    #time_t = '   0   98  99   500   501   1000  1001  2000 2001 1e5'
+    time_t = '   0   380  390 1500  1510  2500  2510  3000 3010 1e6'
+    time_dt ='   1   1   0.1  0.1   0.5   0.5   1     1    5     5'
+
+    #time_t = '   0   98  99   125 126 500   501   1000  1001  2000 2001 1e5'
+    #time_t = '   0   980  990   5000   5010   10000  10010  20000 20010 1e6'
+    #time_dt ='   1   1   0.2  0.2 0.1 0.1 0.5   0.5   1     1    5     5'
+  [../]
+
+  nl_rel_tol = 1e-5
+  nl_abs_tol = 1e-4
+  nl_max_its = 30
+
+  start_time = 432
+  num_steps = 15000
+  end_time = 10000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 200 # Number of linear iterations for each Krylov solve
@@ -1059,7 +1103,11 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
 []
 
 [Problem]
-  restart_file_base = 'pbfhr-t_out_cp/0402'
+  #restart_file_base = 'pbfhr-t_out_cp/0658'  #c1 right after transient
+  #restart_file_base = 'pbfhr-t_out_cp/3043'  #c1 after coastdown, for long term
+  # restart_file_base = 'pbfhr_out_cp/0001'
+  #restart_file_base = 'pbfhr-t_out_cp(c2)/3912'
+  restart_file_base = 'pbfhr-t2_out_cp/0324'
 []
 
 [Outputs]
@@ -1072,7 +1120,12 @@ y = 	'367475	367475	182810.4	89968.8	43302.0	19845.0	8054.3
     type = Exodus
     use_displaced = true
     execute_on = 'initial timestep_end'
+    interval = 5
     sequence = false
+  [../]
+  [./csv]
+    type = CSV
+    interval = 5
   [../]
 
   [./console]

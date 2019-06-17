@@ -4,5 +4,9 @@ r5files
 *.pvsm
 *.png
 *.avi
+*.mp4
+*.ogv
+*.webm
 *.csv
+.DS_Store
 peacock*

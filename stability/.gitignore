@@ -10,4 +10,5 @@
 *.mp4
 *.wmv
 *.docx
+.DS_Store
 peacock*

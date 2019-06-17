@@ -125,6 +125,24 @@ q=12337162 Re=246 Gr=4.22e12 Gr=1.06e13 (boundary)
 6Gt6: Unused
 6Gt7: Creates artificial normal Re moderate Gr case using pump loss, GrALT
 
+ncdracs7C.i -------------------------------
+Steep TCHX, heated pipe, T-dep properties, TCHX mass
+q=10280968 Re=128 Gr=1.98e12 Gr=3.52e12 (boundary)
+7Cu: Stable, starts at uniform temp (file specified IC)
+7Ct1:
+7Ct2:
+7Ct3:
+7Ct4:
+7Ct5:
+7Ct6:
+7Ct7:
+7Cu5: 7Ct5 but split pump
+7Cu6:
+7Cu7: 7Ct7 but split pump
+7Cv5: 6Cu5 but aims left on Gr vs Re to go unstable, GrALT
+7Cv6:
+7Cv7:
+
 ncdracs7G.i -------------------------------
 Steep TCHX, heated pipe, T-dep properties,
 q=12337162 Re=246 Gr=4.22e12 Gr=1.06e13 (boundary)

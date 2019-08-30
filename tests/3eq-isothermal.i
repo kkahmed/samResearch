@@ -81,7 +81,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'friction'
-    prop_values = '0.1'
+    prop_values = '0.0' #'0.1'
   [../]
 []
 
@@ -159,7 +159,7 @@
     eos = eos
     element_length = 0.01
     Ax = 0.07854
-    gx = -9.81
+    gx = 0.0 #-9.81
     dh = 0.01
   [../]
 
@@ -184,7 +184,7 @@
     eos = eos
     element_length = 0.01
     Ax = 0.07854
-    gx = -9.81
+    gx = 0.0 #-9.81
     dh = 0.01
   [../]
 

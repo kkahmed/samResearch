@@ -95,7 +95,7 @@
     Dh = 0.01
     length = 5.0
     n_elems = 100
-    Hw = 900
+    # Hw = 900
 
     solid_phase = true
     eos_solid = frozen
@@ -155,17 +155,17 @@
   l_tol = 1e-4 # Relative linear tolerance for each Krylov solve
   l_max_its = 100 # Number of linear iterations for each Krylov solve
 
-  start_time = 0.0                    # Physical time at the beginning of the simulation
+  start_time = 15.0                    # Physical time at the beginning of the simulation
   num_steps = 20000                    # Max. simulation time steps
-  end_time = 15.0                     # Max. physical time at the end of the simulation
+  end_time = 12000.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./cp]
-    type = Checkpoint
-  [../]
+  # [./cp]
+  #   type = Checkpoint
+  # [../]
   [./out_displaced]
     type = Exodus
     use_displaced = true
@@ -175,6 +175,10 @@
   [./console]
     type = Console
   [../]
+[]
+
+[Problem]
+  restart_file_base = 'FreezingComponent_cp_cp/0015'
 []
 
 [Debug]

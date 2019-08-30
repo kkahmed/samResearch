@@ -12,8 +12,8 @@
 [Functions]
   [./v_in]
     type = PiecewiseLinear
-    x = '0   100   1200 1250 2400 2450 9600 9650 21600'
-    y = '0.05 0.05 0.05 0.02 0.02 0.3  0.3   0.05  0.05'
+    x = '0   140 250 3600 3750 21600'
+    y = '0.2 0.2 0.05 0.05 0.2 0.2'
   [../]
   [./p_out]
     type = PiecewiseLinear
@@ -22,13 +22,13 @@
   [../]
   [./time_stepper_sub]
     type = PiecewiseLinear
-    x = '0   100   1200 1250 2400 2401 9650 9651 21600'
-    y = '1.0  1.0  1.0  1.0  1.0  1.0 1.0 1.0   1.0'
+    x = '0.0  25   26  6100 6101 10800 10801 12000 12001 5e5'
+    y = '1.0  1.0  1.0  1.0 1.0  1.0   1.0   1.0   1.0  1.0'
   [../]
   [./T_in]
     type = PiecewiseLinear
-    x = '0   40   50  100 2400 2450 9600 9650 21600'
-    y = '852 852 785 785  785  870  870   785   785'
+    x = '0   140 250 3600 3750 21600'
+    y = '860 860 785 785  860  860'
   [../]
 []
 
@@ -40,19 +40,19 @@
   [../]
 
   [./alphas]
-    initial_condition = 0.02
+    initial_condition = 0.00099
     order = SECOND
     family = LAGRANGE
   [../]
 
   [./velocity]
-    initial_condition = 0.05
+    initial_condition = 0.2
     order = FIRST
     family = LAGRANGE
   [../]
 
   [./temp_l]
-    initial_condition = 852
+    initial_condition = 860
     order = SECOND
     family = LAGRANGE
     scaling = 1e-6
@@ -105,7 +105,7 @@
     eos = eos
     eos_solid = frozen
     h_int = interfaceHTC
-    h_rad = 0.5e-7
+    h_rad = 2e-8
     heatflux = freezing_heatflux
     #f_alpha = 0.05
   [../]
@@ -139,7 +139,7 @@
   [./rho]
     order = SECOND
     family = MONOMIAL
-    initial_condition = 2279.92
+    #initial_condition = 2279.92
   [../]
   [./freezing_heatflux]
     order = SECOND
@@ -149,23 +149,27 @@
   [./alphaliq]
     order = SECOND
     family = LAGRANGE
-    initial_condition = 0.98
+    initial_condition = 0.99901
   [../]
   [./interfaceHTC]
     order = SECOND
     family = MONOMIAL
+    initial_condition = 0.0
   [../]
   [./interface_temperature]
     order = SECOND
     family = LAGRANGE
+    initial_condition = 732.15
   [../]
   [./temp_external]
     order = SECOND
     family = LAGRANGE
+    initial_condition = 373
   [../]
   [./htc_external]
     order = SECOND
     family = LAGRANGE
+    initial_condition = 75
   [../]
   [./freezing]
     order = CONSTANT
@@ -185,59 +189,39 @@
 []
 
 [AuxKernels]
-  # [./freeze_rate]
-  #   type = FreezingAux
-  #   variable = freezing
-  #   alphas = alphas
-  #   temperature = temp_l
-  #   temp_solid = temp_s
-  #   #radius = radius_i
-  #   eos_solid = frozen
-  #   h_int = 200
-  #   h_rad = 1.5e-7
-  #   r_total = 0.005
-  #   #f_rate = f_rate
-  #   #f_axial = f_axial
-  # [../]
   [./liquid_frac]
     type = AlphalAux
     variable = alphaliq
     alphas = alphas
   [../]
-  # [./radius_int]
-  #   type = RadialAux
-  #   variable = radius_i
-  #   alphas = alphas
-  #   Rt = 0.005
-  # [../]
-  [./interfaceHTCAUX]
-    type = PBHeatTransferCoefficient
-    variable = interfaceHTC
-    rho = rho
-    velocity = velocity
-    temperature = temp_l
-    pressure = pressure
-    Twall = interface_temperature
-    eos = eos
-    g = 9.81
-    Dh = 0.01
-    D_heated = 0.01
-    length = 0.0 #vertical length!
-    alphas = alphas
-    HTC_geometry_type = Pipe
-  [../]
-  # [./interfaceHTCconstant]
-  #   type = ConstantAux
+  # [./interfaceHTCAUX]
+  #   type = PBHeatTransferCoefficient
   #   variable = interfaceHTC
-  #   value = 200.0
+  #   rho = rho
+  #   velocity = velocity
+  #   temperature = temp_l
+  #   pressure = pressure
+  #   Twall = interface_temperature
+  #   eos = eos
+  #   g = 9.81
+  #   Dh = 0.01
+  #   D_heated = 0.01
+  #   length = 0.0 #vertical length!
+  #   alphas = alphas
+  #   HTC_geometry_type = Pipe
   # [../]
+  [./interfaceHTCconstant]
+    type = ConstantAux
+    variable = interfaceHTC
+    value = 900.0
+  [../]
   [./heat_int]
     type = FreezingHeatFluxAux
     variable = freezing_heatflux
     Tfluid = temp_l
     eos_solid = frozen
     h_int = interfaceHTC
-    h_rad = 0.5e-7
+    h_rad = 2e-8
   [../]
   [./density]
     type = DensityAux
@@ -266,18 +250,6 @@
     variable = freezing
     property = freezing_rate
   []
-  # [./freeze_rate]
-  #   type = FreezingAux
-  #   variable = freezing
-  #   alphas = alphas
-  #   temperature = temp_l
-  #   temp_solid = temp_s
-  #   eos_solid = frozen
-  #   h_int = interfaceHTC
-  #   h_rad = 5e-8
-  #   r_total = 0.005
-  #   execute_on = 'initial timestep_end'
-  # [../]
   [./reynolds_alpha]
     type = MaterialRealAux
     variable = reynolds
@@ -288,11 +260,6 @@
     variable = friction
     property = friction_alpha
   []
-  # [./heat_int]
-  #   type = MaterialRealAux
-  #   variable = freezing_heatflux
-  #   property = int_heatflux
-  # []
 []
 
 [Kernels]
@@ -318,7 +285,6 @@
     Ax = 0.07854
     gx = 0.0
     dh = 0.01
-    # freezing = freezing
   [../]
 
   [./pressure_dot]
@@ -342,7 +308,6 @@
     Ax = 0.07854
     gx = 0.0
     dh = 0.01
-    # freezing = freezing
   [../]
 
   [./solid_dot]
@@ -352,7 +317,6 @@
     temp_solid = temp_s
     eos_solid = frozen
     Ax = 0.07854
-    # freezing = freezing
   [../]
 
   [./temp_solid]
@@ -367,7 +331,6 @@
     Ax = 0.07854
     dh = 0.01
     r_total = 0.005
-    # freezing = freezing
   [../]
 
   [./temp_dot]
@@ -392,7 +355,6 @@
     eos_solid = frozen
     Ax = 0.07854
     element_length = 0.05
-    # freezing = freezing
   [../]
 []
 
@@ -503,7 +465,6 @@
 
 [Executioner]
   type = Transient                    # This is a transient simulation
-  # scheme = bdf2
 
   dt = 0.1                           # Targeted time step size
   dtmin = 1e-3                        # The allowed minimum time step size
@@ -526,13 +487,13 @@
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
   num_steps = 50000                    # Max. simulation time steps
-  end_time = 12000.0                     # Max. physical time at the end of the simulation
+  end_time = 15.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]
-  # [./cp]
-  #   type = Checkpoint
-  # [../]
+  [./cp]
+    type = Checkpoint
+  [../]
   execute_on = 'initial timestep_end'
   exodus = true
   # csv = true

@@ -1,6 +1,6 @@
 [GlobalParams]
   global_init_P = 1e5
-  global_init_V = 0.2
+  global_init_V = 0.20
   global_init_T = 860
   [./PBModelParams]
     #pbm_scaling_factors = '1 1e-2 1e-6'
@@ -26,6 +26,10 @@
     order = CONSTANT
     family = MONOMIAL
   [../]
+  [./reynolds_a]
+    order = SECOND
+    family = MONOMIAL
+  [../]
   [./reynolds]
     order = SECOND
     family = MONOMIAL
@@ -44,8 +48,13 @@
   []
   [./reynolds_alpha]
     type = MaterialRealAux
-    variable = reynolds
+    variable = reynolds_a
     property = Re_alpha
+  []
+  [./reynolds]
+    type = MaterialRealAux
+    variable = reynolds
+    property = Re
   []
   [./ff_alpha]
     type = MaterialRealAux
@@ -57,8 +66,8 @@
 [Functions]
   [./v_in]
     type = PiecewiseLinear
-    x = '0   140 250 3600 3750 21600'
-    y = '0.2 0.2 0.05 0.05 0.2 0.2'
+    x = '0    140  21600'
+    y = '0.20 0.20 0.20'
   [../]
   [./p_out]
     type = PiecewiseLinear
@@ -67,29 +76,81 @@
   [../]
   [./time_stepper_sub]
     type = PiecewiseLinear
-    x = '0.0  25   26  6100 6101 10800 10801 12000 12001 5e5'
-    y = '1.0  1.0  1.0  1.0 1.0  1.0   1.0   1.0   1.0  1.0'
-  [../]
-  [./heat_out]
-    type = PiecewiseLinear
-    axis = x
-    x = '0   5.0'
-    y = '-8.0e4 -8.0e4'
+    x = '0.0  25   26   6100 6101 10800 10801 12000 12001 5e5'
+    y = '1.0 1.0 1.0 1.0 1.0 1.0  1.0  1.0  1.0  1.0'
   [../]
   [./T_in]
     type = PiecewiseLinear
-    x = '0   140 250 3600 3750 21600'
-    y = '860 860 785 785  860  860'
+    x = '0   140 400 6100 6300 9000 9300 21600'
+    y = '860 860 830 830  860  860  830  830'
+    # type = ParsedFunction
+    # value = 850+10*cos(pi*t/400)
+  [../]
+  [./htc_ext]
+    type = PiecewiseLinear
+    x = '0   140 400 6100 6300 9000 9300 21600'
+    y = '75  75  140 140  70   70   140  140'
+  [../]
+  [./temp_ext]
+    type = PiecewiseLinear
+    x = '0   140 21600'
+    y = '373 373 373'
+  [../]
+  [./fp0p1T]
+    type = ParsedFunction
+    vals = 'p0p1T'
+    vars = 'T'
+    value = T
+  [../]
+  [./fp0p1v]
+    type = ParsedFunction
+    vals = 'p0p1v'
+    vars = 'v'
+    value = v
+  [../]
+  [./fp0p1P]
+    type = ParsedFunction
+    vals = 'p0p1P'
+    vars = 'P'
+    value = P
   [../]
 []
 
 [Components]
+  [./pipe0]
+    type = PBOneDFluidComponent
+    eos = eos
+    position = '-3 0 4'
+    orientation = '1 0 0'
+
+    A = 0.07854
+    Dh = 0.1
+    length = 3.0
+    n_elems = 12
+    # Hw = 900
+  [../]
+
+  [./p0p1a]
+    type = PBTDV
+    input = 'pipe0(out)'
+    eos = eos
+    p_fn = fp0p1P
+  [../]
+
+  [./p0p1b]
+    type = PBTDJ
+    input = 'pipe1(in)'
+    eos = eos
+    v_fn = fp0p1v
+    T_fn = fp0p1T
+    freeze_bc = true
+  [../]
 
   [./pipe1]
     type = PBOneDFluidComponent
     eos = eos
-    position = '0 0 0'
-    orientation = '0 1 0'
+    position = '0 0 4'
+    orientation = '3 0 -4'
 
     A = 0.07854
     Dh = 0.01
@@ -103,13 +164,47 @@
     h_rad = 2e-8
   [../]
 
+  # [./pipe2]
+  #   type = PBOneDFluidComponent
+  #   eos = eos
+  #   position = '3 0 0'
+  #   orientation = '1 0 0'
+  #   offset = '2 0 0'
+  #
+  #   A = 0.07854
+  #   Dh = 0.1
+  #   length = 3.0
+  #   n_elems = 12
+  #   # Hw = 900
+  # [../]
+
+  # [./Branch4]
+  #   type = PBSingleJunction
+  #   inputs = 'pipe0(out)'
+  #   outputs = 'pipe1(in)'
+  #   eos = eos
+  #   # Area = 0.070686
+  #   # K = '0.1 0.1'
+  #   alphas_outlet = true
+  #   nodal_Tbc = true
+  # [../]
+  # [./Branch5]
+  #   type = PBSingleJunction
+  #   inputs = 'pipe1(out)'
+  #   outputs = 'pipe2(in)'
+  #   eos = eos
+  #   # Area = 0.070686
+  #   # K = '0.1 0.1'
+  #   alphas_inlet = true
+  #   nodal_Tbc = true
+  # [../]
+
   [./inlet]
     type = PBTDJ
-    input = 'pipe1(in)'
+    input = 'pipe0(in)'
     eos = eos
     v_fn = v_in
     T_fn = T_in
-    freeze_bc = true
   [../]
   [./outlet]
     type = PBTDV
@@ -133,6 +228,26 @@
   [../]
 [] # End preconditioning block
 
+[Postprocessors]
+  [./p0p1T]
+    type = ComponentBoundaryVariableValue
+    input = pipe0(out)
+    variable = temperature
+    execute_on = LINEAR
+  [../]
+  [./p0p1v]
+    type = ComponentBoundaryVariableValue
+    input = pipe0(out)
+    variable = velocity
+    execute_on = LINEAR
+  [../]
+  [./p0p1P]
+    type = ComponentBoundaryVariableValue
+    input = pipe1(in)
+    variable = pressure
+    execute_on = LINEAR
+  [../]
+[../]
 
 [Executioner]
   type = Transient
@@ -157,7 +272,7 @@
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
   num_steps = 20000                    # Max. simulation time steps
-  end_time = 15.0                     # Max. physical time at the end of the simulation
+  end_time = 10.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]

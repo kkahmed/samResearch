@@ -57,8 +57,8 @@
 [Functions]
   [./v_in]
     type = PiecewiseLinear
-    x = '0   140 250 3600 3750 21600'
-    y = '0.2 0.2 0.05 0.05 0.2 0.2'
+    x = '0   140 250  1300 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
+    y = '0.2 0.2 0.05 0.05 0.3  0.3  0.05 0.05 0.3  0.3  0.05 0.05 0.3  0.3  0.1 0.1'
   [../]
   [./p_out]
     type = PiecewiseLinear
@@ -67,19 +67,13 @@
   [../]
   [./time_stepper_sub]
     type = PiecewiseLinear
-    x = '0.0  25   26  6100 6101 10800 10801 12000 12001 5e5'
-    y = '1.0  1.0  1.0  1.0 1.0  1.0   1.0   1.0   1.0  1.0'
-  [../]
-  [./heat_out]
-    type = PiecewiseLinear
-    axis = x
-    x = '0   5.0'
-    y = '-8.0e4 -8.0e4'
+    x = '0    249  250  1300 1301 2549  2550 3600 3601 4949 4950 6000 6001 8349 8350 21600'
+    y = '1.0 1.0 1.0  1.0  1.0 1.0  1.0  1.0  1.0 1.0 1.0  1.0  1.0 1.0 1.0  1.0'
   [../]
   [./T_in]
     type = PiecewiseLinear
-    x = '0   140 250 3600 3750 21600'
-    y = '860 860 785 785  860  860'
+    x = '0   140 250  1300 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
+    y = '860 860 785  785  885  885  785  785  885  885  785  785  885  885  800  800'
   [../]
 []
 
@@ -95,7 +89,7 @@
     Dh = 0.01
     length = 5.0
     n_elems = 100
-    Hw = 900
+    # Hw = 900
 
     solid_phase = true
     eos_solid = frozen
@@ -155,17 +149,17 @@
   l_tol = 1e-4 # Relative linear tolerance for each Krylov solve
   l_max_its = 100 # Number of linear iterations for each Krylov solve
 
-  start_time = 0.0                    # Physical time at the beginning of the simulation
+  start_time = 15.0                    # Physical time at the beginning of the simulation
   num_steps = 20000                    # Max. simulation time steps
-  end_time = 15.0                     # Max. physical time at the end of the simulation
+  end_time = 12000.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./cp]
-    type = Checkpoint
-  [../]
+  # [./cp]
+  #   type = Checkpoint
+  # [../]
   [./out_displaced]
     type = Exodus
     use_displaced = true
@@ -175,6 +169,10 @@
   [./console]
     type = Console
   [../]
+[]
+
+[Problem]
+  restart_file_base = 'FreezingComponent_cp_cp/0015'
 []
 
 [Debug]

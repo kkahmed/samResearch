@@ -1,34 +1,43 @@
-# RUN WITH --use-petsc-dm
-
 [Mesh]
   type = GeneratedMesh
   dim = 1
   xmin = 0
-  xmax = 5.0
-  nx = 100
+  xmax = 1
+  nx = 50
   elem_type = EDGE3
 []
 
 [Functions]
   [./v_in]
     type = PiecewiseLinear
-    x = '0   100   1200 1250 2400 2450 9600 9650 21600'
-    y = '0.05 0.05 0.05 0.02 0.02 0.3  0.3   0.05  0.05'
+    x = '0   100'
+    y = '0.2 0.2'
   [../]
   [./p_out]
     type = PiecewiseLinear
     x = '0   100'
     y = '1e5 1e5'
   [../]
+  [./f_rate]
+    type = PiecewiseLinear
+    x = '0   10  11   30   31  100'
+    y = '0.0 0.0 0.030 0.030 0.0 0.0'
+  [../]
+  [./f_axial]
+    type = PiecewiseLinear
+    axis = x
+    x = '0   0.2 0.8 1.0'
+    y = '0.0 0.0  45 45'
+  [../]
   [./time_stepper_sub]
     type = PiecewiseLinear
-    x = '0   100   1200 1250 2400 2401 9650 9651 21600'
-    y = '1.0  1.0  1.0  1.0  1.0  1.0 1.0 1.0   1.0'
+    x = '0.0  100  101  1e5'
+    y = '0.5  0.5  1.0 1.0'
   [../]
   [./T_in]
     type = PiecewiseLinear
-    x = '0   40   50  100 2400 2450 9600 9650 21600'
-    y = '852 852 785 785  785  870  870   785   785'
+    x = '0   100'
+    y = '862 862'
   [../]
 []
 
@@ -40,46 +49,33 @@
   [../]
 
   [./alphas]
-    initial_condition = 0.02
+    initial_condition = 0.01
     order = SECOND
     family = LAGRANGE
   [../]
 
   [./velocity]
-    initial_condition = 0.05
+    initial_condition = 0.2
     order = FIRST
     family = LAGRANGE
   [../]
 
   [./temp_l]
-    initial_condition = 852
+    initial_condition = 802
     order = SECOND
     family = LAGRANGE
-    scaling = 1e-6
   [../]
 
   [./temp_s]
-    initial_condition = 732.1
+    initial_condition = 732
     order = SECOND
     family = LAGRANGE
-    scaling = 1e-5
   [../]
 []
 
 [UserObjects]
 	active = 'eos frozen'
-  [./eos] #const salt
-  	#type = PTConstantEOS
-  	#p_0 = 1.0e5    # Pa
-  	#rho_0 = 2279.92   # kg/m^3
-  	##a2 = 1.834e5  # m^2/s^2
-  	#beta = 0.0002 # K^{-1}
-  	#cp = 2415.78
-  	#cv =  2415.78
-  	#h_0 = 2.35092e6  # J/kg
-  	#T_0 = 973.15      # K
-    #mu = 0.00535189 #1x
-    #k = 0.7662 #1x
+  [./eos]
     type = SaltEquationOfState
     salt_type = Flibe
   [../]
@@ -104,140 +100,49 @@
     Ax = 0.07854
     eos = eos
     eos_solid = frozen
-    h_int = interfaceHTC
-    h_rad = 0.5e-7
-    heatflux = freezing_heatflux
-    #f_alpha = 0.05
+    h_int = 0.0
+    h_rad = 0.0
+    f_alpha = 0.0
+    f_rate = f_rate
+    f_axial = f_axial
   [../]
-  # [./liquid]
-  #   type = PBOneDFluidMaterial
-  #   block = 0
-  #   rho = rho
-  #   velocity = velocity
-  #   temperature = temp_l
-  #   pressure = pressure
-  #   Dh = 0.01
-  #   gx = 0.0
-  #   eos = eos
-  #   low_advection_limit = 1e-6
-  #   element_length = 0.05
-  #   solid_phase = true
-  # [../]
-[]
-
-[Bounds]
-  [./alphas_bound]
-    type = BoundsAux
-    variable = bounds_dummy
-    bounded_variable = alphas
-    upper = 0.9999
-    lower = 0.0001
-  []
 []
 
 [AuxVariables]
   [./rho]
     order = SECOND
-    family = MONOMIAL
+    family = LAGRANGE
     initial_condition = 2279.92
+  [../]
+  [./freezing]
+    order = CONSTANT
+    family = MONOMIAL
   [../]
   [./freezing_heatflux]
     order = SECOND
-    family = MONOMIAL
+    family = LAGRANGE
     initial_condition = 0.0
   [../]
   [./alphaliq]
     order = SECOND
     family = LAGRANGE
-    initial_condition = 0.98
-  [../]
-  [./interfaceHTC]
-    order = SECOND
-    family = MONOMIAL
-  [../]
-  [./interface_temperature]
-    order = SECOND
-    family = LAGRANGE
-  [../]
-  [./temp_external]
-    order = SECOND
-    family = LAGRANGE
-  [../]
-  [./htc_external]
-    order = SECOND
-    family = LAGRANGE
-  [../]
-  [./freezing]
-    order = CONSTANT
-    family = MONOMIAL
-    # initial_condition = 0.0
-  [../]
-  [./reynolds]
-    order = SECOND
-    family = MONOMIAL
-  [../]
-  [./friction]
-    order = SECOND
-    family = MONOMIAL
-  [../]
-  [./bounds_dummy]
+    initial_condition = 0.99
   [../]
 []
 
 [AuxKernels]
-  # [./freeze_rate]
-  #   type = FreezingAux
-  #   variable = freezing
-  #   alphas = alphas
-  #   temperature = temp_l
-  #   temp_solid = temp_s
-  #   #radius = radius_i
-  #   eos_solid = frozen
-  #   h_int = 200
-  #   h_rad = 1.5e-7
-  #   r_total = 0.005
-  #   #f_rate = f_rate
-  #   #f_axial = f_axial
-  # [../]
   [./liquid_frac]
     type = AlphalAux
     variable = alphaliq
     alphas = alphas
   [../]
-  # [./radius_int]
-  #   type = RadialAux
-  #   variable = radius_i
-  #   alphas = alphas
-  #   Rt = 0.005
-  # [../]
-  [./interfaceHTCAUX]
-    type = PBHeatTransferCoefficient
-    variable = interfaceHTC
-    rho = rho
-    velocity = velocity
-    temperature = temp_l
-    pressure = pressure
-    Twall = interface_temperature
-    eos = eos
-    g = 9.81
-    Dh = 0.01
-    D_heated = 0.01
-    length = 0.0 #vertical length!
-    alphas = alphas
-    HTC_geometry_type = Pipe
-  [../]
-  # [./interfaceHTCconstant]
-  #   type = ConstantAux
-  #   variable = interfaceHTC
-  #   value = 200.0
-  # [../]
   [./heat_int]
     type = FreezingHeatFluxAux
     variable = freezing_heatflux
     Tfluid = temp_l
     eos_solid = frozen
-    h_int = interfaceHTC
-    h_rad = 0.5e-7
+    h_int = 0.0
+    h_rad = 0.0
   [../]
   [./density]
     type = DensityAux
@@ -246,53 +151,11 @@
     temperature = temp_l
     eos = eos
   [../]
-  [./temp_int]
-    type = ConstantAux
-    variable = interface_temperature
-    value = 732.15
-  []
-  [./temp_ext]
-    type = ConstantAux
-    variable = temp_external
-    value = 373.0
-  []
-  [./htc_ext]
-    type = ConstantAux
-    variable = htc_external
-    value = 75.0
-  []
   [./freeze_rate]
     type = MaterialRealAux
     variable = freezing
     property = freezing_rate
   []
-  # [./freeze_rate]
-  #   type = FreezingAux
-  #   variable = freezing
-  #   alphas = alphas
-  #   temperature = temp_l
-  #   temp_solid = temp_s
-  #   eos_solid = frozen
-  #   h_int = interfaceHTC
-  #   h_rad = 5e-8
-  #   r_total = 0.005
-  #   execute_on = 'initial timestep_end'
-  # [../]
-  [./reynolds_alpha]
-    type = MaterialRealAux
-    variable = reynolds
-    property = Re_alpha
-  []
-  [./ff_alpha]
-    type = MaterialRealAux
-    variable = friction
-    property = friction_alpha
-  []
-  # [./heat_int]
-  #   type = MaterialRealAux
-  #   variable = freezing_heatflux
-  #   property = int_heatflux
-  # []
 []
 
 [Kernels]
@@ -314,11 +177,10 @@
     alphas = alphas
     pressure = pressure
     eos = eos
-    element_length = 0.05
+    element_length = 0.02
     Ax = 0.07854
     gx = 0.0
     dh = 0.01
-    # freezing = freezing
   [../]
 
   [./pressure_dot]
@@ -338,11 +200,10 @@
     temperature = temp_l
     alphas = alphas
     eos = eos
-    element_length = 0.05
+    element_length = 0.02
     Ax = 0.07854
     gx = 0.0
     dh = 0.01
-    # freezing = freezing
   [../]
 
   [./solid_dot]
@@ -351,8 +212,9 @@
     temperature = temp_l
     temp_solid = temp_s
     eos_solid = frozen
+    h_int = 200
+    h_rad = 1.5e-7
     Ax = 0.07854
-    # freezing = freezing
   [../]
 
   [./temp_solid]
@@ -361,13 +223,12 @@
     alphas = alphas
     heatflux = freezing_heatflux
     temperature = temp_l
-    temp_ext = temp_external
-    h_ext = htc_external
     eos_solid = frozen
+    h_int = 200
+    h_rad = 1.5e-7
     Ax = 0.07854
     dh = 0.01
     r_total = 0.005
-    # freezing = freezing
   [../]
 
   [./temp_dot]
@@ -391,17 +252,18 @@
     eos = eos
     eos_solid = frozen
     Ax = 0.07854
-    element_length = 0.05
-    # freezing = freezing
+    h_int = 200
+    h_rad = 1.5e-7
+    element_length = 0.02
   [../]
 []
 
 [BCs]
   [./vleft]
-    type = FunctionDirichletBC
+    type = DirichletBC
     variable = velocity
     boundary = left
-    function = v_in
+    value = 0.2
   [../]
 
   [./pright]
@@ -412,10 +274,10 @@
   [../]
 
   [./Tleft]
-    type = FunctionDirichletBC
+    type = DirichletBC
     variable = temp_l
     boundary = left
-    function = T_in
+    value = 862
   [../]
 
   [./vbottom]
@@ -496,24 +358,23 @@
     type = SMP                         # Single-Matrix Preconditioner
     full = true                        # Using the full set of couplings among all variables
     solve_type = 'PJFNK'               # Using Preconditioned JFNK solution mehtod
-    petsc_options_iname = '-pc_type -snes_type -snes_linesearch_type'   # PETSc otion, using preconditiong
-    petsc_options_value = 'lu vinewtonrsls basic'         # PETSc otion, using ‘LU’ precondition type in Krylov solve
+    petsc_options_iname = '-pc_type'   # PETSc otion, using preconditiong
+    petsc_options_value = 'lu'         # PETSc otion, using ‘LU’ precondition type in Krylov solve
   [../]
+
 [] # End preconditioning block
 
 [Executioner]
   type = Transient                    # This is a transient simulation
-  # scheme = bdf2
 
   dt = 0.1                           # Targeted time step size
-  dtmin = 1e-3                        # The allowed minimum time step size
+  dtmin = 1e-5                        # The allowed minimum time step size
   [./TimeStepper]
     type = FunctionDT
     function = time_stepper_sub
     min_dt = 1e-3
   [../]
 
-  petsc_options = '-snes_monitor -snes_linesearch_monitor'
   petsc_options_iname = '-ksp_gmres_restart'  # Additional PETSc settings, name list
   petsc_options_value = '100'                 # Additional PETSc settings, value list
 
@@ -525,20 +386,12 @@
   l_max_its = 100                     # Number of linear iterations for each Krylov solve
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
-  num_steps = 50000                    # Max. simulation time steps
-  end_time = 12000.0                     # Max. physical time at the end of the simulation
+  num_steps = 1000                    # Max. simulation time steps
+  end_time = 50.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]
-  # [./cp]
-  #   type = Checkpoint
-  # [../]
   execute_on = 'initial timestep_end'
   exodus = true
-  # csv = true
-  perf_graph = true
-[]
-
-[Debug]
-  show_var_residual_norms = true
+  csv = true
 []

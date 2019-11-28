@@ -7,7 +7,7 @@
     #variable_bounding = true
     #V_bounds = '0 10'
     #supg_max = true
-    p_order = 2
+    p_order = 1
   [../]
 []
 
@@ -22,44 +22,60 @@
 []
 
 [AuxVariables]
-  [./freezing]
+  [./solidQEff]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./solidQOutEff]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./freezing_matprop]
     order = CONSTANT
     family = MONOMIAL
   [../]
   [./reynolds_a]
-    order = SECOND
-    family = MONOMIAL
-  [../]
-  [./reynolds]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
   [../]
   [./friction]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
   [../]
 []
 
 [AuxKernels]
+  [./solidQEff]
+    type = MaterialRealAux
+    variable = solidQEff
+    property = Q_effective
+    factor = -1
+    block = pipe1
+  [../]
+  [./solidQOutEff]
+    type = MaterialRealAux
+    variable = solidQOutEff
+    property = Q_OutEffective
+    factor = -1
+    block = pipe1
+  [../]
   [./freeze_rate]
     type = MaterialRealAux
-    variable = freezing
+    variable = freezing_matprop
     property = freezing_rate
+    block = pipe1
   []
   [./reynolds_alpha]
     type = MaterialRealAux
     variable = reynolds_a
     property = Re_alpha
-  []
-  [./reynolds]
-    type = MaterialRealAux
-    variable = reynolds
-    property = Re
+    block = pipe1
   []
   [./ff_alpha]
     type = MaterialRealAux
     variable = friction
     property = friction_alpha
+    block = pipe1
   []
 []
 
@@ -77,7 +93,7 @@
   [./time_stepper_sub]
     type = PiecewiseLinear
     x = '0.0  25   26   6100 6101 10800 10801 12000 12001 5e5'
-    y = '1.0 1.0 1.0 1.0 1.0 1.0  1.0  1.0  1.0  1.0'
+    y = '2.0 2.0 2.0 2.0 2.0 2.0  2.0  2.0  2.0  2.0'
   [../]
   [./T_in]
     type = PiecewiseLinear
@@ -89,7 +105,7 @@
   [./htc_ext]
     type = PiecewiseLinear
     x = '0   140 400 6100 6300 9000 9300 21600'
-    y = '75  75  140 140  70   70   140  140'
+    y = '75  75  90  90  70   70    90   90'
   [../]
   [./temp_ext]
     type = PiecewiseLinear
@@ -122,12 +138,15 @@
     Dh = 0.01
     length = 5.0
     n_elems = 100
-    Hw = 900
+    #Hw = 900
 
     solid_phase = true
     eos_solid = frozen
     r_total = 0.005
     h_rad = 2e-8
+    htc_ext = htc_ext
+    temp_ext = temp_ext
+    freeze_model = Linear2
   [../]
 
   [./pipe2]
@@ -195,6 +214,10 @@
 [] # End preconditioning block
 
 [Postprocessors]
+  [./timestep_pp]
+    type = FunctionValuePostprocessor
+    function = time_stepper_sub
+  [../]
 [../]
 
 [Executioner]
@@ -206,21 +229,39 @@
 
   dt = 0.1                           # Targeted time step size
   dtmin = 1e-3                        # The allowed minimum time step size
+  # [./TimeStepper]
+  #   type = FunctionDT
+  #   function = time_stepper_sub
+  #   min_dt = 1e-3
+  # [../]
   [./TimeStepper]
-    type = FunctionDT
-    function = time_stepper_sub
-    min_dt = 1e-3
+    type = IterationAdaptiveDT
+    dt = 1.0
+    optimal_iterations = 8
+    growth_factor = 2
+    iteration_window = 2
+    cutback_factor = 0.5
+    timestep_limiting_postprocessor = timestep_pp
   [../]
 
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-7
-  nl_max_its = 20
+  # [./Quadrature]
+  #   type = GAUSS
+  #   order = SECOND
+  # [../]
+  [./Quadrature]
+    type = TRAP
+    order = FIRST
+  [../]
+
+  nl_rel_tol = 1e-7
+  nl_abs_tol = 1e-5
+  nl_max_its = 30
   l_tol = 1e-4 # Relative linear tolerance for each Krylov solve
-  l_max_its = 100 # Number of linear iterations for each Krylov solve
+  l_max_its = 50 # Number of linear iterations for each Krylov solve
 
   start_time = 0.0                    # Physical time at the beginning of the simulation
   num_steps = 20000                    # Max. simulation time steps
-  end_time = 10.0                     # Max. physical time at the end of the simulation
+  end_time = 1200.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]

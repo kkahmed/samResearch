@@ -1,6 +1,6 @@
 [GlobalParams]
   global_init_P = 1e5
-  global_init_V = 0.2
+  global_init_V = 0.4
   global_init_T = 860
   [./PBModelParams]
     #pbm_scaling_factors = '1 1e-2 1e-6'
@@ -22,7 +22,7 @@
 []
 
 [AuxVariables]
-  [./freezing]
+  [./freezing_matprop]
     order = CONSTANT
     family = MONOMIAL
   [../]
@@ -39,7 +39,7 @@
 [AuxKernels]
   [./freeze_rate]
     type = MaterialRealAux
-    variable = freezing
+    variable = freezing_matprop
     property = freezing_rate
   []
   [./reynolds_alpha]
@@ -57,8 +57,8 @@
 [Functions]
   [./v_in]
     type = PiecewiseLinear
-    x = '0   140 250  1300 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
-    y = '0.2 0.2 0.05 0.05 0.3  0.3  0.05 0.05 0.3  0.3  0.05 0.05 0.3  0.3  0.1 0.1'
+    x = '0   150 250  1200 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
+    y = '0.4 0.4 0.3  0.3  0.4  0.4  0.3  0.3  0.4  0.4  0.3  0.3  0.4  0.4  0.3  0.3'
   [../]
   [./p_out]
     type = PiecewiseLinear
@@ -67,18 +67,18 @@
   [../]
   [./time_stepper_sub]
     type = PiecewiseLinear
-    x = '0    249  250  1300 1301 2549  2550 3600 3601 4949 4950 6000 6001 8349 8350 21600'
-    y = '1.0 1.0 1.0  1.0  1.0 1.0  1.0  1.0  1.0 1.0 1.0  1.0  1.0 1.0 1.0  1.0'
+    x = '0.0  25   26   6100 6101 10800 10801 12000 12001 5e5'
+    y = '1.0 1.0 1.0 1.0 1.0 1.0  1.0  1.0  1.0  1.0'
   [../]
   [./T_in]
     type = PiecewiseLinear
-    x = '0   140 250  1300 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
-    y = '860 860 785  785  885  885  785  785  885  885  785  785  885  885  800  800'
+    x = '0   150 250  1200 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
+    y = '860 860 820  820  860  860  820  820  860  860  820  820  860  860  820  820'
   [../]
   [./htc_ext]
     type = PiecewiseLinear
-    x = '0   21600'
-    y = '75  75'
+    x = '0   150 250  1200 1350 2400 2550 3600 3750 4800 4950 6000 6150 8200 8350 21600'
+    y = '50  50  80  80  50   50   80  80  50   50   80  80  50   50   80  80'
   [../]
   [./temp_ext]
     type = PiecewiseLinear
@@ -99,14 +99,14 @@
     Dh = 0.01
     length = 5.0
     n_elems = 100
-    # Hw = 900
+    # Hw = 300
 
     solid_phase = true
     eos_solid = frozen
     r_total = 0.005
-    h_rad = 2e-8
+    h_rad = 1e-8
     htc_ext = htc_ext
-    temp_ext = temp_ext
+    #temp_ext = temp_ext
   [../]
 
   [./inlet]
@@ -130,12 +130,17 @@
   active = 'SMP_PJFNK'
 
   [./SMP_PJFNK]
-    type = SMP
+    type = FDP
     full = true
 
     solve_type = 'PJFNK'
     petsc_options_iname = '-pc_type -snes_type -snes_linesearch_type'
     petsc_options_value = 'lu vinewtonrsls basic'
+  [../]
+  [./FDP]
+    type = FDP
+    full = true
+    solve_type = 'PJFNK'
   [../]
 [] # End preconditioning block
 
@@ -161,9 +166,14 @@
   l_tol = 1e-4 # Relative linear tolerance for each Krylov solve
   l_max_its = 100 # Number of linear iterations for each Krylov solve
 
-  start_time = 15.0                    # Physical time at the beginning of the simulation
+  start_time = 0.0                    # Physical time at the beginning of the simulation
   num_steps = 20000                    # Max. simulation time steps
   end_time = 12000.0                     # Max. physical time at the end of the simulation
+
+  [./Quadrature]
+     type = GAUSS
+     order = AUTO
+  [../]
 [] # close Executioner section
 
 [Outputs]
@@ -181,10 +191,6 @@
   [./console]
     type = Console
   [../]
-[]
-
-[Problem]
-  restart_file_base = 'FreezingComponent_cp_cp/0015'
 []
 
 [Debug]

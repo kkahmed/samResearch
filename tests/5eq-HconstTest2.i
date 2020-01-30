@@ -107,6 +107,9 @@
     h_int = interfaceHTC
     h_rad = 2e-8
     heatflux = freezing_heatflux
+    h_ext = htc_external
+    temp_ext = temp_external
+    HT_surface_area_density = 200
     #f_alpha = 0.05
   [../]
   # [./liquid]
@@ -138,12 +141,12 @@
 [AuxVariables]
   [./rho]
     order = SECOND
-    family = MONOMIAL
+    family = LAGRANGE
     initial_condition = 2279.92
   [../]
   [./freezing_heatflux]
     order = SECOND
-    family = MONOMIAL
+    family = LAGRANGE
     initial_condition = 0.0
   [../]
   [./alphaliq]
@@ -153,7 +156,7 @@
   [../]
   [./interfaceHTC]
     order = SECOND
-    family = MONOMIAL
+    family = LAGRANGE
   [../]
   [./interface_temperature]
     order = SECOND
@@ -342,6 +345,7 @@
     Ax = 0.07854
     dh = 0.01
     r_total = 0.005
+    HT_surface_area_density = 200
     # freezing = freezing
   [../]
 
@@ -367,6 +371,7 @@
     eos_solid = frozen
     Ax = 0.07854
     element_length = 0.05
+    HT_surface_area_density = 200
     # freezing = freezing
   [../]
 []

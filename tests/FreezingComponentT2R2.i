@@ -108,7 +108,7 @@
     r_total = 0.005
     h_rad = 2e-8
     htc_ext = htc_ext
-    #temp_ext = temp_ext
+    temp_ext = temp_ext
   [../]
 
   [./inlet]
@@ -165,7 +165,7 @@
 
   start_time = 15.0                    # Physical time at the beginning of the simulation
   num_steps = 20000                    # Max. simulation time steps
-  end_time = 1200.0                     # Max. physical time at the end of the simulation
+  end_time = 12000.0                     # Max. physical time at the end of the simulation
 [] # close Executioner section
 
 [Outputs]

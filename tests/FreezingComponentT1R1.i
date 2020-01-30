@@ -70,16 +70,20 @@
     x = '0.0  25   26  6100 6101 10800 10801 12000 12001 5e5'
     y = '1.0  1.0  1.0  1.0 1.0  1.0   1.0   1.0   1.0  1.0'
   [../]
-  [./heat_out]
-    type = PiecewiseLinear
-    axis = x
-    x = '0   5.0'
-    y = '-8.0e4 -8.0e4'
-  [../]
   [./T_in]
     type = PiecewiseLinear
     x = '0   140 250 3600 3750 21600'
     y = '860 860 785 785  860  860'
+  [../]
+  [./htc_ext]
+    type = PiecewiseLinear
+    x = '0   21600'
+    y = '75  75'
+  [../]
+  [./temp_ext]
+    type = PiecewiseLinear
+    x = '0   140 21600'
+    y = '373 373 373'
   [../]
 []
 
@@ -101,6 +105,8 @@
     eos_solid = frozen
     r_total = 0.005
     h_rad = 2e-8
+    htc_ext = htc_ext
+    temp_ext = temp_ext
   [../]
 
   [./inlet]

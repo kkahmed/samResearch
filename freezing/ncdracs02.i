@@ -127,7 +127,7 @@
   [./T_perturb]
     type = PiecewiseLinear
     x = '0    400   800   6100    6300    9000    9300    21600'
-    y = '993  993   913   913     993     993     913     913'
+    y = '1020 1020  1020  1020    1020    1020    1020    1020'
   [../]
   [./Q_perturb1]
     type = PiecewiseLinear
@@ -156,8 +156,8 @@
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '0 100  2000  1e5' #For restart from 5Ks
-    y = '0 0 0  0'
+    x = '0 1000  2000  1e5' #For restart from 5Ks
+    y = '0 0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -168,7 +168,7 @@
   [./htc_ext]
     type = PiecewiseLinear
     x = '0   400 800 6100 6300 9000 9300 21600'
-    y = '25  25  25  25   25   25   25   25'
+    y = '25  25  35  35    25   25  35   35'
   [../]
   [./temp_ext]
     type = PiecewiseLinear
@@ -639,7 +639,7 @@ petsc_options = '-snes_monitor -snes_linesearch_monitor'
 
   start_time = 0.0
   num_steps = 20000
-  end_time = 20
+  end_time = 12000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 50 # Number of linear iterations for each Krylov solve

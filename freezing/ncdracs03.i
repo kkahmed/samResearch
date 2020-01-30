@@ -127,7 +127,7 @@
   [./T_perturb]
     type = PiecewiseLinear
     x = '0    400   800   6100    6300    9000    9300    21600'
-    y = '993  993   913   913     993     993     913     913'
+    y = '993  993   993   993     993     993     993     993'
   [../]
   [./Q_perturb1]
     type = PiecewiseLinear
@@ -141,8 +141,8 @@
   #[../]
   [./Q_perturb2]
     type = PiecewiseLinear
-    x = '0        1e5'
-    y = '12337162 12337162'
+    x = '0       100  1e5'
+    y = '1.2e6 1.4e7 1.4e7 '
   [../]
   [./Q_perturb3]
     type = PiecewiseLinear
@@ -157,7 +157,7 @@
   [./PumpFN]
     type = PiecewiseLinear
     x = '0 100  2000  1e5' #For restart from 5Ks
-    y = '0 0 0  0'
+    y = '0 0 0 0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -192,55 +192,20 @@
     #initial_T = 1129
   [../]
 
-  #[./DHX]
-  #  type = PBOneDFluidComponent
-  #  eos = eos
-  #
-  #  position = '0 0.0 0'
-  #  orientation = '0 0 1'
-  #  A = 0.09182015
-  #  Dh = 0.0109
-  #  roughness = 0.000015
-  #  length = 2.5
-  #  n_elems = 14
-  #
-  #  initial_V = 0.068618 #0.029349731
-  #  heat_source = Q_perturb2
-  #[../]
-
   [./DHX]
-    type = PBHeatExchanger
-    eos = eos
-    eos_secondary = eos
-    hs_type = cylinder
-    radius_i = 0.00545
+   type = PBOneDFluidComponent
+   eos = eos
 
-    position = '0 0 0'
-    orientation = '0 0 1'
-    A = 0.1112081702
-    Dh = 0.0108544891
-    A_secondary = 0.09182015
-    Dh_secondary = 0.0109
-    length = 2.5
-    n_elems = 12
-    #f = 0.238
-    #f_secondary = 0.045
-    #Hw = 582 #604.98482473 #Overall Ux2
-    #Hw_secondary = 582 #Overall Ux2
+   position = '0 0.0 0'
+   orientation = '0 0 1'
+   A = 0.09182015
+   Dh = 0.0109
+   roughness = 0.000015
+   length = 2.5
+   n_elems = 14
 
-  	initial_V = -0.0045 #0.23470 #0.104 #0.04855862
-	initial_V_secondary = -0.029349731 #0.0558126 #0.0115474345
-	initial_T = 925
-
-    HT_surface_area_density = 353.0303124 #Heated perimeter / AreaX
-    HT_surface_area_density_secondary = 366.9724771
-
-    Twall_init = 900
-    wall_thickness = 0.0009
-
-    dim_wall = 2
-    material_wall = ss-mat
-    n_wall_elems = 12
+   initial_V = 0.068618 #0.029349731
+   heat_source = Q_perturb2
   [../]
 
   [./pipe2]
@@ -326,10 +291,10 @@
     solid_phase = true
     eos_solid = eos4
     r_total = 0.00545
-    h_rad = 2e-8
+    h_rad = 0.0
     htc_ext = htc_ext
     temp_ext = temp_ext
-    freeze_model = Linear1
+    freeze_model = InterfaceDiff
   [../]
 
   [./pipe4]
@@ -349,7 +314,7 @@
   [./Branch1]
     type = PBBranch
     inputs = 'pipe1(out)'
-    outputs = 'DHX(secondary_out)'
+    outputs = 'DHX(in)'
     eos = eos
     Area = 0.01767146
     K = '1.0 1.0'
@@ -357,7 +322,7 @@
 
   [./Branch2]
     type = PBBranch
-    inputs = 'DHX(secondary_in)'
+    inputs = 'DHX(out)'
     outputs = 'pipe2(in)'
     eos = eos
     Area = 0.01767146
@@ -460,28 +425,12 @@
   	p_bc = 1.01e5
   	T_fn = PBTDVTemp
   [../]
-
-  [./inlet2]
-    type = PBTDJ
-    input = 'DHX(primary_out)'
-    eos = eos
-    v_bc = -0.045
-    T_fn = T_perturb
-  [../]
-
-  [./outlet2]
-  	type = PBTDV
-  	input = 'DHX(primary_in)'
-    eos = eos
-  	p_bc = 1.01e5
-  	T_bc = 883
-  [../]
 []
 
 [Postprocessors]
   [./DHX_flow]
     type = ComponentBoundaryFlow
-    input = DHX(secondary_in)
+    input = DHX(in)
     execute_on = timestep_end
   [../]
   [./TCHX_Re]
@@ -504,14 +453,14 @@
   [../]
   [./DHX_Gr1]
     type = ComponentBoundaryVariableValue
-    input = DHX(primary_out)
+    input = DHX(out)
     variable = temperature
     scale_factor = 4.390e10
     execute_on = timestep_end
   [../]
   [./DHX_Gr2]
     type = ComponentBoundaryVariableValue
-    input = DHX(primary_in)
+    input = DHX(in)
     variable = temperature
     scale_factor = 4.390e10
     execute_on = timestep_end
@@ -530,12 +479,12 @@
   #[../]
   [./DHXTubeTop]
     type = ComponentBoundaryVariableValue
-    input = 'DHX(primary_out)'
+    input = 'DHX(out)'
     variable = 'temperature'
   [../]
   [./DHXTubeBot]
     type = ComponentBoundaryVariableValue
-    input = 'DHX(primary_in)'
+    input = 'DHX(in)'
     variable = 'temperature'
   [../]
   [./DHXTubeAvg_K]
@@ -589,7 +538,7 @@
   # [../]
   [./Residence]
     type = ResidenceTime
-    comp_names = 'pipe1 DHX:secondary_pipe pipe2 pipe3 TCHX pipe4'
+    comp_names = 'pipe1 DHX pipe2 pipe3 TCHX pipe4'
     execute_on = timestep_end
   [../]
   [./pipe5out]
@@ -639,7 +588,7 @@ petsc_options = '-snes_monitor -snes_linesearch_monitor'
 
   start_time = 0.0
   num_steps = 20000
-  end_time = 20
+  end_time = 460
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 50 # Number of linear iterations for each Krylov solve

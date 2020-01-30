@@ -77,6 +77,10 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  # [./reynolds]
+  #   order = SECOND
+  #   family = MONOMIAL
+  # [../]
   [./friction]
     order = FIRST
     family = MONOMIAL
@@ -110,6 +114,11 @@
     property = Re_alpha
     block = TCHX
   []
+  # [./reynolds]
+  #   type = MaterialRealAux
+  #   variable = reynolds
+  #   property = Re
+  # []
   [./ff_alpha]
     type = MaterialRealAux
     variable = friction
@@ -156,8 +165,8 @@
   [../]
   [./PumpFN]
     type = PiecewiseLinear
-    x = '0 100  2000  1e5' #For restart from 5Ks
-    y = '0 0 0  0'
+    x = '1000  2000  1e5' #For restart from 5Ks
+    y = '0.0   0.0   0.0'
   [../]
   [./PBTDVTemp]
     type = ParsedFunction
@@ -637,9 +646,9 @@ petsc_options = '-snes_monitor -snes_linesearch_monitor'
   nl_abs_tol = 1e-5
   nl_max_its = 30
 
-  start_time = 0.0
+  start_time = 20.0
   num_steps = 20000
-  end_time = 20
+  end_time = 12000
 
   l_tol = 1e-5 # Relative linear tolerance for each Krylov solve
   l_max_its = 50 # Number of linear iterations for each Krylov solve
@@ -651,7 +660,7 @@ petsc_options = '-snes_monitor -snes_linesearch_monitor'
 []
 
 [Problem]
-  #restart_file_base = 'ncdracs5Kt_out_cp/1007'
+  restart_file_base = 'ncdracs01_cp_cp/0040'
 []
 
 [Outputs]

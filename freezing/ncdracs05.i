@@ -294,7 +294,7 @@
     h_rad = 0.0
     htc_ext = htc_ext
     temp_ext = temp_ext
-    # freeze_model = Linear2
+    freeze_model = Linear2
   [../]
 
   [./pipe4]

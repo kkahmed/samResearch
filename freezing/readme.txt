@@ -9,3 +9,5 @@ ncdracs -------------------------------
 03 steady conditions, Qin and higher temps
 04 steady conditions, Qin and higher temps
 05 as 04 but InterfaceDiff freezing
+06 horizontal pipe hx
+07 horizontal slab hx
